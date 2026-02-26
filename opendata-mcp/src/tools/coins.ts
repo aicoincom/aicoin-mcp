@@ -101,18 +101,40 @@ export function registerCoinTools(server: McpServer) {
 
   server.tool(
     'get_funding_rate_history',
-    'Get funding rate history for a coin',
+    'Get funding rate history',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      symbol: z
+        .string()
+        .describe(
+          'Trading pair, e.g. btcswapusdt:okcoinfutures'
+        ),
       interval: z
         .string()
+        .describe(
+          'Interval: 1m,3m,5m,15m,30m,1h,4h,6h,8h,12h,1d,1w'
+        ),
+      limit: z
+        .string()
         .optional()
-        .describe('Interval, e.g. 8h'),
+        .describe('Number of records, default 100'),
+      start_time: z
+        .string()
+        .optional()
+        .describe('Start time in ms'),
+      end_time: z
+        .string()
+        .optional()
+        .describe('End time in ms'),
     },
-    async ({ coin, interval }) => {
+    async ({ symbol, interval, limit, start_time, end_time }) => {
       try {
-        const params: Record<string, string> = { coin };
-        if (interval) params.interval = interval;
+        const params: Record<string, string> = {
+          symbol,
+          interval,
+        };
+        if (limit) params.limit = limit;
+        if (start_time) params.start_time = start_time;
+        if (end_time) params.end_time = end_time;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/funding-rate/history',
@@ -127,16 +149,34 @@ export function registerCoinTools(server: McpServer) {
 
   server.tool(
     'get_liquidation_map',
-    'Get liquidation heatmap data for a coin',
+    'Get liquidation heatmap data',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      dbkey: z
+        .string()
+        .describe(
+          'Trading pair key, e.g. btcswapusdt:binance'
+        ),
+      cycle: z
+        .string()
+        .describe('Cycle: 24h or 7d'),
+      leverage: z
+        .string()
+        .optional()
+        .describe(
+          'Leverage filter: 10,25,50,100 (empty=all)'
+        ),
     },
-    async ({ coin }) => {
+    async ({ dbkey, cycle, leverage }) => {
       try {
+        const params: Record<string, string> = {
+          dbkey,
+          cycle,
+        };
+        if (leverage) params.leverage = leverage;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/liquidation/map',
-            { coin }
+            params
           )
         );
       } catch (e) {
@@ -149,16 +189,34 @@ export function registerCoinTools(server: McpServer) {
     'get_weighted_funding_rate_history',
     'Get volume-weighted funding rate history',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      symbol: z
+        .string()
+        .describe('Symbol, e.g. btcswapusdt'),
       interval: z
         .string()
+        .describe('Interval: 1m,3m,5m,15m,30m,1h,4h,6h,8h,12h,1d,1w'),
+      limit: z
+        .string()
         .optional()
-        .describe('Interval, e.g. 8h'),
+        .describe('Number of records, default 100'),
+      start_time: z
+        .string()
+        .optional()
+        .describe('Start time in ms'),
+      end_time: z
+        .string()
+        .optional()
+        .describe('End time in ms'),
     },
-    async ({ coin, interval }) => {
+    async ({ symbol, interval, limit, start_time, end_time }) => {
       try {
-        const params: Record<string, string> = { coin };
-        if (interval) params.interval = interval;
+        const params: Record<string, string> = {
+          symbol,
+          interval,
+        };
+        if (limit) params.limit = limit;
+        if (start_time) params.start_time = start_time;
+        if (end_time) params.end_time = end_time;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/funding-rate/vol-weight-history',
@@ -175,14 +233,38 @@ export function registerCoinTools(server: McpServer) {
     'get_aggregated_stablecoin_oi_history',
     'Get aggregated stablecoin-margined open interest history',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      symbol: z
+        .string()
+        .describe('Coin symbol, e.g. BTC'),
+      interval: z
+        .string()
+        .describe('Interval: 1m,2m,15m,30m'),
+      limit: z
+        .string()
+        .optional()
+        .describe('Number of records, default 100'),
+      start_time: z
+        .string()
+        .optional()
+        .describe('Start time in ms'),
+      end_time: z
+        .string()
+        .optional()
+        .describe('End time in ms'),
     },
-    async ({ coin }) => {
+    async ({ symbol, interval, limit, start_time, end_time }) => {
       try {
+        const params: Record<string, string> = {
+          symbol,
+          interval,
+        };
+        if (limit) params.limit = limit;
+        if (start_time) params.start_time = start_time;
+        if (end_time) params.end_time = end_time;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/open-interest/aggregated-stablecoin-history',
-            { coin }
+            params
           )
         );
       } catch (e) {
@@ -195,14 +277,38 @@ export function registerCoinTools(server: McpServer) {
     'get_aggregated_coin_margin_oi_history',
     'Get aggregated coin-margined open interest history',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      symbol: z
+        .string()
+        .describe('Coin symbol, e.g. BTC'),
+      interval: z
+        .string()
+        .describe('Interval: 1m,2m,15m,30m'),
+      limit: z
+        .string()
+        .optional()
+        .describe('Number of records, default 100'),
+      start_time: z
+        .string()
+        .optional()
+        .describe('Start time in ms'),
+      end_time: z
+        .string()
+        .optional()
+        .describe('End time in ms'),
     },
-    async ({ coin }) => {
+    async ({ symbol, interval, limit, start_time, end_time }) => {
       try {
+        const params: Record<string, string> = {
+          symbol,
+          interval,
+        };
+        if (limit) params.limit = limit;
+        if (start_time) params.start_time = start_time;
+        if (end_time) params.end_time = end_time;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/open-interest/aggregated-coin-margin-history',
-            { coin }
+            params
           )
         );
       } catch (e) {
@@ -215,14 +321,40 @@ export function registerCoinTools(server: McpServer) {
     'get_liquidation_history',
     'Get liquidation order history',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      symbol: z
+        .string()
+        .describe(
+          'Trading pair, e.g. btcswapusdt:binance'
+        ),
+      interval: z
+        .string()
+        .describe('Interval: 1m,2m,15m,30m'),
+      limit: z
+        .string()
+        .optional()
+        .describe('Number of records, default 10'),
+      start_time: z
+        .string()
+        .optional()
+        .describe('Start time in ms'),
+      end_time: z
+        .string()
+        .optional()
+        .describe('End time in ms'),
     },
-    async ({ coin }) => {
+    async ({ symbol, interval, limit, start_time, end_time }) => {
       try {
+        const params: Record<string, string> = {
+          symbol,
+          interval,
+        };
+        if (limit) params.limit = limit;
+        if (start_time) params.start_time = start_time;
+        if (end_time) params.end_time = end_time;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/liquidation/history',
-            { coin }
+            params
           )
         );
       } catch (e) {
@@ -235,14 +367,47 @@ export function registerCoinTools(server: McpServer) {
     'get_estimated_liquidation_history',
     'Get historical estimated liquidation chart data',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      dbkey: z
+        .string()
+        .describe(
+          'Trading pair key, e.g. btcswapusdt:binance'
+        ),
+      cycle: z
+        .string()
+        .describe('Cycle: 24h or 7d'),
+      leverage: z
+        .string()
+        .optional()
+        .describe(
+          'Leverage filter: 10,25,50,100 (empty=all)'
+        ),
+      limit: z
+        .string()
+        .optional()
+        .describe('Number of records, default 100'),
+      start_time: z
+        .string()
+        .optional()
+        .describe('Start time in ms'),
+      end_time: z
+        .string()
+        .optional()
+        .describe('End time in ms'),
     },
-    async ({ coin }) => {
+    async ({ dbkey, cycle, leverage, limit, start_time, end_time }) => {
       try {
+        const params: Record<string, string> = {
+          dbkey,
+          cycle,
+        };
+        if (leverage) params.leverage = leverage;
+        if (limit) params.limit = limit;
+        if (start_time) params.start_time = start_time;
+        if (end_time) params.end_time = end_time;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/estimated-liquidation/history',
-            { coin }
+            params
           )
         );
       } catch (e) {
@@ -255,14 +420,34 @@ export function registerCoinTools(server: McpServer) {
     'get_historical_depth',
     'Get historical order book depth data',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      key: z
+        .string()
+        .describe(
+          'Trading pair key, e.g. btcswapusdt:okcoinfutures'
+        ),
+      limit: z
+        .string()
+        .optional()
+        .describe('Number of records, max 1000'),
+      start_time: z
+        .string()
+        .optional()
+        .describe('Start time in ms'),
+      end_time: z
+        .string()
+        .optional()
+        .describe('End time in ms'),
     },
-    async ({ coin }) => {
+    async ({ key, limit, start_time, end_time }) => {
       try {
+        const params: Record<string, string> = { key };
+        if (limit) params.limit = limit;
+        if (start_time) params.start_time = start_time;
+        if (end_time) params.end_time = end_time;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/historical-depth',
-            { coin }
+            params
           )
         );
       } catch (e) {
@@ -275,14 +460,39 @@ export function registerCoinTools(server: McpServer) {
     'get_super_depth_history',
     'Get large order depth history',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      key: z
+        .string()
+        .describe(
+          'Trading pair key, e.g. btcswapusdt:okcoinfutures'
+        ),
+      amount: z
+        .string()
+        .optional()
+        .describe('USD threshold, default 10000'),
+      limit: z
+        .string()
+        .optional()
+        .describe('Number of records, max 1000'),
+      start_time: z
+        .string()
+        .optional()
+        .describe('Start time in ms'),
+      end_time: z
+        .string()
+        .optional()
+        .describe('End time in ms'),
     },
-    async ({ coin }) => {
+    async ({ key, amount, limit, start_time, end_time }) => {
       try {
+        const params: Record<string, string> = { key };
+        if (amount) params.amount = amount;
+        if (limit) params.limit = limit;
+        if (start_time) params.start_time = start_time;
+        if (end_time) params.end_time = end_time;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/super-depth/history',
-            { coin }
+            params
           )
         );
       } catch (e) {
@@ -295,14 +505,34 @@ export function registerCoinTools(server: McpServer) {
     'get_trade_data',
     'Get latest trade data for futures',
     {
-      coin: z.string().describe('Coin key, e.g. bitcoin'),
+      dbkey: z
+        .string()
+        .describe(
+          'Trading pair key, e.g. btcswapusdt:okcoinfutures'
+        ),
+      limit: z
+        .string()
+        .optional()
+        .describe('Number of records, max 1000'),
+      start_time: z
+        .string()
+        .optional()
+        .describe('Start time in ms'),
+      end_time: z
+        .string()
+        .optional()
+        .describe('End time in ms'),
     },
-    async ({ coin }) => {
+    async ({ dbkey, limit, start_time, end_time }) => {
       try {
+        const params: Record<string, string> = { dbkey };
+        if (limit) params.limit = limit;
+        if (start_time) params.start_time = start_time;
+        if (end_time) params.end_time = end_time;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/trade-data',
-            { coin }
+            params
           )
         );
       } catch (e) {

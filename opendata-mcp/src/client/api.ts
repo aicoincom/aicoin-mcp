@@ -41,7 +41,12 @@ export async function apiGet(
     const body = await res.text();
     throw new Error(`API ${res.status}: ${body}`);
   }
-  return res.json();
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { raw: text };
+  }
 }
 
 /**
@@ -64,8 +69,13 @@ export async function apiPost(
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`API ${res.status}: ${text}`);
+    const txt = await res.text();
+    throw new Error(`API ${res.status}: ${txt}`);
   }
-  return res.json();
+  const txt = await res.text();
+  try {
+    return JSON.parse(txt);
+  } catch {
+    return { raw: txt };
+  }
 }

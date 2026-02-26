@@ -67,6 +67,7 @@ AICOIN_ACCESS_SECRET=your_access_secret
 | `get_markets` | All exchange platforms |
 | `get_futures_interest` | Futures open interest |
 | `get_crypto_stock_quotes` | Crypto stock quotes (MSTR, COIN) |
+| `get_crypto_stock_top_gainer` | Top gaining crypto-related stocks |
 | `get_index_price` | Index price data |
 | `get_hot_tab_coins` | Trending coins by category |
 | `get_crypto_company_info` | Crypto company details by symbol |

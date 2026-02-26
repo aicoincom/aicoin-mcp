@@ -82,27 +82,18 @@ export function registerFeatureTools(server: McpServer) {
     'get_big_orders',
     'Get whale/large order tracking data',
     {
-      coin: z
+      symbol: z
         .string()
-        .optional()
-        .describe('Coin key filter'),
-      platform: z
-        .string()
-        .optional()
-        .describe('Exchange platform filter'),
-      page: z
-        .string()
-        .optional()
-        .describe('Page number'),
+        .describe(
+          'Trading pair, e.g. btcusdt:okex'
+        ),
     },
-    async ({ coin, platform, page }) => {
+    async ({ symbol }) => {
       try {
-        const params: Record<string, string> = {};
-        if (coin) params.coin = coin;
-        if (platform) params.platform = platform;
-        if (page) params.page = page;
         return ok(
-          await apiGet('/api/v2/order/bigOrder', params)
+          await apiGet('/api/v2/order/bigOrder', {
+            symbol,
+          })
         );
       } catch (e) {
         return err(e);
@@ -114,22 +105,18 @@ export function registerFeatureTools(server: McpServer) {
     'get_agg_trades',
     'Get aggregated large trades data',
     {
-      coin: z
+      symbol: z
         .string()
-        .optional()
-        .describe('Coin key filter'),
-      platform: z
-        .string()
-        .optional()
-        .describe('Exchange platform filter'),
+        .describe(
+          'Trading pair, e.g. btcusdt:okex'
+        ),
     },
-    async ({ coin, platform }) => {
+    async ({ symbol }) => {
       try {
-        const params: Record<string, string> = {};
-        if (coin) params.coin = coin;
-        if (platform) params.platform = platform;
         return ok(
-          await apiGet('/api/v2/order/aggTrade', params)
+          await apiGet('/api/v2/order/aggTrade', {
+            symbol,
+          })
         );
       } catch (e) {
         return err(e);
@@ -164,15 +151,28 @@ export function registerFeatureTools(server: McpServer) {
     'get_strategy_signal',
     'Get indicator win-rate signal data',
     {
-      coin: z
+      coin_type: z
         .string()
         .optional()
-        .describe('Coin key filter'),
+        .describe('Coin type, e.g. bitcoin'),
+      signal_key: z
+        .string()
+        .optional()
+        .describe(
+          'Signal key: depth_win_one,depth_win_two,depth_buy_one,order_buy_one,td_buy_one,lsur_one'
+        ),
+      latest_time: z
+        .string()
+        .optional()
+        .describe('Latest time in ms timestamp'),
     },
-    async ({ coin }) => {
+    async ({ coin_type, signal_key, latest_time }) => {
       try {
         const params: Record<string, string> = {};
-        if (coin) params.coin = coin;
+        if (coin_type) params.coin_type = coin_type;
+        if (signal_key) params.signal_key = signal_key;
+        if (latest_time)
+          params.latest_time = latest_time;
         return ok(
           await apiGet(
             '/api/v2/signal/strategySignal',
@@ -347,15 +347,22 @@ export function registerFeatureTools(server: McpServer) {
     'get_change_signal',
     'Get abnormal movement signal data',
     {
-      coin: z
+      type: z
         .string()
         .optional()
-        .describe('Coin key filter'),
+        .describe(
+          'Signal type: 1-12, 17, 18, 23, 24'
+        ),
+      currency: z
+        .string()
+        .optional()
+        .describe('Currency: usd (default) or cny'),
     },
-    async ({ coin }) => {
+    async ({ type, currency }) => {
       try {
         const params: Record<string, string> = {};
-        if (coin) params.coin = coin;
+        if (type) params.type = type;
+        if (currency) params.currency = currency;
         return ok(
           await apiGet(
             '/api/v2/signal/changeSignal',

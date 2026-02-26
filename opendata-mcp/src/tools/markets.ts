@@ -30,25 +30,39 @@ export function registerMarketTools(server: McpServer) {
     'get_kline_data',
     'Get K-line (candlestick) data for a trading pair',
     {
-      trading_pair: z
+      symbol: z
         .string()
-        .describe('Trading pair key'),
+        .describe(
+          'Symbol, e.g. btcusdt:okex or i:ixic:nasdaq'
+        ),
       period: z
         .string()
         .optional()
-        .describe('Period: 1min,5min,15min,1hour,4hour,1day,1week'),
-      limit: z
+        .describe(
+          'Period in seconds: 900=15min, 3600=1h, 14400=4h, 86400=1d'
+        ),
+      size: z
         .string()
         .optional()
-        .describe('Number of candles'),
+        .describe('Number of candles, 1-500'),
+      since: z
+        .string()
+        .optional()
+        .describe('Start timestamp'),
+      open_time: z
+        .string()
+        .optional()
+        .describe('Open time offset: 0 or 8'),
     },
-    async ({ trading_pair, period, limit }) => {
+    async ({ symbol, period, size, since, open_time }) => {
       try {
         const params: Record<string, string> = {
-          trading_pair,
+          symbol,
         };
         if (period) params.period = period;
-        if (limit) params.limit = limit;
+        if (size) params.size = size;
+        if (since) params.since = since;
+        if (open_time) params.open_time = open_time;
         return ok(
           await apiGet(
             '/api/v2/commonKline/dataRecords',
@@ -63,22 +77,20 @@ export function registerMarketTools(server: McpServer) {
 
   server.tool(
     'get_market_ticker',
-    'Get ticker data for a specific exchange platform',
+    'Get ticker data for exchange platforms',
     {
-      platform: z
+      market_list: z
         .string()
-        .describe('Exchange platform key, e.g. binance'),
-      type: z
-        .string()
-        .optional()
-        .describe('Market type filter'),
+        .describe(
+          'Comma-separated exchange keys, max 100, e.g. okex,binance'
+        ),
     },
-    async ({ platform, type }) => {
+    async ({ market_list }) => {
       try {
-        const params: Record<string, string> = { platform };
-        if (type) params.type = type;
         return ok(
-          await apiGet('/api/v2/market/ticker', params)
+          await apiGet('/api/v2/market/ticker', {
+            market_list,
+          })
         );
       } catch (e) {
         return err(e);
@@ -105,7 +117,7 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
     },
     async ({ coin }) => {
       try {
@@ -146,19 +158,60 @@ export function registerMarketTools(server: McpServer) {
   );
 
   server.tool(
+    'get_crypto_stock_top_gainer',
+    'Get top gaining crypto-related stocks (US and/or HK market)',
+    {
+      us_stock: z
+        .boolean()
+        .optional()
+        .describe('Include US stocks (default false)'),
+      hk_stock: z
+        .boolean()
+        .optional()
+        .describe('Include HK stocks (default false)'),
+      limit: z
+        .number()
+        .optional()
+        .describe('Number of results (default 50)'),
+    },
+    async ({ us_stock, hk_stock, limit }) => {
+      try {
+        const params: Record<string, string> = {};
+        if (us_stock != null)
+          params.us_stock = String(us_stock);
+        if (hk_stock != null)
+          params.hk_stock = String(hk_stock);
+        if (limit != null) params.limit = String(limit);
+        return ok(
+          await apiGet(
+            '/api/upgrade/v2/crypto_stock/top-gainer',
+            params
+          )
+        );
+      } catch (e) {
+        return err(e);
+      }
+    }
+  );
+
+  server.tool(
     'get_index_price',
     'Get index price data',
     {
-      index_key: z
+      key: z
         .string()
-        .describe('Index key'),
+        .describe('Index key, e.g. i:diniw:ice'),
+      currency: z
+        .string()
+        .optional()
+        .describe('Currency: cny or usd'),
     },
-    async ({ index_key }) => {
+    async ({ key, currency }) => {
       try {
+        const params: Record<string, string> = { key };
+        if (currency) params.currency = currency;
         return ok(
-          await apiGet('/api/v2/index/indexPrice', {
-            index_key,
-          })
+          await apiGet('/api/v2/index/indexPrice', params)
         );
       } catch (e) {
         return err(e);
@@ -170,15 +223,20 @@ export function registerMarketTools(server: McpServer) {
     'get_hot_tab_coins',
     'Get trending/hot coins list by category',
     {
-      tab: z
+      key: z
+        .string()
+        .describe(
+          'Category key: gamefi,anonymous,market,web,newcoin,stable,defi'
+        ),
+      currency: z
         .string()
         .optional()
-        .describe('Tab/category filter'),
+        .describe('Currency: cny or usd'),
     },
-    async ({ tab }) => {
+    async ({ key, currency }) => {
       try {
-        const params: Record<string, string> = {};
-        if (tab) params.tab = tab;
+        const params: Record<string, string> = { key };
+        if (currency) params.currency = currency;
         return ok(
           await apiGet(
             '/api/v2/market/hotTabCoins',
@@ -197,7 +255,9 @@ export function registerMarketTools(server: McpServer) {
     {
       symbol: z
         .string()
-        .describe('Stock symbol, e.g. mstr, coin'),
+        .describe(
+          'Symbol in i:ticker:market format, e.g. i:mstr:nasdaq'
+        ),
     },
     async ({ symbol }) => {
       try {
@@ -216,16 +276,20 @@ export function registerMarketTools(server: McpServer) {
     'get_index_info',
     'Get index detail information',
     {
-      index_key: z
+      key: z
         .string()
-        .describe('Index key'),
+        .describe('Index key, e.g. i:diniw:ice'),
+      lan: z
+        .string()
+        .optional()
+        .describe('Language: en or cn'),
     },
-    async ({ index_key }) => {
+    async ({ key, lan }) => {
       try {
+        const params: Record<string, string> = { key };
+        if (lan) params.lan = lan;
         return ok(
-          await apiGet('/api/v2/index/indexInfo', {
-            index_key,
-          })
+          await apiGet('/api/v2/index/indexInfo', params)
         );
       } catch (e) {
         return err(e);
@@ -252,15 +316,23 @@ export function registerMarketTools(server: McpServer) {
     'get_indicator_kline_trading_pair',
     'Get trading pairs for indicator K-line',
     {
-      indicator: z
+      coinType: z
         .string()
         .optional()
-        .describe('Indicator name filter'),
+        .describe('Coin type, e.g. bitcoin'),
+      indicator_key: z
+        .string()
+        .optional()
+        .describe(
+          'Indicator key: fundflow,aiaggtrade,fr,etc.'
+        ),
     },
-    async ({ indicator }) => {
+    async ({ coinType, indicator_key }) => {
       try {
         const params: Record<string, string> = {};
-        if (indicator) params.indicator = indicator;
+        if (coinType) params.coinType = coinType;
+        if (indicator_key)
+          params.indicator_key = indicator_key;
         return ok(
           await apiGet(
             '/api/v2/indicatorKline/getTradingPair',
@@ -318,11 +390,13 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
       entity_type: z
         .string()
         .optional()
-        .describe('Entity type filter'),
+        .describe(
+          'Entity type: public-companies, eth-treasuries, etc.'
+        ),
     },
     async ({ coin, entity_type }) => {
       try {
@@ -346,7 +420,7 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
       entity_id: z
         .string()
         .optional()
@@ -374,7 +448,7 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
       entity_id: z
         .string()
         .optional()
@@ -402,7 +476,7 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
     },
     async ({ coin }) => {
       try {
@@ -424,7 +498,7 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
     },
     async ({ coin }) => {
       try {
@@ -446,7 +520,7 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
     },
     async ({ coin }) => {
       try {
@@ -468,7 +542,7 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
     },
     async ({ coin }) => {
       try {
@@ -490,7 +564,7 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
     },
     async ({ coin }) => {
       try {
@@ -512,7 +586,7 @@ export function registerMarketTools(server: McpServer) {
     {
       coin: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe('Coin ticker, e.g. BTC, ETH'),
     },
     async ({ coin }) => {
       try {
