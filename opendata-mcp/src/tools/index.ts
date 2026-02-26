@@ -7,6 +7,7 @@ import { registerContentTools } from './contents.js';
 import { registerMarketTools } from './markets.js';
 import { registerFeatureTools } from './features.js';
 import { registerHyperliquidTools } from './hyperliquid.js';
+import { registerGuideTools } from './guide.js';
 
 export function registerAllTools(server: McpServer) {
   registerCoinTools(server);
@@ -14,4 +15,5 @@ export function registerAllTools(server: McpServer) {
   registerMarketTools(server);
   registerFeatureTools(server);
   registerHyperliquidTools(server);
+  registerGuideTools(server);
 }

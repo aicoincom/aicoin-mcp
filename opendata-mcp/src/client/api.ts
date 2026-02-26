@@ -8,11 +8,14 @@ const DOMAIN =
   'https://open.aicoin.com';
 
 function getCredentials() {
-  const key = process.env.AICOIN_ACCESS_KEY;
+  const key =
+    process.env.AICOIN_ACCESS_KEY_ID ||
+    process.env.AICOIN_ACCESS_KEY;
   const secret = process.env.AICOIN_ACCESS_SECRET;
   if (!key || !secret) {
     throw new Error(
-      'Missing AICOIN_ACCESS_KEY or AICOIN_ACCESS_SECRET'
+      'Missing AICOIN_ACCESS_KEY_ID or AICOIN_ACCESS_SECRET. ' +
+        'Register at https://www.aicoin.com/openapi to get your API credentials.'
     );
   }
   return { key, secret };

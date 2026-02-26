@@ -22,7 +22,7 @@ npm start
 ## Environment Variables
 
 ```bash
-AICOIN_ACCESS_KEY=your_access_key_id
+AICOIN_ACCESS_KEY_ID=your_access_key_id
 AICOIN_ACCESS_SECRET=your_access_secret
 ```
 
@@ -156,9 +156,7 @@ AICOIN_ACCESS_SECRET=your_access_secret
 
 ## Client Configuration
 
-> **Note:** AiCoin 后台字段名和环境变量是反的：
-> - 后台 `api_key` → `AICOIN_ACCESS_KEY`
-> - 后台 `access_key` → `AICOIN_ACCESS_SECRET`
+> Get your API credentials at [AiCoin OpenAPI](https://www.aicoin.com/openapi)
 
 ### Claude Desktop
 
@@ -171,8 +169,8 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
       "command": "npx",
       "args": ["-y", "@aicoin/opendata-mcp"],
       "env": {
-        "AICOIN_ACCESS_KEY": "your_api_key_from_aicoin",
-        "AICOIN_ACCESS_SECRET": "your_access_key_from_aicoin"
+        "AICOIN_ACCESS_KEY_ID": "your_access_key_id",
+        "AICOIN_ACCESS_SECRET": "your_access_secret"
       }
     }
   }
@@ -190,8 +188,8 @@ Add to `.cursor/mcp.json`:
       "command": "npx",
       "args": ["-y", "@aicoin/opendata-mcp"],
       "env": {
-        "AICOIN_ACCESS_KEY": "your_api_key_from_aicoin",
-        "AICOIN_ACCESS_SECRET": "your_access_key_from_aicoin"
+        "AICOIN_ACCESS_KEY_ID": "your_access_key_id",
+        "AICOIN_ACCESS_SECRET": "your_access_secret"
       }
     }
   }
@@ -214,8 +212,8 @@ Add to `.vscode/mcp.json`:
       "command": "npx",
       "args": ["-y", "@aicoin/opendata-mcp"],
       "env": {
-        "AICOIN_ACCESS_KEY": "your_api_key_from_aicoin",
-        "AICOIN_ACCESS_SECRET": "your_access_key_from_aicoin"
+        "AICOIN_ACCESS_KEY_ID": "your_access_key_id",
+        "AICOIN_ACCESS_SECRET": "your_access_secret"
       }
     }
   }
