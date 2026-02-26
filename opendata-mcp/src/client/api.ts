@@ -8,9 +8,7 @@ const DOMAIN =
   'https://open.aicoin.com';
 
 function getCredentials() {
-  const key =
-    process.env.AICOIN_ACCESS_KEY_ID ||
-    process.env.AICOIN_ACCESS_KEY;
+  const key = process.env.AICOIN_ACCESS_KEY_ID;
   const secret = process.env.AICOIN_ACCESS_SECRET;
   if (!key || !secret) {
     throw new Error(
