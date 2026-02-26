@@ -1,0 +1,45 @@
+{
+  "name": "@aicoin/trade-mcp",
+  "version": "1.0.0",
+  "description": "AiCoin Trade MCP Server - AI-powered cryptocurrency trading via ccxt",
+  "main": "build/index.js",
+  "type": "module",
+  "bin": {
+    "aicoin-trade-mcp": "./build/index.js"
+  },
+  "files": [
+    "build",
+    "README.md",
+    ".env.example"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --outDir build --clean",
+    "start": "node build/index.js",
+    "dev": "tsup src/index.ts --format esm --outDir build --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "ccxt": "^4.4.71",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "mcp",
+    "aicoin",
+    "crypto",
+    "trading",
+    "ccxt"
+  ],
+  "license": "MIT"
+}
