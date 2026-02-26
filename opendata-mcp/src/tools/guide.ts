@@ -16,7 +16,7 @@ export function registerGuideTools(server: McpServer) {
 Visit https://www.aicoin.com and create an account (or log in).
 
 ## Step 2: Go to OpenAPI Management
-Visit https://www.aicoin.com/openapi to manage your API keys.
+Visit https://www.aicoin.com/opendata to manage your API keys.
 
 ## Step 3: Create API Key
 Click "Create Key" and select your desired tier:
@@ -94,7 +94,7 @@ ${endpoint ? `Endpoint: ${endpoint}` : ''}
 | Full depth & grouped | ❌ | ❌ | ❌ | ✅ |
 
 ## How to Upgrade
-1. Visit https://www.aicoin.com/openapi
+1. Visit https://www.aicoin.com/opendata
 2. Go to your API key management page
 3. Click "Upgrade" on your current key
 4. Select the tier that includes the features you need

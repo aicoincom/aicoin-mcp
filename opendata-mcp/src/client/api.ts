@@ -13,7 +13,7 @@ function getCredentials() {
   if (!key || !secret) {
     throw new Error(
       'Missing AICOIN_ACCESS_KEY_ID or AICOIN_ACCESS_SECRET. ' +
-        'Register at https://www.aicoin.com/openapi to get your API credentials.'
+        'Register at https://www.aicoin.com/opendata to get your API credentials.'
     );
   }
   return { key, secret };

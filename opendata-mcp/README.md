@@ -156,7 +156,7 @@ AICOIN_ACCESS_SECRET=your_access_secret
 
 ## Client Configuration
 
-> Get your API credentials at [AiCoin OpenAPI](https://www.aicoin.com/openapi)
+> Get your API credentials at [AiCoin OpenAPI](https://www.aicoin.com/opendata)
 
 ### Claude Desktop
 
