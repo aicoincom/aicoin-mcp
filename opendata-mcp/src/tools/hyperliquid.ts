@@ -34,7 +34,7 @@ export function registerHyperliquidTools(
     {},
     async () => {
       try {
-        return ok(await apiGet('/api/v2/hl/tickers'));
+        return ok(await apiGet('/api/upgrade/v2/hl/tickers'));
       } catch (e) {
         return err(e);
       }
@@ -52,7 +52,7 @@ export function registerHyperliquidTools(
     async ({ coin }) => {
       try {
         return ok(
-          await apiGet(`/api/v2/hl/tickers/coin/${coin}`)
+          await apiGet(`/api/upgrade/v2/hl/tickers/coin/${coin}`)
         );
       } catch (e) {
         return err(e);
@@ -80,7 +80,7 @@ export function registerHyperliquidTools(
         if (min_usd) params.min_usd = min_usd;
         return ok(
           await apiGet(
-            '/api/v2/hl/whales/open-positions',
+            '/api/upgrade/v2/hl/whales/open-positions',
             params
           )
         );
@@ -105,7 +105,7 @@ export function registerHyperliquidTools(
         if (coin) params.coin = coin;
         return ok(
           await apiGet(
-            '/api/v2/hl/liquidations/history',
+            '/api/upgrade/v2/hl/liquidations/history',
             params
           )
         );
@@ -127,7 +127,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/addr-stat`
+            `/api/upgrade/v2/hl/traders/${address}/addr-stat`
           )
         );
       } catch (e) {
@@ -164,7 +164,7 @@ export function registerHyperliquidTools(
           Object.assign(body, JSON.parse(extra_params));
         }
         return ok(
-          await apiPost('/api/v2/hl/info', body)
+          await apiPost('/api/upgrade/v2/hl/info', body)
         );
       } catch (e) {
         return err(e);
@@ -183,7 +183,7 @@ export function registerHyperliquidTools(
     async ({ address }) => {
       try {
         return ok(
-          await apiGet(`/api/v2/hl/fills/${address}`)
+          await apiGet(`/api/upgrade/v2/hl/fills/${address}`)
         );
       } catch (e) {
         return err(e);
@@ -200,7 +200,7 @@ export function registerHyperliquidTools(
     async ({ oid }) => {
       try {
         return ok(
-          await apiGet(`/api/v2/hl/fills/oid/${oid}`)
+          await apiGet(`/api/upgrade/v2/hl/fills/oid/${oid}`)
         );
       } catch (e) {
         return err(e);
@@ -218,7 +218,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/fills/twapid/${twapid}`
+            `/api/upgrade/v2/hl/fills/twapid/${twapid}`
           )
         );
       } catch (e) {
@@ -242,7 +242,7 @@ export function registerHyperliquidTools(
         if (coin) params.coin = coin;
         return ok(
           await apiGet(
-            '/api/v2/hl/fills/top-trades',
+            '/api/upgrade/v2/hl/fills/top-trades',
             params
           )
         );
@@ -264,7 +264,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/filled-orders/${address}/latest`
+            `/api/upgrade/v2/hl/filled-orders/${address}/latest`
           )
         );
       } catch (e) {
@@ -283,7 +283,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/filled-orders/oid/${oid}`
+            `/api/upgrade/v2/hl/filled-orders/oid/${oid}`
           )
         );
       } catch (e) {
@@ -304,7 +304,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/orders/${address}/latest`
+            `/api/upgrade/v2/hl/orders/${address}/latest`
           )
         );
       } catch (e) {
@@ -322,7 +322,7 @@ export function registerHyperliquidTools(
     async ({ oid }) => {
       try {
         return ok(
-          await apiGet(`/api/v2/hl/orders/oid/${oid}`)
+          await apiGet(`/api/upgrade/v2/hl/orders/oid/${oid}`)
         );
       } catch (e) {
         return err(e);
@@ -345,7 +345,7 @@ export function registerHyperliquidTools(
         if (coin) params.coin = coin;
         return ok(
           await apiGet(
-            '/api/v2/hl/orders/top-open-orders',
+            '/api/upgrade/v2/hl/orders/top-open-orders',
             params
           )
         );
@@ -370,7 +370,7 @@ export function registerHyperliquidTools(
         if (coin) params.coin = coin;
         return ok(
           await apiGet(
-            '/api/v2/hl/orders/active-stats',
+            '/api/upgrade/v2/hl/orders/active-stats',
             params
           )
         );
@@ -393,7 +393,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/portfolio/${address}/${win}`
+            `/api/upgrade/v2/hl/portfolio/${address}/${win}`
           )
         );
       } catch (e) {
@@ -411,7 +411,7 @@ export function registerHyperliquidTools(
     async ({ address }) => {
       try {
         return ok(
-          await apiGet(`/api/v2/hl/pnls/${address}`)
+          await apiGet(`/api/upgrade/v2/hl/pnls/${address}`)
         );
       } catch (e) {
         return err(e);
@@ -429,7 +429,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/best-trades`
+            `/api/upgrade/v2/hl/traders/${address}/best-trades`
           )
         );
       } catch (e) {
@@ -448,7 +448,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/performance-by-coin`
+            `/api/upgrade/v2/hl/traders/${address}/performance-by-coin`
           )
         );
       } catch (e) {
@@ -467,7 +467,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/completed-trades`
+            `/api/upgrade/v2/hl/traders/${address}/completed-trades`
           )
         );
       } catch (e) {
@@ -487,7 +487,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/current-position-history/${coin}`
+            `/api/upgrade/v2/hl/traders/${address}/current-position-history/${coin}`
           )
         );
       } catch (e) {
@@ -507,7 +507,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/completed-position-history/${coin}`
+            `/api/upgrade/v2/hl/traders/${address}/completed-position-history/${coin}`
           )
         );
       } catch (e) {
@@ -527,7 +527,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/current-position-pnl/${coin}`
+            `/api/upgrade/v2/hl/traders/${address}/current-position-pnl/${coin}`
           )
         );
       } catch (e) {
@@ -547,7 +547,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/completed-position-pnl/${coin}`
+            `/api/upgrade/v2/hl/traders/${address}/completed-position-pnl/${coin}`
           )
         );
       } catch (e) {
@@ -567,7 +567,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/current-position-executions/${coin}`
+            `/api/upgrade/v2/hl/traders/${address}/current-position-executions/${coin}`
           )
         );
       } catch (e) {
@@ -587,7 +587,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/traders/${address}/completed-position-executions/${coin}`
+            `/api/upgrade/v2/hl/traders/${address}/completed-position-executions/${coin}`
           )
         );
       } catch (e) {
@@ -607,7 +607,7 @@ export function registerHyperliquidTools(
     async ({ addresses }) => {
       try {
         return ok(
-          await apiPost('/api/v2/hl/traders/accounts', {
+          await apiPost('/api/upgrade/v2/hl/traders/accounts', {
             addresses: JSON.parse(addresses),
           })
         );
@@ -629,7 +629,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiPost(
-            '/api/v2/hl/traders/statistics',
+            '/api/upgrade/v2/hl/traders/statistics',
             { addresses: JSON.parse(addresses) }
           )
         );
@@ -654,7 +654,7 @@ export function registerHyperliquidTools(
         if (coin) params.coin = coin;
         return ok(
           await apiGet(
-            '/api/v2/hl/whales/latest-events',
+            '/api/upgrade/v2/hl/whales/latest-events',
             params
           )
         );
@@ -679,7 +679,7 @@ export function registerHyperliquidTools(
         if (coin) params.coin = coin;
         return ok(
           await apiGet(
-            '/api/v2/hl/whales/directions',
+            '/api/upgrade/v2/hl/whales/directions',
             params
           )
         );
@@ -704,7 +704,7 @@ export function registerHyperliquidTools(
         if (coin) params.coin = coin;
         return ok(
           await apiGet(
-            '/api/v2/hl/whales/history-long-ratio',
+            '/api/upgrade/v2/hl/whales/history-long-ratio',
             params
           )
         );
@@ -721,7 +721,7 @@ export function registerHyperliquidTools(
     async () => {
       try {
         return ok(
-          await apiGet('/api/v2/hl/liquidations/stat')
+          await apiGet('/api/upgrade/v2/hl/liquidations/stat')
         );
       } catch (e) {
         return err(e);
@@ -744,7 +744,7 @@ export function registerHyperliquidTools(
         if (coin) params.coin = coin;
         return ok(
           await apiGet(
-            '/api/v2/hl/liquidations/stat-by-coin',
+            '/api/upgrade/v2/hl/liquidations/stat-by-coin',
             params
           )
         );
@@ -769,7 +769,7 @@ export function registerHyperliquidTools(
         if (coin) params.coin = coin;
         return ok(
           await apiGet(
-            '/api/v2/hl/liquidations/top-positions',
+            '/api/upgrade/v2/hl/liquidations/top-positions',
             params
           )
         );
@@ -791,7 +791,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiPost(
-            '/api/v2/hl/smart/find',
+            '/api/upgrade/v2/hl/smart/find',
             JSON.parse(params_json)
           )
         );
@@ -813,7 +813,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiPost(
-            '/api/v2/hl/traders/discover',
+            '/api/upgrade/v2/hl/traders/discover',
             JSON.parse(params_json)
           )
         );
@@ -835,7 +835,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/twap-states/${address}/latest`
+            `/api/upgrade/v2/hl/twap-states/${address}/latest`
           )
         );
       } catch (e) {
@@ -856,7 +856,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/max-drawdown/${address}`
+            `/api/upgrade/v2/hl/max-drawdown/${address}`
           )
         );
       } catch (e) {
@@ -877,7 +877,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/ledger-updates/net-flow/${address}`
+            `/api/upgrade/v2/hl/ledger-updates/net-flow/${address}`
           )
         );
       } catch (e) {
@@ -901,7 +901,7 @@ export function registerHyperliquidTools(
       try {
         return ok(
           await apiGet(
-            `/api/v2/hl/klines-with-taker-vol/${coin}/${interval}`
+            `/api/upgrade/v2/hl/klines-with-taker-vol/${coin}/${interval}`
           )
         );
       } catch (e) {
