@@ -46,14 +46,16 @@ export function registerCoinTools(server: McpServer) {
     'get_coin_config',
     'Get coin profile/description data',
     {
-      coin_key: z
+      coin_list: z
         .string()
-        .describe('Coin key, e.g. bitcoin'),
+        .describe(
+          'Coin keys, comma-separated, max 100, e.g. bitcoin,ethereum'
+        ),
     },
-    async ({ coin_key }) => {
+    async ({ coin_list }) => {
       try {
         return ok(
-          await apiGet('/api/v2/coin/config', { coin_key })
+          await apiGet('/api/v2/coin/config', { coin_list })
         );
       } catch (e) {
         return err(e);
@@ -154,19 +156,21 @@ export function registerCoinTools(server: McpServer) {
         .describe(
           'Leverage filter: 10,25,50,100 (empty=all)'
         ),
+      ...maxItemsParam,
     },
-    async ({ dbkey, cycle, leverage }) => {
+    async ({ dbkey, cycle, leverage, _max_items }) => {
       try {
         const params: Record<string, string> = {
           dbkey,
           cycle,
         };
         if (leverage) params.leverage = leverage;
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/futures/liquidation/map',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -382,8 +386,9 @@ export function registerCoinTools(server: McpServer) {
         .string()
         .optional()
         .describe('End time in ms'),
+      ...maxItemsParam,
     },
-    async ({ dbkey, cycle, leverage, limit, start_time, end_time }) => {
+    async ({ dbkey, cycle, leverage, limit, start_time, end_time, _max_items }) => {
       try {
         const params: Record<string, string> = {
           dbkey,
@@ -393,11 +398,12 @@ export function registerCoinTools(server: McpServer) {
         params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/futures/estimated-liquidation/history',
             params
-          )
+          ),
+          parseMax(_max_items, 100)
         );
       } catch (e) {
         return err(e);

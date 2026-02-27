@@ -1,12 +1,11 @@
 # AiCoin Trade MCP Server
 
-AI-powered cryptocurrency trading via ccxt, with AiCoin broker ID injection for exchange rebates.
+AI-powered cryptocurrency trading via ccxt.
 
 ## Features
 
 - 24 trading tools (9 public + 15 private)
-- 10 supported exchanges with built-in AiCoin rebate tracking
-- Broker ID auto-injection (order tag, header, or client ID prefix per exchange)
+- 9 supported exchanges
 - Exchange API keys stored locally via env vars (never sent to cloud)
 - stdio transport for local MCP clients
 
@@ -45,7 +44,7 @@ PROXY_URL=http://127.0.0.1:7890
 
 | Tool | Description |
 |------|-------------|
-| `list_exchanges` | List all 10 supported exchanges |
+| `list_exchanges` | List all 9 supported exchanges |
 | `get_ticker` | Real-time ticker for a trading pair |
 | `get_tickers` | Batch tickers for multiple pairs |
 | `get_ohlcv` | K-line/candlestick data |
@@ -150,22 +149,6 @@ Add to `.vscode/mcp.json`:
 claude mcp add aicoin-trade -- npx -y @aicoin/trade-mcp
 ```
 
-## Broker ID (Rebate Tracking)
-
-Built-in, no configuration needed. Each exchange uses its own injection method:
-
-| Exchange | Method | Value |
-|----------|--------|-------|
-| Binance Spot | `newClientOrderId` prefix | `x-MGFCMH4U` |
-| Binance Futures | `newClientOrderId` prefix | `x-FaeSBrMa` |
-| OKX | `tag` param | `c6851dd5f01e4aBC` |
-| Bybit | `Referer` header | `AiCoin` |
-| Bitget | `X-CHANNEL-API-CODE` header | `tpequ` |
-| Gate | `X-Gate-Channel-Id` header | `AiCoin1` |
-| Huobi | `client-order-id` prefix | `AAf0e4f2ef` |
-| Pionex | `brokerId` param | `AiCoin2023` |
-| Hyperliquid | `builder.address` | `0xc7580C...6E82` |
-
 ## Supported Exchanges
 
-binance, binanceusdm, binancecoinm, okx, bybit, bitget, gate, huobi, pionex, hyperliquid
+binance, binanceusdm, binancecoinm, okx, bybit, bitget, gate, huobi, hyperliquid

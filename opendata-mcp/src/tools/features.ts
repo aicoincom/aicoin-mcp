@@ -70,13 +70,15 @@ export function registerFeatureTools(server: McpServer) {
         .describe(
           'Trading pair, e.g. btcusdt:okex'
         ),
+      ...maxItemsParam,
     },
-    async ({ symbol }) => {
+    async ({ symbol, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet('/api/v2/order/bigOrder', {
             symbol,
-          })
+          }),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -93,13 +95,15 @@ export function registerFeatureTools(server: McpServer) {
         .describe(
           'Trading pair, e.g. btcusdt:okex'
         ),
+      ...maxItemsParam,
     },
-    async ({ symbol }) => {
+    async ({ symbol, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet('/api/v2/order/aggTrade', {
             symbol,
-          })
+          }),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -111,17 +115,17 @@ export function registerFeatureTools(server: McpServer) {
     'get_trading_pair_ticker',
     'Get ticker data for specific trading pairs',
     {
-      trading_pairs: z
+      key_list: z
         .string()
         .describe(
-          'Trading pair keys, comma-separated'
+          'Trading pair keys, comma-separated, max 100, e.g. btcusdt:okex,btcusdt:huobipro'
         ),
     },
-    async ({ trading_pairs }) => {
+    async ({ key_list }) => {
       try {
         return ok(
           await apiGet('/api/v2/trading-pair/ticker', {
-            trading_pairs,
+            key_list,
           })
         );
       } catch (e) {
@@ -148,19 +152,21 @@ export function registerFeatureTools(server: McpServer) {
         .string()
         .optional()
         .describe('Latest time in ms timestamp'),
+      ...maxItemsParam,
     },
-    async ({ coin_type, signal_key, latest_time }) => {
+    async ({ coin_type, signal_key, latest_time, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin_type) params.coin_type = coin_type;
         if (signal_key) params.signal_key = signal_key;
         if (latest_time)
           params.latest_time = latest_time;
-        return ok(
+        return okList(
           await apiGet(
             '/api/v2/signal/strategySignal',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -199,11 +205,19 @@ export function registerFeatureTools(server: McpServer) {
   server.tool(
     'get_gray_scale',
     'Get Grayscale holdings data',
-    {},
-    async () => {
+    {
+      coins: z
+        .string()
+        .describe(
+          'Coin list, comma-separated: btc,ltc,eth,bch,xrp,xlm,zec,zen,etc'
+        ),
+    },
+    async ({ coins }) => {
       try {
         return ok(
-          await apiGet('/api/v2/mix/gray-scale')
+          await apiGet('/api/v2/mix/gray-scale', {
+            coins,
+          })
         );
       } catch (e) {
         return err(e);
@@ -235,16 +249,18 @@ export function registerFeatureTools(server: McpServer) {
         .string()
         .optional()
         .describe('Coin key filter'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
-        return ok(
+        return okList(
           await apiGet(
             '/api/v2/signal/signalAlert',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -363,19 +379,15 @@ export function registerFeatureTools(server: McpServer) {
 
   server.tool(
     'get_trading_pair',
-    'Get trading pair info by key',
-    {
-      trading_pair: z
-        .string()
-        .describe('Trading pair key'),
-    },
-    async ({ trading_pair }) => {
+    'Get all trading pair info (no filter params)',
+    {},
+    async () => {
       try {
-        return ok(
+        return okList(
           await apiGet(
-            '/api/v2/trading-pair/getTradingPair',
-            { trading_pair }
-          )
+            '/api/v2/trading-pair/getTradingPair'
+          ),
+          50
         );
       } catch (e) {
         return err(e);
@@ -387,21 +399,28 @@ export function registerFeatureTools(server: McpServer) {
     'get_trading_pairs',
     'Get trading pair list for a platform',
     {
-      platform: z
+      market: z
         .string()
-        .describe('Platform key, e.g. binance'),
-      type: z
+        .describe(
+          'Platform key (from /v2/market), e.g. okex, binance'
+        ),
+      currency: z
         .string()
         .optional()
-        .describe('Market type filter'),
+        .describe('Quote currency filter'),
+      show: z
+        .string()
+        .optional()
+        .describe('Coin symbol filter'),
       ...maxItemsParam,
     },
-    async ({ platform, type, _max_items }) => {
+    async ({ market, currency, show, _max_items }) => {
       try {
         const params: Record<string, string> = {
-          platform,
+          market,
         };
-        if (type) params.type = type;
+        if (currency) params.currency = currency;
+        if (show) params.show = show;
         return okList(
           await apiGet('/api/v2/trading-pair', params),
           parseMax(_max_items, 100)

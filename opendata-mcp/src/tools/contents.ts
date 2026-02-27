@@ -9,22 +9,17 @@ import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
 export function registerContentTools(server: McpServer) {
   server.tool(
     'get_newsflash',
-    'Get latest crypto flash news (kuaixun)',
+    'Get latest crypto flash news by AiCoin only',
     {
-      page: z
+      language: z
         .string()
         .optional()
-        .describe('Page number, default 1'),
-      limit: z
-        .string()
-        .optional()
-        .describe('Items per page, default 20'),
+        .describe('Language: cn, tc, en'),
     },
-    async ({ page, limit }) => {
+    async ({ language }) => {
       try {
         const params: Record<string, string> = {};
-        if (page) params.page = page;
-        params.limit = limit ?? '20';
+        if (language) params.language = language;
         return ok(
           await apiGet('/api/v2/content/newsflash', params)
         );
@@ -41,17 +36,17 @@ export function registerContentTools(server: McpServer) {
       page: z
         .string()
         .optional()
-        .describe('Page number'),
-      limit: z
+        .describe('Page number, default 1'),
+      pageSize: z
         .string()
         .optional()
-        .describe('Items per page'),
+        .describe('Page size, max 20'),
     },
-    async ({ page, limit }) => {
+    async ({ page, pageSize }) => {
       try {
         const params: Record<string, string> = {};
         if (page) params.page = page;
-        params.limit = limit ?? '20';
+        params.pageSize = pageSize ?? '20';
         return ok(
           await apiGet('/api/v2/content/news-list', params)
         );
@@ -144,20 +139,28 @@ export function registerContentTools(server: McpServer) {
     'get_exchange_listing_flash',
     'Get exchange coin listing/delisting news',
     {
-      page: z
+      language: z
         .string()
         .optional()
-        .describe('Page number'),
-      limit: z
+        .describe('Language: cn, tc, en'),
+      memberIds: z
         .string()
         .optional()
-        .describe('Items per page'),
+        .describe(
+          'Exchange member IDs, comma-separated. ' +
+            '477=Binance, 1509=Bitget. Default: 477,1509'
+        ),
+      pageSize: z
+        .string()
+        .optional()
+        .describe('Page size, default 20'),
     },
-    async ({ page, limit }) => {
+    async ({ language, memberIds, pageSize }) => {
       try {
         const params: Record<string, string> = {};
-        if (page) params.page = page;
-        params.limit = limit ?? '20';
+        if (language) params.language = language;
+        if (memberIds) params.memberIds = memberIds;
+        if (pageSize) params.pageSize = pageSize;
         return ok(
           await apiGet(
             '/api/v2/content/exchange-listing-flash',

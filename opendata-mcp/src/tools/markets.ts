@@ -4,7 +4,7 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { apiGet, apiPost } from '../client/api.js';
-import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
+import { ok, okList, okDepth, err, maxItemsParam, parseMax } from './utils.js';
 
 export function registerMarketTools(server: McpServer) {
   server.tool(
@@ -99,11 +99,13 @@ export function registerMarketTools(server: McpServer) {
       coin: z
         .string()
         .describe('Coin ticker, e.g. BTC, ETH'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
-        return ok(
-          await apiGet('/api/v2/futures/interest', { coin })
+        return okList(
+          await apiGet('/api/v2/futures/interest', { coin }),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -550,18 +552,30 @@ export function registerMarketTools(server: McpServer) {
 
   server.tool(
     'get_latest_depth',
-    'Get latest order book depth data for futures',
+    'Get latest order book depth snapshot from Redis',
     {
-      coin: z
+      dbKey: z
         .string()
-        .describe('Coin ticker, e.g. BTC, ETH'),
+        .describe(
+          'Trading pair key, e.g. btcusdt:binance, ethusdt:okex'
+        ),
+      size: z
+        .string()
+        .optional()
+        .describe(
+          'Number of depth levels, 1-500, default 50'
+        ),
     },
-    async ({ coin }) => {
+    async ({ dbKey, size }) => {
       try {
+        const params: Record<string, string> = {
+          dbKey,
+        };
+        if (size) params.size = size;
         return ok(
           await apiGet(
             '/api/upgrade/v2/futures/latest-depth',
-            { coin }
+            params
           )
         );
       } catch (e) {
@@ -574,17 +588,19 @@ export function registerMarketTools(server: McpServer) {
     'get_full_depth',
     'Get full order book depth data for futures',
     {
-      coin: z
+      dbKey: z
         .string()
-        .describe('Coin ticker, e.g. BTC, ETH'),
+        .describe(
+          'Trading pair key, e.g. btcswapusd:hbdm, btcswapusdt:binance'
+        ),
       ...maxItemsParam,
     },
-    async ({ coin, _max_items }) => {
+    async ({ dbKey, _max_items }) => {
       try {
-        return okList(
+        return okDepth(
           await apiGet(
             '/api/upgrade/v2/futures/full-depth',
-            { coin }
+            { dbKey }
           ),
           parseMax(_max_items, 50)
         );
@@ -596,19 +612,26 @@ export function registerMarketTools(server: McpServer) {
 
   server.tool(
     'get_full_depth_grouped',
-    'Get full depth data grouped by price level',
+    'Get full depth data grouped by price interval',
     {
-      coin: z
+      dbKey: z
         .string()
-        .describe('Coin ticker, e.g. BTC, ETH'),
+        .describe(
+          'Trading pair key, e.g. btcswapusd:hbdm, btcswapusdt:binance'
+        ),
+      groupSize: z
+        .string()
+        .describe(
+          'Price grouping interval, e.g. 100, 500, 1000'
+        ),
       ...maxItemsParam,
     },
-    async ({ coin, _max_items }) => {
+    async ({ dbKey, groupSize, _max_items }) => {
       try {
-        return okList(
+        return okDepth(
           await apiGet(
             '/api/upgrade/v2/futures/full-depth/grouped',
-            { coin }
+            { dbKey, groupSize }
           ),
           parseMax(_max_items, 50)
         );

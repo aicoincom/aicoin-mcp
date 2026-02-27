@@ -8,7 +8,7 @@ import { getBrokerOptions } from './broker.js';
 export const SUPPORTED_EXCHANGES = [
   'binance', 'binanceusdm', 'binancecoinm',
   'okx', 'bybit', 'bitget', 'gate',
-  'huobi', 'pionex', 'hyperliquid',
+  'huobi', 'hyperliquid',
 ];
 
 const cache: Record<string, ccxt.Exchange> = {};
@@ -23,15 +23,15 @@ interface ExchangeConfig {
   passphrase?: string;
 }
 
-function buildOptions(config: ExchangeConfig): Record<string, unknown> {
-  const { exchangeId, marketType, apiKey, secret, passphrase } = config;
+function buildOptions(config: ExchangeConfig & { skipAuth?: boolean }): Record<string, unknown> {
+  const { exchangeId, marketType, apiKey, secret, passphrase, skipAuth } = config;
   const id = exchangeId.toLowerCase();
 
-  // Read credentials from env if not provided
-  const key = apiKey || process.env[`${id.toUpperCase()}_API_KEY`];
-  const sec = secret || process.env[`${id.toUpperCase()}_SECRET`];
-  const pass =
-    passphrase || process.env[`${id.toUpperCase()}_PASSPHRASE`];
+  // Read credentials from env if not provided (skip for public-only instances)
+  const key = skipAuth ? undefined : (apiKey || process.env[`${id.toUpperCase()}_API_KEY`]);
+  const sec = skipAuth ? undefined : (secret || process.env[`${id.toUpperCase()}_SECRET`]);
+  const pass = skipAuth ? undefined :
+    (passphrase || process.env[`${id.toUpperCase()}_PASSPHRASE`]);
 
   // Merge broker options + headers
   const broker = getBrokerOptions(id);
@@ -90,11 +90,13 @@ function createInstance(id: string, opts: Record<string, unknown>): ccxt.Exchang
  */
 export function getExchange(
   exchangeId?: string,
-  marketType?: MarketType
+  marketType?: MarketType,
+  options?: { skipAuth?: boolean }
 ): ccxt.Exchange {
   const id = (exchangeId || process.env.DEFAULT_EXCHANGE || 'binance').toLowerCase();
   const type = marketType || 'spot';
-  const key = `${id}:${type}`;
+  const skipAuth = options?.skipAuth ?? false;
+  const key = `${id}:${type}${skipAuth ? ':pub' : ''}`;
 
   if (!cache[key]) {
     if (!SUPPORTED_EXCHANGES.includes(id)) {
@@ -102,7 +104,7 @@ export function getExchange(
         `Exchange '${id}' not supported. Available: ${SUPPORTED_EXCHANGES.join(', ')}`
       );
     }
-    cache[key] = createInstance(id, buildOptions({ exchangeId: id, marketType: type }));
+    cache[key] = createInstance(id, buildOptions({ exchangeId: id, marketType: type, skipAuth }));
   }
   return cache[key];
 }

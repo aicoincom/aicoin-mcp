@@ -29,7 +29,7 @@ export function registerPublicTools(server: McpServer) {
     },
     async ({ exchange, symbol, market_type }) => {
       try {
-        const ex = getExchange(exchange, market_type);
+        const ex = getExchange(exchange, market_type, { skipAuth: true });
         const ticker = await ex.fetchTicker(symbol);
         return ok(ticker);
       } catch (e) {
@@ -44,12 +44,12 @@ export function registerPublicTools(server: McpServer) {
     {
       exchange: z.string().describe('Exchange ID'),
       symbol: z.string().describe('Trading pair, e.g. BTC/USDT'),
-      limit: z.number().optional().default(20).describe('Depth limit'),
+      limit: z.number().min(1).optional().default(20).describe('Depth limit'),
       market_type: marketTypeSchema,
     },
     async ({ exchange, symbol, limit, market_type }) => {
       try {
-        const ex = getExchange(exchange, market_type);
+        const ex = getExchange(exchange, market_type, { skipAuth: true });
         const book = await ex.fetchOrderBook(symbol, limit);
         return ok(book);
       } catch (e) {
@@ -69,7 +69,7 @@ export function registerPublicTools(server: McpServer) {
     },
     async ({ exchange, symbol, limit, market_type }) => {
       try {
-        const ex = getExchange(exchange, market_type);
+        const ex = getExchange(exchange, market_type, { skipAuth: true });
         const trades = await ex.fetchTrades(symbol, undefined, limit);
         return ok(trades);
       } catch (e) {
@@ -97,7 +97,7 @@ export function registerPublicTools(server: McpServer) {
     },
     async ({ exchange, market_type, base, quote, limit }) => {
       try {
-        const ex = getExchange(exchange, market_type);
+        const ex = getExchange(exchange, market_type, { skipAuth: true });
         await ex.loadMarkets();
         let markets = Object.values(ex.markets).map(m => ({
           symbol: m.symbol,
@@ -128,7 +128,7 @@ export function registerPublicTools(server: McpServer) {
     },
     async ({ exchange, symbols }) => {
       try {
-        const ex = getExchange(exchange, 'swap');
+        const ex = getExchange(exchange, 'swap', { skipAuth: true });
         const rates = await ex.fetchFundingRates(symbols);
         return ok(rates);
       } catch (e) {
@@ -150,8 +150,9 @@ export function registerPublicTools(server: McpServer) {
     },
     async ({ exchange, symbols, market_type }) => {
       try {
-        const ex = getExchange(exchange, market_type);
-        const tickers = await ex.fetchTickers(symbols);
+        const ex = getExchange(exchange, market_type, { skipAuth: true });
+        const syms = symbols && symbols.length > 0 ? symbols : undefined;
+        const tickers = await ex.fetchTickers(syms);
         return okList(Object.values(tickers));
       } catch (e) {
         return err(e);
@@ -169,7 +170,7 @@ export function registerPublicTools(server: McpServer) {
     },
     async ({ exchange, symbol, limit }) => {
       try {
-        const ex = getExchange(exchange, 'swap');
+        const ex = getExchange(exchange, 'swap', { skipAuth: true });
         const history = await ex.fetchFundingRateHistory(
           symbol, undefined, limit
         );
@@ -200,7 +201,7 @@ export function registerPublicTools(server: McpServer) {
     },
     async ({ exchange, symbol, timeframe, limit, market_type }) => {
       try {
-        const ex = getExchange(exchange, market_type);
+        const ex = getExchange(exchange, market_type, { skipAuth: true });
         const data = await ex.fetchOHLCV(
           symbol,
           timeframe,

@@ -390,13 +390,15 @@ export function registerHyperliquidTools(
         .describe(
           'Time window: day, week, month, allTime'
         ),
+      ...maxItemsParam,
     },
-    async ({ address, window: win }) => {
+    async ({ address, window: win, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet(
             `/api/upgrade/v2/hl/portfolio/${address}/${win}`
-          )
+          ),
+          parseMax(_max_items, 100)
         );
       } catch (e) {
         return err(e);
@@ -887,12 +889,16 @@ export function registerHyperliquidTools(
       address: z
         .string()
         .describe('Wallet address'),
+      days: z
+        .string()
+        .describe('Number of days, e.g. 7, 30, 90'),
     },
-    async ({ address }) => {
+    async ({ address, days }) => {
       try {
         return ok(
           await apiGet(
-            `/api/upgrade/v2/hl/max-drawdown/${address}`
+            `/api/upgrade/v2/hl/max-drawdown/${address}`,
+            { days }
           )
         );
       } catch (e) {
@@ -908,12 +914,16 @@ export function registerHyperliquidTools(
       address: z
         .string()
         .describe('Wallet address'),
+      days: z
+        .string()
+        .describe('Number of days, e.g. 7, 30, 90'),
     },
-    async ({ address }) => {
+    async ({ address, days }) => {
       try {
         return ok(
           await apiGet(
-            `/api/upgrade/v2/hl/ledger-updates/net-flow/${address}`
+            `/api/upgrade/v2/hl/ledger-updates/net-flow/${address}`,
+            { days }
           )
         );
       } catch (e) {
