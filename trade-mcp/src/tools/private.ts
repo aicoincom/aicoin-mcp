@@ -323,7 +323,7 @@ export function registerPrivateTools(server: McpServer) {
         let lever = leverage;
         if (lever == null) {
           const info = await ex.fetchLeverage(symbol, { marginMode: margin_mode });
-          lever = info?.leverage ?? info?.info?.lever;
+          lever = info?.longLeverage ?? info?.shortLeverage;
         }
         const params: Record<string, unknown> = {};
         if (lever != null) params.lever = String(lever);

@@ -9,7 +9,7 @@ import { registerAllTools } from './tools/index.js';
 
 const server = new McpServer({
   name: 'aicoin-trade',
-  version: '1.0.2',
+  version: '1.0.3',
 });
 
 registerAllTools(server);
