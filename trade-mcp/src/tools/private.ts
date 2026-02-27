@@ -310,7 +310,7 @@ export function registerPrivateTools(server: McpServer) {
         .int()
         .positive()
         .optional()
-        .describe('Leverage to set alongside margin mode (required by some exchanges like OKX)'),
+        .describe('Leverage to set alongside margin mode. If omitted, auto-reads current leverage from the exchange'),
       market_type: z
         .enum(['swap', 'future'])
         .optional()
@@ -320,8 +320,13 @@ export function registerPrivateTools(server: McpServer) {
     async ({ exchange, margin_mode, symbol, leverage, market_type }) => {
       try {
         const ex = getExchange(exchange, market_type);
+        let lever = leverage;
+        if (lever == null) {
+          const info = await ex.fetchLeverage(symbol, { marginMode: margin_mode });
+          lever = info?.leverage ?? info?.info?.lever;
+        }
         const params: Record<string, unknown> = {};
-        if (leverage != null) params.lever = String(leverage);
+        if (lever != null) params.lever = String(lever);
         return ok(
           await ex.setMarginMode(margin_mode, symbol, params)
         );

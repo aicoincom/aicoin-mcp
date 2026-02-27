@@ -1,6 +1,6 @@
 {
   "name": "@aicoin/trade-mcp",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "AiCoin Trade MCP Server - AI-powered cryptocurrency trading via ccxt",
   "main": "build/index.js",
   "type": "module",
