@@ -252,7 +252,21 @@ export function registerPrivateTools(server: McpServer) {
     async ({ exchange, symbol, market_type }) => {
       try {
         const ex = getExchange(exchange, market_type);
-        return ok(await ex.cancelAllOrders(symbol));
+        // Try native cancelAllOrders first, fallback to manual cancel
+        if (typeof ex.cancelAllOrders === 'function' && ex.has['cancelAllOrders']) {
+          return ok(await ex.cancelAllOrders(symbol));
+        }
+        // Fallback: fetch open orders then cancel each
+        const openOrders = await ex.fetchOpenOrders(symbol);
+        const results = [];
+        for (const order of openOrders) {
+          try {
+            results.push(await ex.cancelOrder(order.id, symbol));
+          } catch (ce) {
+            results.push({ id: order.id, error: (ce as Error).message });
+          }
+        }
+        return ok({ cancelled: results.length, details: results });
       } catch (e) {
         return errResult(e);
       }
@@ -299,12 +313,19 @@ export function registerPrivateTools(server: McpServer) {
       symbol: z
         .string()
         .describe('Trading pair, e.g. BTC/USDT:USDT'),
+      leverage: z
+        .number()
+        .int()
+        .positive()
+        .optional()
+        .default(3)
+        .describe('Leverage to set along with margin mode (required by some exchanges like OKX)'),
     },
-    async ({ exchange, margin_mode, symbol }) => {
+    async ({ exchange, margin_mode, symbol, leverage }) => {
       try {
         const ex = getExchange(exchange, 'swap');
         return ok(
-          await ex.setMarginMode(margin_mode, symbol)
+          await ex.setMarginMode(margin_mode, symbol, { lever: leverage })
         );
       } catch (e) {
         return errResult(e);
