@@ -4,30 +4,19 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { apiGet, apiPost } from '../client/api.js';
-
-function ok(data: unknown) {
-  return {
-    content: [{ type: 'text' as const, text: JSON.stringify(data) }],
-  };
-}
-
-function err(e: unknown) {
-  return {
-    content: [
-      { type: 'text' as const, text: `Error: ${(e as Error).message}` },
-    ],
-    isError: true as const,
-  };
-}
+import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
 
 export function registerCoinTools(server: McpServer) {
   server.tool(
     'get_coin_list',
-    'Get list of all supported coins with basic info',
-    {},
-    async () => {
+    'Get supported coins list (returns top 100 by default, use get_coin_ticker for specific coins)',
+    { ...maxItemsParam },
+    async ({ _max_items }) => {
       try {
-        return ok(await apiGet('/api/v2/coin'));
+        return okList(
+          await apiGet('/api/v2/coin'),
+          parseMax(_max_items, 100)
+        );
       } catch (e) {
         return err(e);
       }
@@ -132,7 +121,7 @@ export function registerCoinTools(server: McpServer) {
           symbol,
           interval,
         };
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
         return ok(
@@ -214,7 +203,7 @@ export function registerCoinTools(server: McpServer) {
           symbol,
           interval,
         };
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
         return ok(
@@ -258,7 +247,7 @@ export function registerCoinTools(server: McpServer) {
           symbol,
           interval,
         };
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
         return ok(
@@ -302,7 +291,7 @@ export function registerCoinTools(server: McpServer) {
           symbol,
           interval,
         };
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
         return ok(
@@ -348,7 +337,7 @@ export function registerCoinTools(server: McpServer) {
           symbol,
           interval,
         };
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
         return ok(
@@ -401,7 +390,7 @@ export function registerCoinTools(server: McpServer) {
           cycle,
         };
         if (leverage) params.leverage = leverage;
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
         return ok(
@@ -441,7 +430,7 @@ export function registerCoinTools(server: McpServer) {
     async ({ key, limit, start_time, end_time }) => {
       try {
         const params: Record<string, string> = { key };
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
         return ok(
@@ -486,7 +475,7 @@ export function registerCoinTools(server: McpServer) {
       try {
         const params: Record<string, string> = { key };
         if (amount) params.amount = amount;
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
         return ok(
@@ -526,7 +515,7 @@ export function registerCoinTools(server: McpServer) {
     async ({ dbkey, limit, start_time, end_time }) => {
       try {
         const params: Record<string, string> = { dbkey };
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
         return ok(

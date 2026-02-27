@@ -2,28 +2,15 @@
  * Private trading tools - require exchange API key in env
  */
 import { z } from 'zod';
+import * as ccxt from 'ccxt';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { getExchange } from '../exchange/manager.js';
+import { ok, err } from './utils.js';
 
 const marketTypeSchema = z
   .enum(['spot', 'future', 'swap', 'margin'])
   .optional()
   .describe('Market type, default spot');
-
-function errResult(e: unknown) {
-  return {
-    content: [
-      { type: 'text' as const, text: `Error: ${(e as Error).message}` },
-    ],
-    isError: true as const,
-  };
-}
-
-function ok(data: unknown) {
-  return {
-    content: [{ type: 'text' as const, text: JSON.stringify(data) }],
-  };
-}
 
 export function registerPrivateTools(server: McpServer) {
   // ── get_balance ──
@@ -44,7 +31,7 @@ export function registerPrivateTools(server: McpServer) {
           used: bal.used,
         });
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -80,6 +67,9 @@ export function registerPrivateTools(server: McpServer) {
       exchange, symbol, type, side, amount, price, pos_side, margin_mode, market_type,
     }) => {
       try {
+        if (type === 'limit' && price == null) {
+          return err('price is required for limit orders');
+        }
         const ex = getExchange(exchange, market_type);
         const params: Record<string, unknown> = {};
         if (pos_side) params.posSide = pos_side;
@@ -89,7 +79,7 @@ export function registerPrivateTools(server: McpServer) {
         );
         return ok(order);
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -104,13 +94,14 @@ export function registerPrivateTools(server: McpServer) {
       symbol: z
         .string()
         .describe('Trading pair, e.g. BTC/USDT'),
+      market_type: marketTypeSchema,
     },
-    async ({ exchange, order_id, symbol }) => {
+    async ({ exchange, order_id, symbol, market_type }) => {
       try {
-        const ex = getExchange(exchange);
+        const ex = getExchange(exchange, market_type);
         return ok(await ex.cancelOrder(order_id, symbol));
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -132,7 +123,7 @@ export function registerPrivateTools(server: McpServer) {
         const ex = getExchange(exchange, market_type);
         return ok(await ex.fetchOpenOrders(symbol));
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -161,7 +152,7 @@ export function registerPrivateTools(server: McpServer) {
           await ex.fetchClosedOrders(symbol, undefined, limit)
         );
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -176,13 +167,18 @@ export function registerPrivateTools(server: McpServer) {
         .array(z.string())
         .optional()
         .describe('Filter by symbols, e.g. ["BTC/USDT:USDT"]'),
+      market_type: z
+        .enum(['swap', 'future'])
+        .optional()
+        .default('swap')
+        .describe('Market type: swap (default) or future'),
     },
-    async ({ exchange, symbols }) => {
+    async ({ exchange, symbols, market_type }) => {
       try {
-        const ex = getExchange(exchange, 'swap');
+        const ex = getExchange(exchange, market_type);
         return ok(await ex.fetchPositions(symbols));
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -204,7 +200,7 @@ export function registerPrivateTools(server: McpServer) {
         const ex = getExchange(exchange, market_type);
         return ok(await ex.fetchOrder(order_id, symbol));
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -233,7 +229,7 @@ export function registerPrivateTools(server: McpServer) {
           await ex.fetchMyTrades(symbol, undefined, limit)
         );
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -252,23 +248,19 @@ export function registerPrivateTools(server: McpServer) {
     async ({ exchange, symbol, market_type }) => {
       try {
         const ex = getExchange(exchange, market_type);
-        // Try native cancelAllOrders first, fallback to manual cancel
-        if (typeof ex.cancelAllOrders === 'function' && ex.has['cancelAllOrders']) {
+        if (ex.has['cancelAllOrders']) {
           return ok(await ex.cancelAllOrders(symbol));
         }
-        // Fallback: fetch open orders then cancel each
-        const openOrders = await ex.fetchOpenOrders(symbol);
-        const results = [];
-        for (const order of openOrders) {
-          try {
-            results.push(await ex.cancelOrder(order.id, symbol));
-          } catch (ce) {
-            results.push({ id: order.id, error: (ce as Error).message });
-          }
-        }
-        return ok({ cancelled: results.length, details: results });
+        // Fallback: fetch open orders then cancel each in parallel
+        const open = await ex.fetchOpenOrders(symbol);
+        const results = await Promise.allSettled(
+          open.map(o => ex.cancelOrder(o.id, symbol))
+        );
+        const cancelled = results.filter(r => r.status === 'fulfilled').length;
+        const failed = results.filter(r => r.status === 'rejected').length;
+        return ok({ cancelled, failed, total: open.length });
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -296,7 +288,7 @@ export function registerPrivateTools(server: McpServer) {
         );
         return ok(await ex.setLeverage(leverage, symbol));
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -318,17 +310,23 @@ export function registerPrivateTools(server: McpServer) {
         .int()
         .positive()
         .optional()
-        .default(3)
-        .describe('Leverage to set along with margin mode (required by some exchanges like OKX)'),
+        .describe('Leverage to set alongside margin mode (required by some exchanges like OKX)'),
+      market_type: z
+        .enum(['swap', 'future'])
+        .optional()
+        .default('swap')
+        .describe('Market type: swap (default) or future'),
     },
-    async ({ exchange, margin_mode, symbol, leverage }) => {
+    async ({ exchange, margin_mode, symbol, leverage, market_type }) => {
       try {
-        const ex = getExchange(exchange, 'swap');
+        const ex = getExchange(exchange, market_type);
+        const params: Record<string, unknown> = {};
+        if (leverage != null) params.lever = String(leverage);
         return ok(
-          await ex.setMarginMode(margin_mode, symbol, { lever: leverage })
+          await ex.setMarginMode(margin_mode, symbol, params)
         );
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -357,7 +355,7 @@ export function registerPrivateTools(server: McpServer) {
           await ex.fetchLedger(code, undefined, limit)
         );
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -377,15 +375,16 @@ export function registerPrivateTools(server: McpServer) {
         .optional()
         .default(20)
         .describe('Number of records'),
+      market_type: marketTypeSchema,
     },
-    async ({ exchange, code, limit }) => {
+    async ({ exchange, code, limit, market_type }) => {
       try {
-        const ex = getExchange(exchange);
+        const ex = getExchange(exchange, market_type);
         return ok(
           await ex.fetchDeposits(code, undefined, limit)
         );
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -405,15 +404,16 @@ export function registerPrivateTools(server: McpServer) {
         .optional()
         .default(20)
         .describe('Number of records'),
+      market_type: marketTypeSchema,
     },
-    async ({ exchange, code, limit }) => {
+    async ({ exchange, code, limit, market_type }) => {
       try {
-        const ex = getExchange(exchange);
+        const ex = getExchange(exchange, market_type);
         return ok(
           await ex.fetchWithdrawals(code, undefined, limit)
         );
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );
@@ -432,19 +432,20 @@ export function registerPrivateTools(server: McpServer) {
       to_account: z
         .string()
         .describe('Target account: spot, swap, future'),
+      market_type: marketTypeSchema,
     },
     async ({
-      exchange, code, amount, from_account, to_account,
+      exchange, code, amount, from_account, to_account, market_type,
     }) => {
       try {
-        const ex = getExchange(exchange);
+        const ex = getExchange(exchange, market_type);
         return ok(
           await ex.transfer(
             code, amount, from_account, to_account
           )
         );
       } catch (e) {
-        return errResult(e);
+        return err(e);
       }
     }
   );

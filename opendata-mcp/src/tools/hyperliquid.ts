@@ -4,37 +4,21 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { apiGet, apiPost } from '../client/api.js';
-
-function ok(data: unknown) {
-  return {
-    content: [
-      { type: 'text' as const, text: JSON.stringify(data) },
-    ],
-  };
-}
-
-function err(e: unknown) {
-  return {
-    content: [
-      {
-        type: 'text' as const,
-        text: `Error: ${(e as Error).message}`,
-      },
-    ],
-    isError: true as const,
-  };
-}
+import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
 
 export function registerHyperliquidTools(
   server: McpServer
 ) {
   server.tool(
     'hl_get_tickers',
-    'Get all Hyperliquid ticker data',
-    {},
-    async () => {
+    'Get Hyperliquid ticker data (truncated to top 50, use hl_get_ticker_by_coin for specific coin)',
+    { ...maxItemsParam },
+    async ({ _max_items }) => {
       try {
-        return ok(await apiGet('/api/upgrade/v2/hl/tickers'));
+        return okList(
+          await apiGet('/api/upgrade/v2/hl/tickers'),
+          parseMax(_max_items, 50)
+        );
       } catch (e) {
         return err(e);
       }
@@ -72,17 +56,19 @@ export function registerHyperliquidTools(
         .string()
         .optional()
         .describe('Min position size in USD'),
+      ...maxItemsParam,
     },
-    async ({ coin, min_usd }) => {
+    async ({ coin, min_usd, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
         if (min_usd) params.min_usd = min_usd;
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/hl/whales/open-positions',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -98,16 +84,18 @@ export function registerHyperliquidTools(
         .string()
         .optional()
         .describe('Coin filter'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/hl/liquidations/history',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -155,16 +143,18 @@ export function registerHyperliquidTools(
         .string()
         .optional()
         .describe('Extra params as JSON string, e.g. {"coin":"BTC"}'),
+      ...maxItemsParam,
     },
-    async ({ type, user, extra_params }) => {
+    async ({ type, user, extra_params, _max_items }) => {
       try {
         const body: Record<string, unknown> = { type };
         if (user) body.user = user;
         if (extra_params) {
           Object.assign(body, JSON.parse(extra_params));
         }
-        return ok(
-          await apiPost('/api/upgrade/v2/hl/info', body)
+        return okList(
+          await apiPost('/api/upgrade/v2/hl/info', body),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -179,11 +169,13 @@ export function registerHyperliquidTools(
       address: z
         .string()
         .describe('Wallet address, e.g. 0x...'),
+      ...maxItemsParam,
     },
-    async ({ address }) => {
+    async ({ address, _max_items }) => {
       try {
-        return ok(
-          await apiGet(`/api/upgrade/v2/hl/fills/${address}`)
+        return okList(
+          await apiGet(`/api/upgrade/v2/hl/fills/${address}`),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -235,16 +227,18 @@ export function registerHyperliquidTools(
         .string()
         .optional()
         .describe('Coin filter, e.g. BTC'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/hl/fills/top-trades',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -259,13 +253,15 @@ export function registerHyperliquidTools(
       address: z
         .string()
         .describe('Wallet address'),
+      ...maxItemsParam,
     },
-    async ({ address }) => {
+    async ({ address, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet(
             `/api/upgrade/v2/hl/filled-orders/${address}/latest`
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -299,13 +295,15 @@ export function registerHyperliquidTools(
       address: z
         .string()
         .describe('Wallet address'),
+      ...maxItemsParam,
     },
-    async ({ address }) => {
+    async ({ address, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet(
             `/api/upgrade/v2/hl/orders/${address}/latest`
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -338,16 +336,18 @@ export function registerHyperliquidTools(
         .string()
         .optional()
         .describe('Coin filter'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/hl/orders/top-open-orders',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -387,7 +387,9 @@ export function registerHyperliquidTools(
       address: z.string().describe('Wallet address'),
       window: z
         .string()
-        .describe('Time window, e.g. 1d, 7d, 30d'),
+        .describe(
+          'Time window: day, week, month, allTime'
+        ),
     },
     async ({ address, window: win }) => {
       try {
@@ -407,11 +409,13 @@ export function registerHyperliquidTools(
     'Get PNL curve data by address',
     {
       address: z.string().describe('Wallet address'),
+      ...maxItemsParam,
     },
-    async ({ address }) => {
+    async ({ address, _max_items }) => {
       try {
-        return ok(
-          await apiGet(`/api/upgrade/v2/hl/pnls/${address}`)
+        return okList(
+          await apiGet(`/api/upgrade/v2/hl/pnls/${address}`),
+          parseMax(_max_items, 100)
         );
       } catch (e) {
         return err(e);
@@ -424,12 +428,24 @@ export function registerHyperliquidTools(
     'Get most profitable trades by address',
     {
       address: z.string().describe('Wallet address'),
+      period: z
+        .string()
+        .describe('Period in days, e.g. 7, 30, 90'),
+      limit: z
+        .string()
+        .optional()
+        .describe('Max results, default 10'),
     },
-    async ({ address }) => {
+    async ({ address, period, limit }) => {
       try {
+        const params: Record<string, string> = {
+          period,
+        };
+        if (limit) params.limit = limit;
         return ok(
           await apiGet(
-            `/api/upgrade/v2/hl/traders/${address}/best-trades`
+            `/api/upgrade/v2/hl/traders/${address}/best-trades`,
+            params
           )
         );
       } catch (e) {
@@ -443,12 +459,24 @@ export function registerHyperliquidTools(
     'Get per-coin trading performance stats',
     {
       address: z.string().describe('Wallet address'),
+      period: z
+        .string()
+        .describe('Period in days, e.g. 7, 30, 90'),
+      limit: z
+        .string()
+        .optional()
+        .describe('Max results, default 10'),
     },
-    async ({ address }) => {
+    async ({ address, period, limit }) => {
       try {
+        const params: Record<string, string> = {
+          period,
+        };
+        if (limit) params.limit = limit;
         return ok(
           await apiGet(
-            `/api/upgrade/v2/hl/traders/${address}/performance-by-coin`
+            `/api/upgrade/v2/hl/traders/${address}/performance-by-coin`,
+            params
           )
         );
       } catch (e) {
@@ -462,13 +490,15 @@ export function registerHyperliquidTools(
     'Get completed trades list by address',
     {
       address: z.string().describe('Wallet address'),
+      ...maxItemsParam,
     },
-    async ({ address }) => {
+    async ({ address, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet(
             `/api/upgrade/v2/hl/traders/${address}/completed-trades`
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -647,16 +677,18 @@ export function registerHyperliquidTools(
         .string()
         .optional()
         .describe('Coin filter'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/hl/whales/latest-events',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -697,16 +729,18 @@ export function registerHyperliquidTools(
         .string()
         .optional()
         .describe('Coin filter'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/hl/whales/history-long-ratio',
             params
-          )
+          ),
+          parseMax(_max_items, 100)
         );
       } catch (e) {
         return err(e);
@@ -762,16 +796,18 @@ export function registerHyperliquidTools(
         .string()
         .optional()
         .describe('Coin filter'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/hl/liquidations/top-positions',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -896,13 +932,15 @@ export function registerHyperliquidTools(
       interval: z
         .string()
         .describe('Interval, e.g. 1h, 4h, 1d'),
+      ...maxItemsParam,
     },
-    async ({ coin, interval }) => {
+    async ({ coin, interval, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet(
             `/api/upgrade/v2/hl/klines-with-taker-vol/${coin}/${interval}`
-          )
+          ),
+          parseMax(_max_items, 100)
         );
       } catch (e) {
         return err(e);

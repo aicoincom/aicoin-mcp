@@ -4,15 +4,19 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { getExchange, SUPPORTED_EXCHANGES } from '../exchange/manager.js';
+import { ok, err, okList } from './utils.js';
+
+const marketTypeSchema = z
+  .enum(['spot', 'future', 'swap'])
+  .optional()
+  .describe('Market type, default spot');
 
 export function registerPublicTools(server: McpServer) {
   server.tool(
     'list_exchanges',
     'List all supported cryptocurrency exchanges',
     {},
-    async () => ({
-      content: [{ type: 'text', text: JSON.stringify(SUPPORTED_EXCHANGES) }],
-    })
+    async () => ok(SUPPORTED_EXCHANGES)
   );
 
   server.tool(
@@ -21,21 +25,15 @@ export function registerPublicTools(server: McpServer) {
     {
       exchange: z.string().describe('Exchange ID, e.g. binance, okx, bybit'),
       symbol: z.string().describe('Trading pair, e.g. BTC/USDT'),
-      market_type: z
-        .enum(['spot', 'future', 'swap'])
-        .optional()
-        .describe('Market type, default spot'),
+      market_type: marketTypeSchema,
     },
     async ({ exchange, symbol, market_type }) => {
       try {
         const ex = getExchange(exchange, market_type);
         const ticker = await ex.fetchTicker(symbol);
-        return { content: [{ type: 'text', text: JSON.stringify(ticker) }] };
+        return ok(ticker);
       } catch (e) {
-        return {
-          content: [{ type: 'text', text: `Error: ${(e as Error).message}` }],
-          isError: true,
-        };
+        return err(e);
       }
     }
   );
@@ -47,17 +45,15 @@ export function registerPublicTools(server: McpServer) {
       exchange: z.string().describe('Exchange ID'),
       symbol: z.string().describe('Trading pair, e.g. BTC/USDT'),
       limit: z.number().optional().default(20).describe('Depth limit'),
+      market_type: marketTypeSchema,
     },
-    async ({ exchange, symbol, limit }) => {
+    async ({ exchange, symbol, limit, market_type }) => {
       try {
-        const ex = getExchange(exchange);
+        const ex = getExchange(exchange, market_type);
         const book = await ex.fetchOrderBook(symbol, limit);
-        return { content: [{ type: 'text', text: JSON.stringify(book) }] };
+        return ok(book);
       } catch (e) {
-        return {
-          content: [{ type: 'text', text: `Error: ${(e as Error).message}` }],
-          isError: true,
-        };
+        return err(e);
       }
     }
   );
@@ -69,48 +65,53 @@ export function registerPublicTools(server: McpServer) {
       exchange: z.string().describe('Exchange ID'),
       symbol: z.string().describe('Trading pair, e.g. BTC/USDT'),
       limit: z.number().optional().default(50).describe('Number of trades'),
+      market_type: marketTypeSchema,
     },
-    async ({ exchange, symbol, limit }) => {
+    async ({ exchange, symbol, limit, market_type }) => {
       try {
-        const ex = getExchange(exchange);
+        const ex = getExchange(exchange, market_type);
         const trades = await ex.fetchTrades(symbol, undefined, limit);
-        return { content: [{ type: 'text', text: JSON.stringify(trades) }] };
+        return ok(trades);
       } catch (e) {
-        return {
-          content: [{ type: 'text', text: `Error: ${(e as Error).message}` }],
-          isError: true,
-        };
+        return err(e);
       }
     }
   );
 
   server.tool(
     'get_markets',
-    'Get all available trading pairs on an exchange',
+    'Get available trading pairs on an exchange (filtered, paginated)',
     {
       exchange: z.string().describe('Exchange ID'),
-      market_type: z
-        .enum(['spot', 'future', 'swap'])
+      market_type: marketTypeSchema.describe('Filter by market type'),
+      base: z.string().optional().describe('Filter by base currency, e.g. BTC'),
+      quote: z.string().optional().describe('Filter by quote currency, e.g. USDT'),
+      limit: z
+        .number()
+        .int()
+        .min(1)
+        .max(500)
         .optional()
-        .describe('Filter by market type'),
+        .default(100)
+        .describe('Max results (1-500, default 100)'),
     },
-    async ({ exchange, market_type }) => {
+    async ({ exchange, market_type, base, quote, limit }) => {
       try {
         const ex = getExchange(exchange, market_type);
         await ex.loadMarkets();
-        const markets = Object.values(ex.markets).map(m => ({
+        let markets = Object.values(ex.markets).map(m => ({
           symbol: m.symbol,
           base: m.base,
           quote: m.quote,
           type: m.type,
           active: m.active,
         }));
-        return { content: [{ type: 'text', text: JSON.stringify(markets) }] };
+        if (market_type) markets = markets.filter(m => m.type === market_type);
+        if (base) markets = markets.filter(m => m.base === base.toUpperCase());
+        if (quote) markets = markets.filter(m => m.quote === quote.toUpperCase());
+        return okList(markets.slice(0, limit), limit);
       } catch (e) {
-        return {
-          content: [{ type: 'text', text: `Error: ${(e as Error).message}` }],
-          isError: true,
-        };
+        return err(e);
       }
     }
   );
@@ -122,21 +123,16 @@ export function registerPublicTools(server: McpServer) {
       exchange: z.string().describe('Exchange ID'),
       symbols: z
         .array(z.string())
-        .optional()
+        .min(1)
         .describe('Trading pairs to query, e.g. ["BTC/USDT:USDT"]'),
     },
     async ({ exchange, symbols }) => {
       try {
         const ex = getExchange(exchange, 'swap');
-        const rates = symbols
-          ? await ex.fetchFundingRates(symbols)
-          : await ex.fetchFundingRates();
-        return { content: [{ type: 'text', text: JSON.stringify(rates) }] };
+        const rates = await ex.fetchFundingRates(symbols);
+        return ok(rates);
       } catch (e) {
-        return {
-          content: [{ type: 'text', text: `Error: ${(e as Error).message}` }],
-          isError: true,
-        };
+        return err(e);
       }
     }
   );
@@ -150,21 +146,15 @@ export function registerPublicTools(server: McpServer) {
         .array(z.string())
         .optional()
         .describe('Trading pairs, e.g. ["BTC/USDT","ETH/USDT"]'),
-      market_type: z
-        .enum(['spot', 'future', 'swap'])
-        .optional()
-        .describe('Market type, default spot'),
+      market_type: marketTypeSchema,
     },
     async ({ exchange, symbols, market_type }) => {
       try {
         const ex = getExchange(exchange, market_type);
         const tickers = await ex.fetchTickers(symbols);
-        return { content: [{ type: 'text', text: JSON.stringify(tickers) }] };
+        return okList(Object.values(tickers));
       } catch (e) {
-        return {
-          content: [{ type: 'text', text: `Error: ${(e as Error).message}` }],
-          isError: true,
-        };
+        return err(e);
       }
     }
   );
@@ -183,12 +173,9 @@ export function registerPublicTools(server: McpServer) {
         const history = await ex.fetchFundingRateHistory(
           symbol, undefined, limit
         );
-        return { content: [{ type: 'text', text: JSON.stringify(history) }] };
+        return ok(history);
       } catch (e) {
-        return {
-          content: [{ type: 'text', text: `Error: ${(e as Error).message}` }],
-          isError: true,
-        };
+        return err(e);
       }
     }
   );
@@ -209,22 +196,20 @@ export function registerPublicTools(server: McpServer) {
         .optional()
         .default(100)
         .describe('Number of candles, max 1000'),
+      market_type: marketTypeSchema,
     },
-    async ({ exchange, symbol, timeframe, limit }) => {
+    async ({ exchange, symbol, timeframe, limit, market_type }) => {
       try {
-        const ex = getExchange(exchange);
+        const ex = getExchange(exchange, market_type);
         const data = await ex.fetchOHLCV(
           symbol,
           timeframe,
           undefined,
           Math.min(limit, 1000)
         );
-        return { content: [{ type: 'text', text: JSON.stringify(data) }] };
+        return ok(data);
       } catch (e) {
-        return {
-          content: [{ type: 'text', text: `Error: ${(e as Error).message}` }],
-          isError: true,
-        };
+        return err(e);
       }
     }
   );

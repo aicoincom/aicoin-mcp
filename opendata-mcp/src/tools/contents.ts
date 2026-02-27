@@ -4,21 +4,7 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { apiGet } from '../client/api.js';
-
-function ok(data: unknown) {
-  return {
-    content: [{ type: 'text' as const, text: JSON.stringify(data) }],
-  };
-}
-
-function err(e: unknown) {
-  return {
-    content: [
-      { type: 'text' as const, text: `Error: ${(e as Error).message}` },
-    ],
-    isError: true as const,
-  };
-}
+import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
 
 export function registerContentTools(server: McpServer) {
   server.tool(
@@ -38,7 +24,7 @@ export function registerContentTools(server: McpServer) {
       try {
         const params: Record<string, string> = {};
         if (page) params.page = page;
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '20';
         return ok(
           await apiGet('/api/v2/content/newsflash', params)
         );
@@ -65,7 +51,7 @@ export function registerContentTools(server: McpServer) {
       try {
         const params: Record<string, string> = {};
         if (page) params.page = page;
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '20';
         return ok(
           await apiGet('/api/v2/content/news-list', params)
         );
@@ -109,7 +95,7 @@ export function registerContentTools(server: McpServer) {
       try {
         const params: Record<string, string> = {};
         if (page) params.page = page;
-        if (pageSize) params.pageSize = pageSize;
+        params.pageSize = pageSize ?? '20';
         return ok(
           await apiGet(
             '/api/v2/content/square/market/news-list',
@@ -134,17 +120,19 @@ export function registerContentTools(server: McpServer) {
         .string()
         .optional()
         .describe('Filter by create time'),
+      ...maxItemsParam,
     },
-    async ({ language, createtime }) => {
+    async ({ language, createtime, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (language) params.language = language;
         if (createtime) params.createtime = createtime;
-        return ok(
+        return okList(
           await apiGet(
             '/api/v2/content/flashList',
             params
-          )
+          ),
+          parseMax(_max_items, 30)
         );
       } catch (e) {
         return err(e);
@@ -169,7 +157,7 @@ export function registerContentTools(server: McpServer) {
       try {
         const params: Record<string, string> = {};
         if (page) params.page = page;
-        if (limit) params.limit = limit;
+        params.limit = limit ?? '20';
         return ok(
           await apiGet(
             '/api/v2/content/exchange-listing-flash',

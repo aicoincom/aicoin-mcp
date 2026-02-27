@@ -3,13 +3,24 @@
  * AiCoin OpenData MCP Server
  * Crypto market data via AiCoin Open API
  */
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { registerAllTools } from './tools/index.js';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(
+  readFileSync(
+    resolve(__dirname, '..', 'package.json'),
+    'utf-8'
+  )
+) as { version: string };
+
 const server = new McpServer({
   name: 'aicoin-opendata',
-  version: '1.0.0',
+  version: pkg.version,
 });
 
 registerAllTools(server);

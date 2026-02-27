@@ -4,26 +4,7 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { apiGet } from '../client/api.js';
-
-function ok(data: unknown) {
-  return {
-    content: [
-      { type: 'text' as const, text: JSON.stringify(data) },
-    ],
-  };
-}
-
-function err(e: unknown) {
-  return {
-    content: [
-      {
-        type: 'text' as const,
-        text: `Error: ${(e as Error).message}`,
-      },
-    ],
-    isError: true as const,
-  };
-}
+import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
 
 export function registerFeatureTools(server: McpServer) {
   server.tool(
@@ -63,14 +44,16 @@ export function registerFeatureTools(server: McpServer) {
         .string()
         .optional()
         .describe('Period filter'),
+      ...maxItemsParam,
     },
-    async ({ coin, period }) => {
+    async ({ coin, period, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
         if (period) params.period = period;
-        return ok(
-          await apiGet('/api/v2/mix/liq', params)
+        return okList(
+          await apiGet('/api/v2/mix/liq', params),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -231,11 +214,12 @@ export function registerFeatureTools(server: McpServer) {
   server.tool(
     'get_stock_market',
     'Get stock market data (crypto-related)',
-    {},
-    async () => {
+    { ...maxItemsParam },
+    async ({ _max_items }) => {
       try {
-        return ok(
-          await apiGet('/api/v2/mix/stock-market')
+        return okList(
+          await apiGet('/api/v2/mix/stock-market'),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -357,17 +341,19 @@ export function registerFeatureTools(server: McpServer) {
         .string()
         .optional()
         .describe('Currency: usd (default) or cny'),
+      ...maxItemsParam,
     },
-    async ({ type, currency }) => {
+    async ({ type, currency, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (type) params.type = type;
         if (currency) params.currency = currency;
-        return ok(
+        return okList(
           await apiGet(
             '/api/v2/signal/changeSignal',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -408,15 +394,17 @@ export function registerFeatureTools(server: McpServer) {
         .string()
         .optional()
         .describe('Market type filter'),
+      ...maxItemsParam,
     },
-    async ({ platform, type }) => {
+    async ({ platform, type, _max_items }) => {
       try {
         const params: Record<string, string> = {
           platform,
         };
         if (type) params.type = type;
-        return ok(
-          await apiGet('/api/v2/trading-pair', params)
+        return okList(
+          await apiGet('/api/v2/trading-pair', params),
+          parseMax(_max_items, 100)
         );
       } catch (e) {
         return err(e);

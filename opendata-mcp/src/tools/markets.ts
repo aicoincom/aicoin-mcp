@@ -4,26 +4,7 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { apiGet, apiPost } from '../client/api.js';
-
-function ok(data: unknown) {
-  return {
-    content: [
-      { type: 'text' as const, text: JSON.stringify(data) },
-    ],
-  };
-}
-
-function err(e: unknown) {
-  return {
-    content: [
-      {
-        type: 'text' as const,
-        text: `Error: ${(e as Error).message}`,
-      },
-    ],
-    isError: true as const,
-  };
-}
+import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
 
 export function registerMarketTools(server: McpServer) {
   server.tool(
@@ -60,7 +41,7 @@ export function registerMarketTools(server: McpServer) {
           symbol,
         };
         if (period) params.period = period;
-        if (size) params.size = size;
+        params.size = size ?? '100';
         if (since) params.since = since;
         if (open_time) params.open_time = open_time;
         return ok(
@@ -181,7 +162,7 @@ export function registerMarketTools(server: McpServer) {
           params.us_stock = String(us_stock);
         if (hk_stock != null)
           params.hk_stock = String(hk_stock);
-        if (limit != null) params.limit = String(limit);
+        params.limit = String(limit ?? 30);
         return ok(
           await apiGet(
             '/api/upgrade/v2/crypto_stock/top-gainer',
@@ -232,16 +213,18 @@ export function registerMarketTools(server: McpServer) {
         .string()
         .optional()
         .describe('Currency: cny or usd'),
+      ...maxItemsParam,
     },
-    async ({ key, currency }) => {
+    async ({ key, currency, _max_items }) => {
       try {
         const params: Record<string, string> = { key };
         if (currency) params.currency = currency;
-        return ok(
+        return okList(
           await apiGet(
             '/api/v2/market/hotTabCoins',
             params
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -300,11 +283,12 @@ export function registerMarketTools(server: McpServer) {
   server.tool(
     'get_index_list',
     'Get list of all available indexes',
-    {},
-    async () => {
+    { ...maxItemsParam },
+    async ({ _max_items }) => {
       try {
-        return ok(
-          await apiGet('/api/v2/index/getIndex')
+        return okList(
+          await apiGet('/api/v2/index/getIndex'),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -349,29 +333,53 @@ export function registerMarketTools(server: McpServer) {
     'get_indicator_kline_data',
     'Get indicator K-line data records',
     {
-      trading_pair: z
+      symbol: z
         .string()
-        .describe('Trading pair key'),
-      indicator: z
+        .describe(
+          'Trading pair, e.g. btcswapusdt:binance'
+        ),
+      indicator_key: z
         .string()
-        .describe('Indicator name'),
+        .describe(
+          'Indicator key: fundflow, aiaggtrade, fr, etc.'
+        ),
       period: z
         .string()
         .optional()
-        .describe('Period: 1min,5min,15min,1hour,4hour,1day'),
-      limit: z
+        .describe(
+          'Period in seconds: 900=15min, 3600=1h, ' +
+            '14400=4h, 86400=1d'
+        ),
+      size: z
         .string()
         .optional()
-        .describe('Number of records'),
+        .describe('Number of records, 1-500'),
+      since: z
+        .string()
+        .optional()
+        .describe('Start timestamp'),
+      open_time: z
+        .string()
+        .optional()
+        .describe('Open time offset: 0 or 8'),
     },
-    async ({ trading_pair, indicator, period, limit }) => {
+    async ({
+      symbol,
+      indicator_key,
+      period,
+      size,
+      since,
+      open_time,
+    }) => {
       try {
         const params: Record<string, string> = {
-          trading_pair,
-          indicator,
+          symbol,
+          indicator_key,
         };
         if (period) params.period = period;
-        if (limit) params.limit = limit;
+        params.size = size ?? '100';
+        if (since) params.since = since;
+        if (open_time) params.open_time = open_time;
         return ok(
           await apiGet(
             '/api/v2/indicatorKline/dataRecords',
@@ -425,16 +433,18 @@ export function registerMarketTools(server: McpServer) {
         .string()
         .optional()
         .describe('Entity ID filter'),
+      ...maxItemsParam,
     },
-    async ({ coin, entity_id }) => {
+    async ({ coin, entity_id, _max_items }) => {
       try {
         const body: Record<string, unknown> = { coin };
         if (entity_id) body.entity_id = entity_id;
-        return ok(
+        return okList(
           await apiPost(
             '/api/upgrade/v2/coin-treasuries/history',
             body
-          )
+          ),
+          parseMax(_max_items, 100)
         );
       } catch (e) {
         return err(e);
@@ -453,16 +463,18 @@ export function registerMarketTools(server: McpServer) {
         .string()
         .optional()
         .describe('Entity ID filter'),
+      ...maxItemsParam,
     },
-    async ({ coin, entity_id }) => {
+    async ({ coin, entity_id, _max_items }) => {
       try {
         const body: Record<string, unknown> = { coin };
         if (entity_id) body.entity_id = entity_id;
-        return ok(
+        return okList(
           await apiPost(
             '/api/upgrade/v2/coin-treasuries/history/accumulated',
             body
-          )
+          ),
+          parseMax(_max_items, 100)
         );
       } catch (e) {
         return err(e);
@@ -565,14 +577,16 @@ export function registerMarketTools(server: McpServer) {
       coin: z
         .string()
         .describe('Coin ticker, e.g. BTC, ETH'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/futures/full-depth',
             { coin }
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
@@ -587,14 +601,16 @@ export function registerMarketTools(server: McpServer) {
       coin: z
         .string()
         .describe('Coin ticker, e.g. BTC, ETH'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/futures/full-depth/grouped',
             { coin }
-          )
+          ),
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);
