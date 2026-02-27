@@ -58,7 +58,15 @@ function buildOptions(config: ExchangeConfig): Record<string, unknown> {
   const proxyUrl = process.env.PROXY_URL;
   if (process.env.USE_PROXY === 'true' && proxyUrl) {
     if (proxyUrl.startsWith('socks')) {
-      opts.socksProxy = proxyUrl;
+      // Always use socks5h:// to resolve DNS through the proxy,
+      // avoiding DNS pollution issues (common in China).
+      let socksUrl = proxyUrl;
+      if (socksUrl.startsWith('socks5://')) {
+        socksUrl = socksUrl.replace('socks5://', 'socks5h://');
+      } else if (socksUrl.startsWith('socks4://')) {
+        socksUrl = socksUrl.replace('socks4://', 'socks4a://');
+      }
+      opts.socksProxy = socksUrl;
     } else if (proxyUrl.startsWith('https://')) {
       opts.httpsProxy = proxyUrl;
     } else if (proxyUrl.startsWith('http://')) {
