@@ -54,10 +54,16 @@ function buildOptions(config: ExchangeConfig): Record<string, unknown> {
   if (sec) opts.secret = sec;
   if (pass) opts.password = pass;
 
-  // Proxy support
+  // Proxy support via ccxt built-in proxy settings.
   const proxyUrl = process.env.PROXY_URL;
   if (process.env.USE_PROXY === 'true' && proxyUrl) {
-    opts.proxy = proxyUrl;
+    if (proxyUrl.startsWith('socks')) {
+      opts.socksProxy = proxyUrl;
+    } else if (proxyUrl.startsWith('https://')) {
+      opts.httpsProxy = proxyUrl;
+    } else if (proxyUrl.startsWith('http://')) {
+      opts.httpProxy = proxyUrl;
+    }
   }
 
   return opts;
