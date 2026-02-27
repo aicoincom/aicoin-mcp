@@ -96,16 +96,35 @@ export function registerMarketTools(server: McpServer) {
     'get_futures_interest',
     'Get futures open interest data',
     {
-      coin: z
+      lan: z
         .string()
-        .describe('Coin ticker, e.g. BTC, ETH'),
-      ...maxItemsParam,
+        .optional()
+        .describe('Language: cn or en'),
+      page: z
+        .string()
+        .optional()
+        .describe('Page number'),
+      pageSize: z
+        .string()
+        .optional()
+        .describe('Page size, max 20'),
+      currency: z
+        .string()
+        .optional()
+        .describe('Currency: cny or usd'),
     },
-    async ({ coin, _max_items }) => {
+    async ({ lan, page, pageSize, currency }) => {
       try {
-        return okList(
-          await apiGet('/api/v2/futures/interest', { coin }),
-          parseMax(_max_items, 50)
+        const params: Record<string, string> = {};
+        if (lan) params.lan = lan;
+        if (page) params.page = page;
+        if (pageSize) params.pageSize = pageSize;
+        if (currency) params.currency = currency;
+        return ok(
+          await apiGet(
+            '/api/v2/futures/interest',
+            params
+          )
         );
       } catch (e) {
         return err(e);
@@ -226,7 +245,7 @@ export function registerMarketTools(server: McpServer) {
             '/api/v2/market/hotTabCoins',
             params
           ),
-          parseMax(_max_items, 50)
+          parseMax(_max_items, 20)
         );
       } catch (e) {
         return err(e);
@@ -290,7 +309,7 @@ export function registerMarketTools(server: McpServer) {
       try {
         return okList(
           await apiGet('/api/v2/index/getIndex'),
-          parseMax(_max_items, 50)
+          parseMax(_max_items, 20)
         );
       } catch (e) {
         return err(e);
@@ -407,11 +426,57 @@ export function registerMarketTools(server: McpServer) {
         .describe(
           'Entity type: public-companies, eth-treasuries, etc.'
         ),
+      name: z
+        .string()
+        .optional()
+        .describe('Entity name fuzzy search'),
+      ticker: z
+        .string()
+        .optional()
+        .describe('Stock ticker filter'),
+      start_date: z
+        .string()
+        .optional()
+        .describe('Start date, ISO 8601'),
+      end_date: z
+        .string()
+        .optional()
+        .describe('End date, ISO 8601'),
+      page: z
+        .string()
+        .optional()
+        .describe('Page number, default 1'),
+      page_size: z
+        .string()
+        .optional()
+        .describe('Page size, default 20, max 100'),
+      sort_order: z
+        .string()
+        .optional()
+        .describe('Sort: asc or desc, default desc'),
     },
-    async ({ coin, entity_type }) => {
+    async ({
+      coin,
+      entity_type,
+      name,
+      ticker,
+      start_date,
+      end_date,
+      page,
+      page_size,
+      sort_order,
+    }) => {
       try {
         const body: Record<string, unknown> = { coin };
         if (entity_type) body.entity_type = entity_type;
+        if (name) body.name = name;
+        if (ticker) body.ticker = ticker;
+        if (start_date) body.start_date = start_date;
+        if (end_date) body.end_date = end_date;
+        if (page) body.page = Number(page);
+        if (page_size)
+          body.page_size = Number(page_size);
+        if (sort_order) body.sort_order = sort_order;
         return ok(
           await apiPost(
             '/api/upgrade/v2/coin-treasuries/entities',
@@ -431,22 +496,66 @@ export function registerMarketTools(server: McpServer) {
       coin: z
         .string()
         .describe('Coin ticker, e.g. BTC, ETH'),
-      entity_id: z
+      name: z
         .string()
         .optional()
-        .describe('Entity ID filter'),
-      ...maxItemsParam,
+        .describe('Entity name filter'),
+      type: z
+        .string()
+        .optional()
+        .describe('Trade type: Buy or Sell'),
+      start_date: z
+        .string()
+        .optional()
+        .describe('Start date, ISO 8601'),
+      end_date: z
+        .string()
+        .optional()
+        .describe('End date, ISO 8601'),
+      page: z
+        .string()
+        .optional()
+        .describe('Page number, default 1'),
+      page_size: z
+        .string()
+        .optional()
+        .describe('Page size, default 20'),
+      sort_by: z
+        .string()
+        .optional()
+        .describe('Sort field, default date'),
+      sort_order: z
+        .string()
+        .optional()
+        .describe('Sort: asc or desc, default desc'),
     },
-    async ({ coin, entity_id, _max_items }) => {
+    async ({
+      coin,
+      name,
+      type,
+      start_date,
+      end_date,
+      page,
+      page_size,
+      sort_by,
+      sort_order,
+    }) => {
       try {
         const body: Record<string, unknown> = { coin };
-        if (entity_id) body.entity_id = entity_id;
-        return okList(
+        if (name) body.name = name;
+        if (type) body.type = type;
+        if (start_date) body.start_date = start_date;
+        if (end_date) body.end_date = end_date;
+        if (page) body.page = Number(page);
+        if (page_size)
+          body.page_size = Number(page_size);
+        if (sort_by) body.sort_by = sort_by;
+        if (sort_order) body.sort_order = sort_order;
+        return ok(
           await apiPost(
             '/api/upgrade/v2/coin-treasuries/history',
             body
-          ),
-          parseMax(_max_items, 100)
+          )
         );
       } catch (e) {
         return err(e);
@@ -461,22 +570,45 @@ export function registerMarketTools(server: McpServer) {
       coin: z
         .string()
         .describe('Coin ticker, e.g. BTC, ETH'),
-      entity_id: z
+      entity_type: z
         .string()
         .optional()
-        .describe('Entity ID filter'),
-      ...maxItemsParam,
+        .describe('Entity type filter'),
+      start_date: z
+        .string()
+        .optional()
+        .describe('Start date, ISO 8601'),
+      end_date: z
+        .string()
+        .optional()
+        .describe('End date, ISO 8601'),
+      interval: z
+        .string()
+        .optional()
+        .describe(
+          'Interval: daily, weekly, or monthly'
+        ),
     },
-    async ({ coin, entity_id, _max_items }) => {
+    async ({
+      coin,
+      entity_type,
+      start_date,
+      end_date,
+      interval,
+    }) => {
       try {
         const body: Record<string, unknown> = { coin };
-        if (entity_id) body.entity_id = entity_id;
-        return okList(
+        if (entity_type)
+          body.entity_type = entity_type;
+        if (start_date)
+          body.start_date = start_date;
+        if (end_date) body.end_date = end_date;
+        if (interval) body.interval = interval;
+        return ok(
           await apiPost(
             '/api/upgrade/v2/coin-treasuries/history/accumulated',
             body
-          ),
-          parseMax(_max_items, 100)
+          )
         );
       } catch (e) {
         return err(e);
@@ -491,14 +623,16 @@ export function registerMarketTools(server: McpServer) {
       coin: z
         .string()
         .describe('Coin ticker, e.g. BTC, ETH'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/coin-treasuries/latest/entities',
             { coin }
-          )
+          ),
+          parseMax(_max_items, 20)
         );
       } catch (e) {
         return err(e);
@@ -513,14 +647,16 @@ export function registerMarketTools(server: McpServer) {
       coin: z
         .string()
         .describe('Coin ticker, e.g. BTC, ETH'),
+      ...maxItemsParam,
     },
-    async ({ coin }) => {
+    async ({ coin, _max_items }) => {
       try {
-        return ok(
+        return okList(
           await apiGet(
             '/api/upgrade/v2/coin-treasuries/latest/history',
             { coin }
-          )
+          ),
+          parseMax(_max_items, 20)
         );
       } catch (e) {
         return err(e);

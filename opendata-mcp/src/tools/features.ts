@@ -10,21 +10,11 @@ export function registerFeatureTools(server: McpServer) {
   server.tool(
     'get_ls_ratio',
     'Get long/short ratio data',
-    {
-      coin: z
-        .string()
-        .describe('Coin key, e.g. bitcoin'),
-      period: z
-        .string()
-        .optional()
-        .describe('Period filter'),
-    },
-    async ({ coin, period }) => {
+    {},
+    async () => {
       try {
-        const params: Record<string, string> = { coin };
-        if (period) params.period = period;
         return ok(
-          await apiGet('/api/v2/mix/ls-ratio', params)
+          await apiGet('/api/v2/mix/ls-ratio')
         );
       } catch (e) {
         return err(e);
@@ -36,24 +26,34 @@ export function registerFeatureTools(server: McpServer) {
     'get_liquidation_data',
     'Get liquidation/forced-close data',
     {
-      coin: z
+      currency: z
         .string()
         .optional()
-        .describe('Coin key filter'),
-      period: z
+        .describe('Currency: cny or usd, default cny'),
+      type: z
         .string()
         .optional()
-        .describe('Period filter'),
-      ...maxItemsParam,
+        .describe(
+          'Query type: 1=by coin, 2=by platform'
+        ),
+      coinKey: z
+        .string()
+        .optional()
+        .describe('Coin key, used when type=1'),
+      marketKey: z
+        .string()
+        .optional()
+        .describe('Market key, used when type=2'),
     },
-    async ({ coin, period, _max_items }) => {
+    async ({ currency, type, coinKey, marketKey }) => {
       try {
         const params: Record<string, string> = {};
-        if (coin) params.coin = coin;
-        if (period) params.period = period;
-        return okList(
-          await apiGet('/api/v2/mix/liq', params),
-          parseMax(_max_items, 50)
+        if (currency) params.currency = currency;
+        if (type) params.type = type;
+        if (coinKey) params.coinKey = coinKey;
+        if (marketKey) params.marketKey = marketKey;
+        return ok(
+          await apiGet('/api/v2/mix/liq', params)
         );
       } catch (e) {
         return err(e);
@@ -78,7 +78,7 @@ export function registerFeatureTools(server: McpServer) {
           await apiGet('/api/v2/order/bigOrder', {
             symbol,
           }),
-          parseMax(_max_items, 50)
+          parseMax(_max_items, 20)
         );
       } catch (e) {
         return err(e);
@@ -103,7 +103,7 @@ export function registerFeatureTools(server: McpServer) {
           await apiGet('/api/v2/order/aggTrade', {
             symbol,
           }),
-          parseMax(_max_items, 50)
+          parseMax(_max_items, 30)
         );
       } catch (e) {
         return err(e);
@@ -166,7 +166,7 @@ export function registerFeatureTools(server: McpServer) {
             '/api/v2/signal/strategySignal',
             params
           ),
-          parseMax(_max_items, 50)
+          parseMax(_max_items, 20)
         );
       } catch (e) {
         return err(e);
@@ -177,10 +177,19 @@ export function registerFeatureTools(server: McpServer) {
   server.tool(
     'get_nav',
     'Get navigation bar data (market overview)',
-    {},
-    async () => {
+    {
+      lan: z
+        .string()
+        .optional()
+        .describe('Language: cn or en'),
+    },
+    async ({ lan }) => {
       try {
-        return ok(await apiGet('/api/v2/mix/nav'));
+        const params: Record<string, string> = {};
+        if (lan) params.lan = lan;
+        return ok(
+          await apiGet('/api/v2/mix/nav', params)
+        );
       } catch (e) {
         return err(e);
       }
@@ -244,23 +253,14 @@ export function registerFeatureTools(server: McpServer) {
   server.tool(
     'get_signal_alert',
     'Get signal alert data',
-    {
-      coin: z
-        .string()
-        .optional()
-        .describe('Coin key filter'),
-      ...maxItemsParam,
-    },
-    async ({ coin, _max_items }) => {
+    { ...maxItemsParam },
+    async ({ _max_items }) => {
       try {
-        const params: Record<string, string> = {};
-        if (coin) params.coin = coin;
         return okList(
           await apiGet(
-            '/api/v2/signal/signalAlert',
-            params
+            '/api/v2/signal/signalAlert'
           ),
-          parseMax(_max_items, 50)
+          parseMax(_max_items, 20)
         );
       } catch (e) {
         return err(e);
@@ -271,11 +271,23 @@ export function registerFeatureTools(server: McpServer) {
   server.tool(
     'get_signal_alert_config',
     'Get signal alert configuration options',
-    {},
-    async () => {
+    {
+      lan: z
+        .string()
+        .optional()
+        .describe('Language: cn or en'),
+      ...maxItemsParam,
+    },
+    async ({ lan, _max_items }) => {
       try {
-        return ok(
-          await apiGet('/api/v2/signal/signalAlertConf')
+        const params: Record<string, string> = {};
+        if (lan) params.lan = lan;
+        return okList(
+          await apiGet(
+            '/api/v2/signal/signalAlertConf',
+            params
+          ),
+          parseMax(_max_items, 20)
         );
       } catch (e) {
         return err(e);
@@ -307,13 +319,24 @@ export function registerFeatureTools(server: McpServer) {
     'add_signal_alert',
     'Add a new signal alert',
     {
-      params_json: z
+      subType: z
         .string()
-        .describe('Alert params as JSON string'),
+        .describe('Alert sub type'),
+      symbol: z
+        .string()
+        .describe('Trading pair symbol'),
+      remark: z
+        .string()
+        .optional()
+        .describe('Alert remark/note'),
     },
-    async ({ params_json }) => {
+    async ({ subType, symbol, remark }) => {
       try {
-        const params = JSON.parse(params_json);
+        const params: Record<string, string> = {
+          subType,
+          symbol,
+        };
+        if (remark) params.remark = remark;
         return ok(
           await apiGet(
             '/api/v2/signal/addSignalAlert',
@@ -379,15 +402,23 @@ export function registerFeatureTools(server: McpServer) {
 
   server.tool(
     'get_trading_pair',
-    'Get all trading pair info (no filter params)',
-    {},
-    async () => {
+    'Get trading pair info for a platform',
+    {
+      market: z
+        .string()
+        .describe(
+          'Platform key (from get_markets), e.g. okex, binance'
+        ),
+      ...maxItemsParam,
+    },
+    async ({ market, _max_items }) => {
       try {
         return okList(
           await apiGet(
-            '/api/v2/trading-pair/getTradingPair'
+            '/api/v2/trading-pair/getTradingPair',
+            { market }
           ),
-          50
+          parseMax(_max_items, 50)
         );
       } catch (e) {
         return err(e);

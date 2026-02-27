@@ -1,6 +1,6 @@
 {
   "name": "@aicoin/opendata-mcp",
-  "version": "1.0.17",
+  "version": "1.0.28",
   "description": "AiCoin OpenData MCP Server - crypto market data via AiCoin Open API",
   "main": "build/index.js",
   "type": "module",

@@ -35,8 +35,12 @@ function buildOptions(config: ExchangeConfig & { skipAuth?: boolean }): Record<s
 
   // Merge broker options + headers
   const broker = getBrokerOptions(id);
+  // Allow custom timeout via env (default 30s, ccxt default is only 10s)
+  const timeout = Number(process.env.EXCHANGE_TIMEOUT) || 30000;
+
   const opts: Record<string, unknown> = {
     enableRateLimit: true,
+    timeout,
     options: {
       ...broker.options,
       ...(marketType && marketType !== 'spot'
@@ -70,7 +74,8 @@ function buildOptions(config: ExchangeConfig & { skipAuth?: boolean }): Record<s
     } else if (proxyUrl.startsWith('https://')) {
       opts.httpsProxy = proxyUrl;
     } else if (proxyUrl.startsWith('http://')) {
-      opts.httpProxy = proxyUrl;
+      // Exchange APIs all use HTTPS, so route through httpsProxy
+      opts.httpsProxy = proxyUrl;
     }
   }
 

@@ -4,7 +4,7 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { apiGet, apiPost } from '../client/api.js';
-import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
+import { ok, okList, okListDeep, err, maxItemsParam, parseMax } from './utils.js';
 
 export function registerCoinTools(server: McpServer) {
   server.tool(
@@ -102,7 +102,8 @@ export function registerCoinTools(server: McpServer) {
       interval: z
         .string()
         .describe(
-          'Interval: 1m,3m,5m,15m,30m,1h,4h,6h,8h,12h,1d,1w'
+          'Interval: 5m,15m,30m,8h (recommended). ' +
+            '1h,4h,1d may return empty data'
         ),
       limit: z
         .string()
@@ -187,7 +188,10 @@ export function registerCoinTools(server: McpServer) {
         .describe('Symbol, e.g. btcswapusdt'),
       interval: z
         .string()
-        .describe('Interval: 1m,3m,5m,15m,30m,1h,4h,6h,8h,12h,1d,1w'),
+        .describe(
+          'Interval: 5m,15m,30m,8h (recommended). ' +
+            '1h,4h,1d may return empty data'
+        ),
       limit: z
         .string()
         .optional()
@@ -395,15 +399,16 @@ export function registerCoinTools(server: McpServer) {
           cycle,
         };
         if (leverage) params.leverage = leverage;
-        params.limit = limit ?? '100';
+        params.limit = limit ?? '5';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;
-        return okList(
+        return okListDeep(
           await apiGet(
             '/api/upgrade/v2/futures/estimated-liquidation/history',
             params
           ),
-          parseMax(_max_items, 100)
+          parseMax(_max_items, 5),
+          20
         );
       } catch (e) {
         return err(e);
@@ -480,7 +485,7 @@ export function registerCoinTools(server: McpServer) {
     async ({ key, amount, limit, start_time, end_time }) => {
       try {
         const params: Record<string, string> = { key };
-        if (amount) params.amount = amount;
+        params.amount = amount ?? '10000';
         params.limit = limit ?? '100';
         if (start_time) params.start_time = start_time;
         if (end_time) params.end_time = end_time;

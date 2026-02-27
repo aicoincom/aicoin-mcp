@@ -9,22 +9,26 @@ const DOMAIN =
 
 const TIMEOUT_MS = 30_000;
 
-const AUTH_GUIDE =
+const UPGRADE_GUIDE =
   '\n\n--- How to fix ---\n' +
-  '1. Visit https://www.aicoin.com/opendata\n' +
-  '2. Register/login and create an API key\n' +
+  'Your current API tier does not have access ' +
+  'to this endpoint. Please upgrade your plan.\n' +
+  '1. Visit https://www.aicoin.com/opendata ' +
+  'to purchase or upgrade\n' +
+  '2. Tiers: Basic(free) | Normal(¥99) | ' +
+  'Premium(¥299) | Professional(¥999)\n' +
   '3. Set AICOIN_ACCESS_KEY_ID and ' +
   'AICOIN_ACCESS_SECRET in your MCP config\n' +
   '4. Restart your MCP client';
 
-const UPGRADE_GUIDE =
+const AUTH_GUIDE =
   '\n\n--- How to fix ---\n' +
-  'Your current API tier lacks permission ' +
-  'for this endpoint.\n' +
-  '1. Visit https://www.aicoin.com/opendata\n' +
-  '2. Upgrade your API key tier\n' +
-  'Tiers: Basic(free) | Normal(¥99) | ' +
-  'Premium(¥299) | Professional(¥999)';
+  'An API key is required to access this endpoint.\n' +
+  '1. Visit https://www.aicoin.com/opendata ' +
+  'to register and create an API key\n' +
+  '2. Set AICOIN_ACCESS_KEY_ID and ' +
+  'AICOIN_ACCESS_SECRET in your MCP config\n' +
+  '3. Restart your MCP client';
 
 function throwApiError(
   status: number,
@@ -41,17 +45,47 @@ function throwApiError(
   throw new Error(msg);
 }
 
-function getCredentials() {
-  const key = process.env.AICOIN_ACCESS_KEY_ID;
-  const secret = process.env.AICOIN_ACCESS_SECRET;
-  if (!key || !secret) {
+/** Business-level error codes that mean "need auth/upgrade" */
+const BIZ_AUTH_CODES = new Set([403, 401]);
+
+/**
+ * Check parsed JSON for business-level errors.
+ * Some endpoints return HTTP 200 with
+ * { success: false, errorCode: 304 }.
+ */
+function checkBizError(
+  data: unknown,
+  path: string
+): void {
+  if (!data || typeof data !== 'object') return;
+  const obj = data as Record<string, unknown>;
+  if (obj.success === false) {
+    const code = Number(obj.errorCode ?? 0);
+    const errMsg =
+      String(obj.error || obj.message || 'Unknown error');
+    if (BIZ_AUTH_CODES.has(code)) {
+      throw new Error(
+        `Permission denied: ${errMsg}` +
+          UPGRADE_GUIDE +
+          `\nEndpoint: ${path}`
+      );
+    }
     throw new Error(
-      'Missing AICOIN_ACCESS_KEY_ID or ' +
-        'AICOIN_ACCESS_SECRET. ' +
-        'Register at https://www.aicoin.com/opendata' +
-        ' to get your API credentials.'
+      `API error (${code}): ${errMsg}\nEndpoint: ${path}`
     );
   }
+}
+
+/* Built-in free-tier key (IP-rate-limited) */
+const FREE_KEY = 'ronJ8uI0Yj2soAfGVs5H1YALUIINbE22';
+const FREE_SECRET =
+  'CWHZcH2us1CLSE7grroR1TpS0Z1JxTwU';
+
+function getCredentials() {
+  const key =
+    process.env.AICOIN_ACCESS_KEY_ID || FREE_KEY;
+  const secret =
+    process.env.AICOIN_ACCESS_SECRET || FREE_SECRET;
   return { key, secret };
 }
 
@@ -82,9 +116,12 @@ export async function apiGet(
   }
   const text = await res.text();
   try {
-    return JSON.parse(text);
-  } catch {
-    return { raw: text };
+    const json = JSON.parse(text);
+    checkBizError(json, path);
+    return json;
+  } catch (e) {
+    if (e instanceof SyntaxError) return { raw: text };
+    throw e;
   }
 }
 
@@ -114,8 +151,11 @@ export async function apiPost(
   }
   const txt = await res.text();
   try {
-    return JSON.parse(txt);
-  } catch {
-    return { raw: txt };
+    const json = JSON.parse(txt);
+    checkBizError(json, path);
+    return json;
+  } catch (e) {
+    if (e instanceof SyntaxError) return { raw: txt };
+    throw e;
   }
 }
