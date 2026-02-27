@@ -21,6 +21,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.8.0",
     "ccxt": "^4.4.71",
+    "socks-proxy-agent": "^8.0.5",
     "zod": "^3.22.2"
   },
   "devDependencies": {

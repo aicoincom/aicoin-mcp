@@ -66,15 +66,26 @@ export function registerPrivateTools(server: McpServer) {
         .positive()
         .optional()
         .describe('Limit price (required for limit orders)'),
+      pos_side: z
+        .enum(['long', 'short'])
+        .optional()
+        .describe('Position side for hedge mode (okx): long/short'),
+      margin_mode: z
+        .enum(['cross', 'isolated'])
+        .optional()
+        .describe('Margin mode for derivatives (okx): cross/isolated'),
       market_type: marketTypeSchema,
     },
     async ({
-      exchange, symbol, type, side, amount, price, market_type,
+      exchange, symbol, type, side, amount, price, pos_side, margin_mode, market_type,
     }) => {
       try {
         const ex = getExchange(exchange, market_type);
+        const params: Record<string, unknown> = {};
+        if (pos_side) params.posSide = pos_side;
+        if (margin_mode) params.tdMode = margin_mode;
         const order = await ex.createOrder(
-          symbol, type, side, amount, price
+          symbol, type, side, amount, price, params
         );
         return ok(order);
       } catch (e) {
