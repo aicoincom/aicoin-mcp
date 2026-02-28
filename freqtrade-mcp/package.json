@@ -1,0 +1,46 @@
+{
+  "name": "@aicoin/freqtrade-mcp",
+  "version": "0.1.0",
+  "description": "AiCoin Freqtrade MCP Server - AI-powered Freqtrade bot management",
+  "main": "build/index.js",
+  "type": "module",
+  "bin": {
+    "aicoin-freqtrade-mcp": "./build/index.js"
+  },
+  "files": [
+    "build",
+    "python",
+    "README.md",
+    ".env.example"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --outDir build --clean",
+    "start": "node build/index.js",
+    "dev": "tsup src/index.ts --format esm --outDir build --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "mcp",
+    "aicoin",
+    "freqtrade",
+    "crypto",
+    "trading",
+    "backtesting"
+  ],
+  "license": "MIT"
+}
