@@ -72,8 +72,19 @@ export function registerPrivateTools(server: McpServer) {
         }
         const ex = getExchange(exchange, market_type);
         const params: Record<string, unknown> = {};
-        if (pos_side) params.posSide = pos_side;
-        if (margin_mode) params.tdMode = margin_mode;
+        const isBinance = exchange?.toLowerCase().startsWith("binance");
+        if (pos_side) {
+          if (isBinance) {
+            params.positionSide = pos_side.toUpperCase();
+          } else {
+            params.posSide = pos_side;
+          }
+        }
+        if (margin_mode) {
+          if (!isBinance) {
+            params.tdMode = margin_mode;
+          }
+        }
         const order = await ex.createOrder(
           symbol, type, side, amount, price, params
         );
