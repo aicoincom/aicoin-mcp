@@ -1119,4 +1119,104 @@ export function registerHyperliquidTools(
       }
     }
   );
+
+  server.tool(
+    'hl_get_oi_summary',
+    'Get Hyperliquid open interest summary (positionCount, longPv, shortPv, totalPv, avgPv)',
+    {},
+    async () => {
+      try {
+        return ok(
+          await apiGet('/api/upgrade/v2/hl/open-interest/summary')
+        );
+      } catch (e) {
+        return err(e);
+      }
+    }
+  );
+
+  server.tool(
+    'hl_get_oi_top_coins',
+    'Get top coins by open interest on Hyperliquid, sorted by totalPv',
+    {
+      limit: z
+        .string()
+        .optional()
+        .describe('Number of coins to return'),
+      ...maxItemsParam,
+    },
+    async ({ limit, _max_items }) => {
+      try {
+        const params: Record<string, string> = {};
+        if (limit) params.limit = limit;
+        return okList(
+          await apiGet(
+            '/api/upgrade/v2/hl/open-interest/top-coins',
+            params
+          ),
+          parseMax(_max_items, 50)
+        );
+      } catch (e) {
+        return err(e);
+      }
+    }
+  );
+
+  server.tool(
+    'hl_get_oi_history',
+    'Get open interest history for a coin on Hyperliquid (positionCount, longCount, longPv, totalPv, avgPv)',
+    {
+      coin: z
+        .string()
+        .describe('Coin, e.g. BTC, ETH'),
+      interval: z
+        .string()
+        .optional()
+        .describe('Time window, e.g. 4h, 1d'),
+      ...maxItemsParam,
+    },
+    async ({ coin, interval, _max_items }) => {
+      try {
+        const params: Record<string, string> = {};
+        if (interval) params.interval = interval;
+        return okList(
+          await apiGet(
+            `/api/upgrade/v2/hl/open-interest/history/${coin}`,
+            params
+          ),
+          parseMax(_max_items, 50)
+        );
+      } catch (e) {
+        return err(e);
+      }
+    }
+  );
+
+  server.tool(
+    'hl_get_accumulated_taker_delta',
+    'Get accumulated taker buy/sell delta for a coin on Hyperliquid (szDelta, valDelta)',
+    {
+      coin: z
+        .string()
+        .describe('Coin, e.g. BTC, ETH'),
+      interval: z
+        .string()
+        .optional()
+        .describe('Time window, e.g. 15m, 4h, 1d'),
+    },
+    async ({ coin, interval }) => {
+      try {
+        const params: Record<string, string> = {};
+        if (interval) params.interval = interval;
+        return ok(
+          await apiGet(
+            `/api/upgrade/v2/hl/accumulated-taker-delta/${coin}`,
+            params
+          )
+        );
+      } catch (e) {
+        return err(e);
+      }
+    }
+  );
 }

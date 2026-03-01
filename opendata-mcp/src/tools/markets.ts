@@ -693,7 +693,7 @@ export function registerMarketTools(server: McpServer) {
       dbKey: z
         .string()
         .describe(
-          'Trading pair key, e.g. btcusdt:binance, ethusdt:okex'
+          'Futures trading pair key, e.g. btcswapusdt:binance, ethswapusdt:okex'
         ),
       size: z
         .string()
