@@ -176,31 +176,16 @@ export function registerFeatureTools(server: McpServer) {
     }
   );
 
-  // #29 signal_manage
+  // #29 signal_manage (add not supported by backend yet, only delete)
   server.tool(
     'signal_manage',
-    'Manage signal alerts.\n• add — create new alert. Requires: subType + symbol\n• delete — remove alert. Requires: id',
+    'Delete a signal alert. Requires: id',
     {
-      action: z.enum(['add', 'delete']).describe('add: create new alert; delete: remove alert by ID'),
-      id: z.string().optional().describe('REQUIRED for delete. Signal alert ID'),
-      subType: z.string().optional().describe('REQUIRED for add. Alert sub type'),
-      symbol: z.string().optional().describe('REQUIRED for add. Trading pair symbol'),
-      remark: z.string().optional().describe('For add: alert remark/note'),
+      id: z.string().describe('REQUIRED. Signal alert ID to delete'),
     },
-    async ({ action, id, subType, symbol, remark }) => {
+    async ({ id }) => {
       try {
-        switch (action) {
-          case 'add': {
-            if (!subType || !symbol) return err('subType and symbol are required for add action');
-            const params: Record<string, string> = { subType, symbol };
-            if (remark) params.remark = remark;
-            return ok(await apiGet('/api/v2/signal/addSignalAlert', params));
-          }
-          case 'delete': {
-            if (!id) return err('id is required for delete action');
-            return ok(await apiGet('/api/v2/signal/delSignalAlert', { id }));
-          }
-        }
+        return ok(await apiGet('/api/v2/signal/delSignalAlert', { id }));
       } catch (e) {
         return err(e);
       }

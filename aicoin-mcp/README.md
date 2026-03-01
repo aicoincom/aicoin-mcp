@@ -94,7 +94,7 @@ Supported exchanges: `binance` `binanceusdm` `binancecoinm` `okx` `bybit` `bitge
 | `order_flow` | Whale order tracking, aggregated large trades |
 | `trading_pair` | Trading pair tickers, pairs by platform, filtered search |
 | `signal_data` | Win-rate strategy signals, alerts, abnormal price movements |
-| `signal_manage` | Create and delete signal alerts |
+| `signal_manage` | Delete signal alerts |
 | `news` | Paginated news articles, full article detail, RSS feed |
 | `flash` | Flash news, industry flashes, exchange listing announcements |
 | `hl_ticker` | Hyperliquid tickers (single coin or all) |
