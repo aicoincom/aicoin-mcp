@@ -84,6 +84,21 @@ class FreqtradeClient {
             `Authentication failed (401). Check FREQTRADE_USERNAME and FREQTRADE_PASSWORD.`
           );
         }
+        if (res.status === 502) {
+          throw new Error(
+            `Freqtrade is not reachable (502 Bad Gateway). ` +
+              `Make sure Freqtrade is running at ${this.serverUrl}.`
+          );
+        }
+        if (res.status === 503) {
+          throw new Error(
+            `Bot is not in the correct state (503). ` +
+              `This usually means the bot was started in webserver-only mode without a strategy. ` +
+              `Use ft_info action=config to check the current state. ` +
+              `If "state" is empty and "strategy" is null, restart Freqtrade with a strategy: ` +
+              `freqtrade trade --strategy <name> --config user_data/config.json`
+          );
+        }
         throw new Error(
           `Freqtrade API error ${res.status}: ${text || res.statusText}`
         );

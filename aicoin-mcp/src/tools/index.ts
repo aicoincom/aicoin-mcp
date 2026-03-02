@@ -9,6 +9,8 @@ import { registerMarketTools } from './markets.js';
 import { registerFeatureTools } from './features.js';
 import { registerHyperliquidTools } from './hyperliquid.js';
 import { registerGuideTools } from './guide.js';
+import { registerFreqtradeTools } from './freqtrade.js';
+import { registerFreqtradeDevTools } from './freqtrade-dev.js';
 
 export function registerAllTools(server: McpServer) {
   registerTradeTools(server);
@@ -18,4 +20,6 @@ export function registerAllTools(server: McpServer) {
   registerFeatureTools(server);
   registerHyperliquidTools(server);
   registerGuideTools(server);
+  registerFreqtradeTools(server);
+  registerFreqtradeDevTools(server);
 }

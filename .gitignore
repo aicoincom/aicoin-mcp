@@ -3,3 +3,4 @@ build/
 .env
 *.log
 .DS_Store
+.mcp.json
