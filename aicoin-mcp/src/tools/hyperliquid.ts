@@ -84,15 +84,17 @@ export function registerHyperliquidTools(server: McpServer) {
   // #32 hl_liquidation
   server.tool(
     'hl_liquidation',
-    'Hyperliquid liquidation data. All actions support optional coin filter.\n• history — liquidation history\n• stats — aggregate stats\n• stats_by_coin — per-coin stats\n• top_positions — top liquidated positions',
+    'Hyperliquid liquidation data. All actions support optional coin filter.\n• history — liquidation history\n• stats — aggregate stats\n• stats_by_coin — per-coin stats\n• top_positions — top liquidated positions. Requires: coin + interval',
     {
       action: z.enum(['history', 'stats', 'stats_by_coin', 'top_positions']).describe(
         'history: liquidation history; stats: aggregate stats; stats_by_coin: per-coin stats; top_positions: top liquidated'
       ),
-      coin: z.string().optional().describe('Optional. Coin filter in uppercase, e.g. BTC'),
+      coin: z.string().optional().describe('Optional. Coin filter in uppercase, e.g. BTC. REQUIRED for top_positions'),
+      interval: z.string().optional().describe('REQUIRED for top_positions. Interval: 4h, 1d'),
+      limit: z.string().optional().describe('Optional for top_positions. Max results'),
       ...maxItemsParam,
     },
-    async ({ action, coin, _max_items }) => {
+    async ({ action, coin, interval, limit, _max_items }) => {
       try {
         const params: Record<string, string> = {};
         if (coin) params.coin = coin;
@@ -106,11 +108,16 @@ export function registerHyperliquidTools(server: McpServer) {
             return ok(await apiGet('/api/upgrade/v2/hl/liquidations/stat'));
           case 'stats_by_coin':
             return ok(await apiGet('/api/upgrade/v2/hl/liquidations/stat-by-coin', params));
-          case 'top_positions':
+          case 'top_positions': {
+            if (!coin) return err('coin is required for top_positions action');
+            if (!interval) return err('interval is required for top_positions action (e.g. "4h", "1d")');
+            const tpParams: Record<string, string> = { coin, interval };
+            if (limit) tpParams.limit = limit;
             return okList(
-              await apiGet('/api/upgrade/v2/hl/liquidations/top-positions', params),
+              await apiGet('/api/upgrade/v2/hl/liquidations/top-positions', tpParams),
               parseMax(_max_items, 50)
             );
+          }
         }
       } catch (e) {
         return err(e);
@@ -259,7 +266,7 @@ export function registerHyperliquidTools(server: McpServer) {
   // #36 hl_fills
   server.tool(
     'hl_fills',
-    'Hyperliquid trade fills.\n• by_address — fills by wallet. Requires: address\n• by_oid — fills by order ID. Requires: oid\n• by_twapid — fills by TWAP ID. Requires: twapid\n• top_trades — top trades, no required params',
+    'Hyperliquid trade fills.\n• by_address — fills by wallet. Requires: address\n• by_oid — fills by order ID. Requires: oid\n• by_twapid — fills by TWAP ID. Requires: twapid\n• top_trades — top trades. Requires: interval + coin',
     {
       action: z.enum(['by_address', 'by_oid', 'by_twapid', 'top_trades']).describe(
         'by_address: fills by wallet; by_oid: fills by order ID; by_twapid: fills by TWAP ID; top_trades: top trades'
@@ -267,8 +274,8 @@ export function registerHyperliquidTools(server: McpServer) {
       address: z.string().optional().describe('REQUIRED for by_address. Wallet address (0x...)'),
       oid: z.string().optional().describe('REQUIRED for by_oid. Order ID'),
       twapid: z.string().optional().describe('REQUIRED for by_twapid. TWAP ID'),
-      coin: z.string().optional().describe('Optional. Coin filter in uppercase, e.g. BTC'),
-      interval: z.string().optional().describe('Optional for top_trades. Interval: 4h, 1d'),
+      coin: z.string().optional().describe('Optional. Coin filter in uppercase, e.g. BTC. REQUIRED for top_trades'),
+      interval: z.string().optional().describe('REQUIRED for top_trades. Interval: 4h, 1d'),
       limit: z.string().optional().describe('Max results'),
       ...maxItemsParam,
     },
@@ -294,9 +301,9 @@ export function registerHyperliquidTools(server: McpServer) {
             return ok(await apiGet(`/api/upgrade/v2/hl/fills/twapid/${twapid}`));
           }
           case 'top_trades': {
-            const params: Record<string, string> = {};
-            if (coin) params.coin = coin;
-            if (interval) params.interval = interval;
+            if (!coin) return err('coin is required for top_trades action');
+            if (!interval) return err('interval is required for top_trades action (e.g. "4h", "1d")');
+            const params: Record<string, string> = { coin, interval };
             if (limit) params.limit = limit;
             return okList(
               await apiGet('/api/upgrade/v2/hl/fills/top-trades', params),
@@ -450,9 +457,10 @@ export function registerHyperliquidTools(server: McpServer) {
       window: z.string().optional().describe('REQUIRED for portfolio ONLY. Time window: "day", "week", "month", "allTime". NOT used by max_drawdown/net_flow'),
       period: z.string().optional().describe('Optional for pnls. Period in days: 0=allTime, 1, 7, 30'),
       days: z.string().optional().describe('REQUIRED for max_drawdown, net_flow. Number of days: 7, 30, 90. NOT used by portfolio'),
+      scope: z.string().optional().describe('Optional for max_drawdown. Scope: "perp" (default), "all"'),
       ...maxItemsParam,
     },
-    async ({ action, address, window: win, period, days, _max_items }) => {
+    async ({ action, address, window: win, period, days, scope, _max_items }) => {
       try {
         switch (action) {
           case 'portfolio': {
@@ -472,7 +480,8 @@ export function registerHyperliquidTools(server: McpServer) {
           }
           case 'max_drawdown': {
             if (!days) return err('days is required for max_drawdown action');
-            return ok(await apiGet(`/api/upgrade/v2/hl/max-drawdown/${address}`, { days }));
+            const params: Record<string, string> = { days, scope: scope || 'perp' };
+            return ok(await apiGet(`/api/upgrade/v2/hl/max-drawdown/${address}`, params));
           }
           case 'net_flow': {
             if (!days) return err('days is required for net_flow action');
