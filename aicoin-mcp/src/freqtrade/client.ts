@@ -91,6 +91,25 @@ class FreqtradeClient {
           );
         }
         if (res.status === 503) {
+          const endpoint = url.pathname.replace('/api/v1/', '');
+          const devEndpoints = [
+            'strategies',
+            'strategy/',
+            'available_pairs',
+            'backtest',
+            'pair_history',
+            'freqaimodels',
+          ];
+          const isDev = devEndpoints.some((e) => endpoint.startsWith(e));
+          if (isDev) {
+            throw new Error(
+              `This endpoint requires webserver mode (503). ` +
+                `Freqtrade separates "trade" and "webserver" modes: ` +
+                `strategy/backtest/candle-analysis endpoints are only available in webserver mode. ` +
+                `To use this feature, restart Freqtrade with: freqtrade webserver --config user_data/config.json. ` +
+                `Note: webserver mode and trade mode cannot run simultaneously.`
+            );
+          }
           throw new Error(
             `Bot is not in the correct state (503). ` +
               `This usually means the bot was started in webserver-only mode without a strategy. ` +

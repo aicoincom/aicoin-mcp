@@ -9,7 +9,7 @@ import { ok, err } from './utils.js';
 import { generateBasicStrategy } from '../strategy-templates/base.js';
 import { generateAiCoinStrategy } from '../strategy-templates/aicoin-data.js';
 import { generateRsiBbStrategy } from '../strategy-templates/rsi-bb.js';
-import { readFile, writeFile, access, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, readdir, access, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -46,7 +46,8 @@ export function registerFreqtradeDevTools(server: McpServer) {
       '- abort: abort running backtest\n' +
       '- delete: clear backtest state\n' +
       '- history: list all backtest history entries\n' +
-      '- history_result: get specific result (requires filename & strategy)',
+      '- history_result: get specific result (requires filename & strategy)\n' +
+      'NOTE: Requires Freqtrade in webserver mode (freqtrade webserver). Not available in trade mode.',
     {
       action: z
         .enum(['start', 'status', 'abort', 'delete', 'history', 'history_result'])
@@ -140,7 +141,8 @@ export function registerFreqtradeDevTools(server: McpServer) {
     'Freqtrade K-line / candle data.\n' +
       '- live: live candlestick data (pair + timeframe required)\n' +
       '- analyzed: historical data with strategy indicators (pair + timeframe + strategy required)\n' +
-      '- available: list available pairs with downloaded data',
+      '- available: list available pairs with downloaded data\n' +
+      'NOTE: "analyzed" and "available" require Freqtrade in webserver mode. "live" works in trade mode.',
     {
       action: z
         .enum(['live', 'analyzed', 'available'])
@@ -276,13 +278,30 @@ export function registerFreqtradeDevTools(server: McpServer) {
     },
     async ({ action, strategy, name, template, timeframe, stoploss, roi, overwrite }) => {
       try {
-        const client = getFreqtradeClient();
         switch (action) {
-          case 'list':
-            return ok(await client.strategies());
+          case 'list': {
+            const userDataPath = getUserDataPath();
+            const strategiesDir = join(userDataPath, 'strategies');
+            try {
+              const files = await readdir(strategiesDir);
+              const strategies = files
+                .filter((f) => f.endsWith('.py') && !f.startsWith('__') && f !== 'aicoin_provider.py')
+                .map((f) => f.replace(/\.py$/, ''));
+              return ok({ strategies });
+            } catch {
+              return ok({ strategies: [], note: `No strategies directory found at ${strategiesDir}` });
+            }
+          }
           case 'get': {
             if (!strategy) return err('strategy name is required for get action');
-            return ok(await client.strategy(strategy));
+            const userDataPath = getUserDataPath();
+            const filePath = join(userDataPath, 'strategies', `${strategy}.py`);
+            try {
+              const code = await readFile(filePath, 'utf-8');
+              return ok({ strategy, code });
+            } catch {
+              return err(`Strategy file not found: ${filePath}`);
+            }
           }
           case 'create': {
             if (!name) return err('name is required for create action');
