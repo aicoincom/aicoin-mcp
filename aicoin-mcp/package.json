@@ -1,6 +1,6 @@
 {
   "name": "@aicoin/aicoin-mcp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "AiCoin MCP Server - unified crypto market data & trading via AiCoin API + CCXT",
   "main": "build/index.js",
   "type": "module",

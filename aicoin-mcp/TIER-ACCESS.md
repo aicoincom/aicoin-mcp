@@ -6,15 +6,15 @@
 
 ## Summary
 
-| Tier | 价格 | 频率限制 | ✅ 可访问 | 🔒 需升级 | ⚠️ 后端bug | 🔘 无法测试 |
-|------|------|---------|:---:|:---:|:---:|:---:|
-| Free (内置) | 免费 | 10 req/min | 9 | 92 | 2 | 1 |
-| Basic (基础版) | 免费 | 10 req/min | 23 | 77 | 3 | 1 |
-| Normal (标准版) | ¥99/月 | 60 req/min | 68 | 32 | 3 | 1 |
-| Premium (高级版) | ¥299/月 | 120 req/min | 76 | 24 | 3 | 1 |
-| Professional (专业版) | ¥999/月 | 300 req/min | 100 | 0 | 3 | 1 |
+| Tier | 价格 | 频率限制 | ✅ 可访问 | 🔒 需升级 | 🔘 无法测试 |
+|------|------|---------|:---:|:---:|:---:|
+| Free (内置) | 免费 | 10 req/min | 9 | 94 | 1 |
+| Basic (基础版) | 免费 | 10 req/min | 24 | 79 | 1 |
+| Normal (标准版) | ¥99/月 | 60 req/min | 71 | 32 | 1 |
+| Premium (高级版) | ¥299/月 | 120 req/min | 79 | 24 | 1 |
+| Professional (专业版) | ¥999/月 | 300 req/min | 103 | 0 | 1 |
 
-> **Professional 全部端点均可访问**。3 个 ⚠️ 是后端 500 bug（非权限），1 个 🔘 是测试用假ID无法判断。
+> **Professional 全部端点均可访问**。1 个 🔘 是测试用假ID无法判断（news.detail）。
 
 ## Legend
 
@@ -22,7 +22,6 @@
 |:---:|------|
 | ✅ | 可访问（HTTP 200 成功 或 400 参数错误） |
 | 🔒 | 需升级（HTTP 403 或 业务码 403/304） |
-| ⚠️ | 后端错误（HTTP 500，非权限问题） |
 | 🔘 | 无法测试（需要真实数据才能判断） |
 
 ---
@@ -158,7 +157,7 @@
 | 66 | hl_liquidation | history | /api/upgrade/v2/hl/liquidations/history | 🔒 | 🔒 | ✅ | ✅ | ✅ |
 | 67 | hl_liquidation | stats | /api/upgrade/v2/hl/liquidations/stat | 🔒 | 🔒 | ✅ | ✅ | ✅ |
 | 68 | hl_liquidation | stats_by_coin | /api/upgrade/v2/hl/liquidations/stat-by-coin | 🔒 | 🔒 | ✅ | ✅ | ✅ |
-| 69 | hl_liquidation | top_positions | /api/upgrade/v2/hl/liquidations/top-positions | 🔒 | 🔒 | ⚠️ | ⚠️ | ⚠️ |
+| 69 | hl_liquidation | top_positions | /api/upgrade/v2/hl/liquidations/top-positions | 🔒 | 🔒 | ✅ | ✅ | ✅ |
 | 70 | hl_open_interest | summary | /api/upgrade/v2/hl/open-interest/summary | 🔒 | 🔒 | 🔒 | ✅ | ✅ |
 | 71 | hl_open_interest | top_coins | /api/upgrade/v2/hl/open-interest/top-coins | 🔒 | 🔒 | 🔒 | ✅ | ✅ |
 | 72 | hl_open_interest | history | /api/upgrade/v2/hl/open-interest/history/{coin} | 🔒 | 🔒 | 🔒 | 🔒 | ✅ |
@@ -188,7 +187,7 @@
 | 81 | hl_fills | by_address | /api/upgrade/v2/hl/fills/{addr} | 🔒 | 🔒 | ✅ | ✅ | ✅ |
 | 82 | hl_fills | by_oid | /api/upgrade/v2/hl/fills/oid/{oid} | 🔒 | 🔒 | ✅ | ✅ | ✅ |
 | 83 | hl_fills | by_twapid | /api/upgrade/v2/hl/fills/twapid/{twapid} | 🔒 | 🔒 | ✅ | ✅ | ✅ |
-| 84 | hl_fills | top_trades | /api/upgrade/v2/hl/fills/top-trades | 🔒 | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
+| 84 | hl_fills | top_trades | /api/upgrade/v2/hl/fills/top-trades | 🔒 | ✅ | ✅ | ✅ | ✅ |
 
 ### Hyperliquid — Orders (Upgrade)
 
@@ -221,7 +220,7 @@
 |--:|------|--------|----------|:---:|:---:|:---:|:---:|:---:|
 | 98 | hl_portfolio | portfolio | /api/upgrade/v2/hl/portfolio/{addr}/{window} | 🔒 | 🔒 | ✅ | ✅ | ✅ |
 | 99 | hl_portfolio | pnls | /api/upgrade/v2/hl/pnls/{addr} | 🔒 | 🔒 | ✅ | ✅ | ✅ |
-| 100 | hl_portfolio | max_drawdown | /api/upgrade/v2/hl/max-drawdown/{addr} | 🔒 | 🔒 | ⚠️ | ⚠️ | ⚠️ |
+| 100 | hl_portfolio | max_drawdown | /api/upgrade/v2/hl/max-drawdown/{addr} | 🔒 | 🔒 | ✅ | ✅ | ✅ |
 | 101 | hl_portfolio | net_flow | /api/upgrade/v2/hl/ledger-updates/net-flow/{addr} | 🔒 | 🔒 | ✅ | ✅ | ✅ |
 
 ### Hyperliquid — Advanced (Upgrade)
@@ -234,16 +233,6 @@
 
 ---
 
-## Backend Errors (⚠️)
-
-以下 3 个端点返回 HTTP 500，是后端 bug，非权限问题：
-
-| # | Endpoint | 说明 |
-|--:|----------|------|
-| 69 | hl_liquidation.top_positions | 所有有权限的 tier 均返回 500 |
-| 84 | hl_fills.top_trades | 所有有权限的 tier 均返回 500 |
-| 100 | hl_portfolio.max_drawdown | 所有有权限的 tier 均返回 500 |
-
 ## Notes
 
 - **Key 映射**：`api_key` = AccessKeyId（公钥），`access_key` = HMAC Secret（签名密钥）
@@ -251,3 +240,4 @@
 - **guide 工具** 返回静态文本，无 API 调用，未纳入测试
 - **#16 news.detail**：假 ID 测试时后端对无效 ID 返回 errorCode 403，无法区分权限与参数错误
 - **#92-97 hl_position**：Premium 测试偶发限流（normal ✅, professional ✅），已手动修正为 ✅
+- **#69, #84, #100**：v1.0.3 时因测试缺少必传参数导致 500，v1.0.4 已修复（补充 `interval`/`coin`/`scope` 参数）
