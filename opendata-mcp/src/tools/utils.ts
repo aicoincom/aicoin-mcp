@@ -1,5 +1,6 @@
 /**
  * Shared MCP tool response helpers
+ * Merged from opendata-mcp (enhanced) + trade-mcp (okList with total/returned)
  */
 import { z } from 'zod';
 
@@ -264,6 +265,18 @@ export function okListDeep(
     }
   }
   return ok(data);
+}
+
+/** Trade-mcp style list response (for ccxt array results) */
+export function okTradeList(data: unknown[], max = 200) {
+  const truncated = data.length > max;
+  const items = truncated ? data.slice(0, max) : data;
+  return ok({
+    total: data.length,
+    returned: items.length,
+    truncated,
+    data: items,
+  });
 }
 
 export function err(e: unknown) {

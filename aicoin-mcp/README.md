@@ -1,18 +1,37 @@
 # @aicoin/aicoin-mcp
 
-AiCoin MCP Server — connect any AI assistant to real-time crypto market data and exchange trading.
+AiCoin MCP Server — real-time crypto market data & exchange trading for any AI assistant.
 
-**41 tools** covering market data, K-lines, funding rates, liquidations, order flow, Hyperliquid analytics, news, and multi-exchange trading via CCXT.
+**41 tools** · Market data · K-lines · Funding rates · Liquidations · Order flow · Hyperliquid analytics · News · Multi-exchange trading via CCXT
 
 ## Quick Start
 
-### 1. Get your API Key
+Works out of the box — a free API key is built in (10 req/min, IP rate-limited).
 
-Visit [aicoin.com/opendata](https://www.aicoin.com/opendata) to create a free API key.
+### Claude Code
 
-### 2. Add to your MCP client
+```bash
+claude mcp add aicoin -- npx -y @aicoin/aicoin-mcp
+```
 
-**Claude Desktop / Cursor / Windsurf** — edit your MCP config:
+### Other Clients
+
+Add to your MCP config (`.mcp.json`, `claude_desktop_config.json`, etc.):
+
+```json
+{
+  "mcpServers": {
+    "aicoin": {
+      "command": "npx",
+      "args": ["-y", "@aicoin/aicoin-mcp"]
+    }
+  }
+}
+```
+
+### Use Your Own API Key (Optional)
+
+For higher rate limits, get a key at [aicoin.com/opendata](https://www.aicoin.com/opendata) and add env vars:
 
 ```json
 {
@@ -29,49 +48,26 @@ Visit [aicoin.com/opendata](https://www.aicoin.com/opendata) to create a free AP
 }
 ```
 
-**Claude Code** — add to `.mcp.json` in your project root, same format as above.
+## Enable Exchange Trading (Optional)
 
-That's it. Your AI assistant now has access to 41 crypto data tools.
-
-### 3. (Optional) Enable exchange trading
-
-To place orders, check balances, etc., add your exchange API key:
+To place orders, check balances, and manage positions, add your exchange API key:
 
 ```json
 {
-  "mcpServers": {
-    "aicoin": {
-      "command": "npx",
-      "args": ["-y", "@aicoin/aicoin-mcp"],
-      "env": {
-        "AICOIN_ACCESS_KEY_ID": "your-key-id",
-        "AICOIN_ACCESS_SECRET": "your-secret",
-        "DEFAULT_EXCHANGE": "okx",
-        "OKX_API_KEY": "your-exchange-api-key",
-        "OKX_SECRET": "your-exchange-secret",
-        "OKX_PASSPHRASE": "your-passphrase"
-      }
-    }
+  "env": {
+    "AICOIN_ACCESS_KEY_ID": "your-key-id",
+    "AICOIN_ACCESS_SECRET": "your-secret",
+    "DEFAULT_EXCHANGE": "okx",
+    "OKX_API_KEY": "your-exchange-key",
+    "OKX_SECRET": "your-exchange-secret",
+    "OKX_PASSPHRASE": "your-passphrase"
   }
 }
 ```
 
 Exchange API keys are stored locally only and never sent to AiCoin servers.
 
-## Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `AICOIN_ACCESS_KEY_ID` | No | AiCoin API key (free tier built-in, rate-limited) |
-| `AICOIN_ACCESS_SECRET` | No | AiCoin API secret |
-| `DEFAULT_EXCHANGE` | No | Default exchange for trading (default: `binance`) |
-| `{EXCHANGE}_API_KEY` | For trading | Exchange API key |
-| `{EXCHANGE}_SECRET` | For trading | Exchange API secret |
-| `{EXCHANGE}_PASSPHRASE` | OKX/Bitget | Exchange passphrase |
-| `USE_PROXY` | No | Enable proxy (`true`/`false`) |
-| `PROXY_URL` | No | Proxy URL, e.g. `http://127.0.0.1:7890` |
-
-Supported exchanges: `binance` `binanceusdm` `binancecoinm` `okx` `bybit` `bitget` `gate` `huobi` `hyperliquid`
+**Supported exchanges:** `binance` `binanceusdm` `binancecoinm` `okx` `bybit` `bitget` `gate` `huobi` `hyperliquid`
 
 ## Tools
 
@@ -110,7 +106,7 @@ Supported exchanges: `binance` `binanceusdm` `binancecoinm` `okx` `bybit` `bitge
 | `hl_advanced` | HL generic info API, smart money finder, trader discovery |
 | `guide` | Setup guides for API key, tier upgrade, exchange trading |
 
-### Exchange Trading (11 tools, requires exchange API key)
+### Exchange Trading (11 tools)
 
 | Tool | What it does |
 |------|-------------|
@@ -125,6 +121,19 @@ Supported exchanges: `binance` `binanceusdm` `binancecoinm` `okx` `bybit` `bitge
 | `cancel_order` | Cancel single or all open orders |
 | `set_trading_config` | Set leverage and margin mode |
 | `transfer` | Transfer funds between accounts (spot/futures) |
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `AICOIN_ACCESS_KEY_ID` | No | AiCoin API key (free tier built-in, rate-limited) |
+| `AICOIN_ACCESS_SECRET` | No | AiCoin API secret |
+| `DEFAULT_EXCHANGE` | No | Default exchange for trading (default: `binance`) |
+| `{EXCHANGE}_API_KEY` | For trading | Exchange API key |
+| `{EXCHANGE}_SECRET` | For trading | Exchange API secret |
+| `{EXCHANGE}_PASSPHRASE` | OKX/Bitget | Exchange passphrase |
+| `USE_PROXY` | No | Enable proxy (`true`/`false`) |
+| `PROXY_URL` | No | Proxy URL, e.g. `http://127.0.0.1:7890` |
 
 ## API Tiers
 

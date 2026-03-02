@@ -46,7 +46,7 @@ function throwApiError(
 }
 
 /** Business-level error codes that mean "need auth/upgrade" */
-const BIZ_AUTH_CODES = new Set([403, 401]);
+const BIZ_AUTH_CODES = new Set([403, 401, 304]);
 
 /**
  * Check parsed JSON for business-level errors.

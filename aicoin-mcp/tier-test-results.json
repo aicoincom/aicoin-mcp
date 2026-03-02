@@ -1,0 +1,3734 @@
+{
+  "professional": [
+    {
+      "tool": "coin_info",
+      "action": "list",
+      "endpoint": "/api/v2/coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/coin/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "config",
+      "endpoint": "/api/v2/coin/config",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ai_analysis",
+      "endpoint": "/api/v2/content/ai-coins",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "exchanges",
+      "endpoint": "/api/v2/market",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/market/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "hot_coins",
+      "endpoint": "/api/v2/market/hotTabCoins",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "futures_interest",
+      "endpoint": "/api/v2/futures/interest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "kline",
+      "action": "data",
+      "endpoint": "/api/v2/commonKline/dataRecords",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_1000"
+    },
+    {
+      "tool": "kline",
+      "action": "indicator",
+      "endpoint": "/api/v2/indicatorKline/dataRecords",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "kline",
+      "action": "trading_pair",
+      "endpoint": "/api/v2/indicatorKline/getTradingPair",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_400"
+    },
+    {
+      "tool": "index_data",
+      "action": "price",
+      "endpoint": "/api/v2/index/indexPrice",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "index_data",
+      "action": "info",
+      "endpoint": "/api/v2/index/indexInfo",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "index_data",
+      "action": "list",
+      "endpoint": "/api/v2/index/getIndex",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "news",
+      "action": "list",
+      "endpoint": "/api/v2/content/news-list",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "news",
+      "action": "detail",
+      "endpoint": "/api/v2/content/news-detail",
+      "status": 200,
+      "code": "403",
+      "note": "invalid parameters"
+    },
+    {
+      "tool": "news",
+      "action": "rss",
+      "endpoint": "/api/v2/content/square/market/news-list",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "newsflash",
+      "endpoint": "/api/v2/content/newsflash",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "list",
+      "endpoint": "/api/v2/content/flashList",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "exchange_listing",
+      "endpoint": "/api/v2/content/exchange-listing-flash",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "nav",
+      "endpoint": "/api/v2/mix/nav",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "ls_ratio",
+      "endpoint": "/api/v2/mix/ls-ratio",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "liquidation",
+      "endpoint": "/api/v2/mix/liq",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "grayscale_trust",
+      "endpoint": "/api/v2/mix/grayscale-trust",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "gray_scale",
+      "endpoint": "/api/v2/mix/gray-scale",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "stock_market",
+      "endpoint": "/api/v2/mix/stock-market",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "order_flow",
+      "action": "big_orders",
+      "endpoint": "/api/v2/order/bigOrder",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "order_flow",
+      "action": "agg_trades",
+      "endpoint": "/api/v2/order/aggTrade",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "ticker",
+      "endpoint": "/api/v2/trading-pair/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "by_market",
+      "endpoint": "/api/v2/trading-pair/getTradingPair",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "list",
+      "endpoint": "/api/v2/trading-pair",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "strategy",
+      "endpoint": "/api/v2/signal/strategySignal",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_400"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert",
+      "endpoint": "/api/v2/signal/signalAlert",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "config",
+      "endpoint": "/api/v2/signal/signalAlertConf",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert_list",
+      "endpoint": "/api/v2/signal/getSignalAlertSetList",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "change",
+      "endpoint": "/api/v2/signal/changeSignal",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_manage",
+      "action": "delete",
+      "endpoint": "/api/v2/signal/delSignalAlert",
+      "status": 200,
+      "code": "OK",
+      "note": "common.not_exist_id"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "default",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "weighted",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/vol-weight-history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "map",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/map",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "estimated",
+      "endpoint": "/api/upgrade/v2/futures/estimated-liquidation/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "stablecoin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-stablecoin-history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "coin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-coin-margin-history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "historical_depth",
+      "endpoint": "/api/upgrade/v2/futures/historical-depth",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "super_depth",
+      "endpoint": "/api/upgrade/v2/futures/super-depth/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "trade_data",
+      "endpoint": "/api/upgrade/v2/futures/trade-data",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "depth",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/futures/latest-depth",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "depth",
+      "action": "full",
+      "endpoint": "/api/upgrade/v2/futures/full-depth",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "depth",
+      "action": "grouped",
+      "endpoint": "/api/upgrade/v2/futures/full-depth/grouped",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "quotes",
+      "endpoint": "/api/upgrade/v2/crypto_stock/quotes",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "top_gainer",
+      "endpoint": "/api/upgrade/v2/crypto_stock/top-gainer",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "company",
+      "endpoint": "/api/upgrade/v2/crypto_stock/company/i:mstr:nasdaq",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/entities",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "accumulated",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history/accumulated",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/entities",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/summary",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "all",
+      "endpoint": "/api/upgrade/v2/hl/tickers",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "single",
+      "endpoint": "/api/upgrade/v2/hl/tickers/coin/BTC",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "positions",
+      "endpoint": "/api/upgrade/v2/hl/whales/open-positions",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "events",
+      "endpoint": "/api/upgrade/v2/hl/whales/latest-events",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "directions",
+      "endpoint": "/api/upgrade/v2/hl/whales/directions",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "history_ratio",
+      "endpoint": "/api/upgrade/v2/hl/whales/history-long-ratio",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats_by_coin",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat-by-coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "top_positions",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/top-positions",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/summary",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "top_coins",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/top-coins",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/history/BTC",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "delta",
+      "endpoint": "/api/upgrade/v2/hl/accumulated-taker-delta/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "klines",
+      "endpoint": "/api/upgrade/v2/hl/klines-with-taker-vol/BTC/4h",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/addr-stat",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "best_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/best-trades",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "performance",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/performance-by-coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "completed_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-trades",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "accounts",
+      "endpoint": "/api/upgrade/v2/hl/traders/accounts",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "statistics",
+      "endpoint": "/api/upgrade/v2/hl/traders/statistics",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_address",
+      "endpoint": "/api/upgrade/v2/hl/fills/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/fills/oid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_twapid",
+      "endpoint": "/api/upgrade/v2/hl/fills/twapid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "top_trades",
+      "endpoint": "/api/upgrade/v2/hl/fills/top-trades",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/hl/orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/orders/oid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled_by_oid",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/oid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "top_open",
+      "endpoint": "/api/upgrade/v2/hl/orders/top-open-orders",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "active_stats",
+      "endpoint": "/api/upgrade/v2/hl/orders/active-stats",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "twap_states",
+      "endpoint": "/api/upgrade/v2/hl/twap-states/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-history/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-history/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-pnl/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-pnl/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-executions/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-executions/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "portfolio",
+      "endpoint": "/api/upgrade/v2/hl/portfolio/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/week",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "pnls",
+      "endpoint": "/api/upgrade/v2/hl/pnls/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "max_drawdown",
+      "endpoint": "/api/upgrade/v2/hl/max-drawdown/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "net_flow",
+      "endpoint": "/api/upgrade/v2/hl/ledger-updates/net-flow/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "info",
+      "endpoint": "/api/upgrade/v2/hl/info",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "smart_find",
+      "endpoint": "/api/upgrade/v2/hl/smart/find",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "discover",
+      "endpoint": "/api/upgrade/v2/hl/traders/discover",
+      "status": 200,
+      "code": "OK"
+    }
+  ],
+  "premium": [
+    {
+      "tool": "coin_info",
+      "action": "list",
+      "endpoint": "/api/v2/coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/coin/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "config",
+      "endpoint": "/api/v2/coin/config",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ai_analysis",
+      "endpoint": "/api/v2/content/ai-coins",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_info",
+      "action": "exchanges",
+      "endpoint": "/api/v2/market",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/market/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "hot_coins",
+      "endpoint": "/api/v2/market/hotTabCoins",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "futures_interest",
+      "endpoint": "/api/v2/futures/interest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "kline",
+      "action": "data",
+      "endpoint": "/api/v2/commonKline/dataRecords",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_1000"
+    },
+    {
+      "tool": "kline",
+      "action": "indicator",
+      "endpoint": "/api/v2/indicatorKline/dataRecords",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "kline",
+      "action": "trading_pair",
+      "endpoint": "/api/v2/indicatorKline/getTradingPair",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_400"
+    },
+    {
+      "tool": "index_data",
+      "action": "price",
+      "endpoint": "/api/v2/index/indexPrice",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "index_data",
+      "action": "info",
+      "endpoint": "/api/v2/index/indexInfo",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "index_data",
+      "action": "list",
+      "endpoint": "/api/v2/index/getIndex",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "news",
+      "action": "list",
+      "endpoint": "/api/v2/content/news-list",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "news",
+      "action": "detail",
+      "endpoint": "/api/v2/content/news-detail",
+      "status": 200,
+      "code": "403",
+      "note": "invalid parameters"
+    },
+    {
+      "tool": "news",
+      "action": "rss",
+      "endpoint": "/api/v2/content/square/market/news-list",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "newsflash",
+      "endpoint": "/api/v2/content/newsflash",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "list",
+      "endpoint": "/api/v2/content/flashList",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "exchange_listing",
+      "endpoint": "/api/v2/content/exchange-listing-flash",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "nav",
+      "endpoint": "/api/v2/mix/nav",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "ls_ratio",
+      "endpoint": "/api/v2/mix/ls-ratio",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "liquidation",
+      "endpoint": "/api/v2/mix/liq",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "grayscale_trust",
+      "endpoint": "/api/v2/mix/grayscale-trust",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "gray_scale",
+      "endpoint": "/api/v2/mix/gray-scale",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "stock_market",
+      "endpoint": "/api/v2/mix/stock-market",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "order_flow",
+      "action": "big_orders",
+      "endpoint": "/api/v2/order/bigOrder",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "order_flow",
+      "action": "agg_trades",
+      "endpoint": "/api/v2/order/aggTrade",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "ticker",
+      "endpoint": "/api/v2/trading-pair/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "by_market",
+      "endpoint": "/api/v2/trading-pair/getTradingPair",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "list",
+      "endpoint": "/api/v2/trading-pair",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "strategy",
+      "endpoint": "/api/v2/signal/strategySignal",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_400"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert",
+      "endpoint": "/api/v2/signal/signalAlert",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "config",
+      "endpoint": "/api/v2/signal/signalAlertConf",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert_list",
+      "endpoint": "/api/v2/signal/getSignalAlertSetList",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "change",
+      "endpoint": "/api/v2/signal/changeSignal",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_manage",
+      "action": "delete",
+      "endpoint": "/api/v2/signal/delSignalAlert",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "default",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "weighted",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/vol-weight-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "map",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/map",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "estimated",
+      "endpoint": "/api/upgrade/v2/futures/estimated-liquidation/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "stablecoin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-stablecoin-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "coin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-coin-margin-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "historical_depth",
+      "endpoint": "/api/upgrade/v2/futures/historical-depth",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "super_depth",
+      "endpoint": "/api/upgrade/v2/futures/super-depth/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "trade_data",
+      "endpoint": "/api/upgrade/v2/futures/trade-data",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "depth",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/futures/latest-depth",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "depth",
+      "action": "full",
+      "endpoint": "/api/upgrade/v2/futures/full-depth",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "depth",
+      "action": "grouped",
+      "endpoint": "/api/upgrade/v2/futures/full-depth/grouped",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "quotes",
+      "endpoint": "/api/upgrade/v2/crypto_stock/quotes",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "top_gainer",
+      "endpoint": "/api/upgrade/v2/crypto_stock/top-gainer",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "company",
+      "endpoint": "/api/upgrade/v2/crypto_stock/company/i:mstr:nasdaq",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/entities",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "accumulated",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history/accumulated",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/entities",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/summary",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "all",
+      "endpoint": "/api/upgrade/v2/hl/tickers",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "single",
+      "endpoint": "/api/upgrade/v2/hl/tickers/coin/BTC",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "positions",
+      "endpoint": "/api/upgrade/v2/hl/whales/open-positions",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "events",
+      "endpoint": "/api/upgrade/v2/hl/whales/latest-events",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "directions",
+      "endpoint": "/api/upgrade/v2/hl/whales/directions",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "history_ratio",
+      "endpoint": "/api/upgrade/v2/hl/whales/history-long-ratio",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats_by_coin",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat-by-coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "top_positions",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/top-positions",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/summary",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "top_coins",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/top-coins",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "delta",
+      "endpoint": "/api/upgrade/v2/hl/accumulated-taker-delta/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "klines",
+      "endpoint": "/api/upgrade/v2/hl/klines-with-taker-vol/BTC/4h",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/addr-stat",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "best_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/best-trades",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "performance",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/performance-by-coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "completed_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-trades",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "accounts",
+      "endpoint": "/api/upgrade/v2/hl/traders/accounts",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "statistics",
+      "endpoint": "/api/upgrade/v2/hl/traders/statistics",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_address",
+      "endpoint": "/api/upgrade/v2/hl/fills/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/fills/oid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_twapid",
+      "endpoint": "/api/upgrade/v2/hl/fills/twapid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "top_trades",
+      "endpoint": "/api/upgrade/v2/hl/fills/top-trades",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/hl/orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/orders/oid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled_by_oid",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/oid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "top_open",
+      "endpoint": "/api/upgrade/v2/hl/orders/top-open-orders",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "active_stats",
+      "endpoint": "/api/upgrade/v2/hl/orders/active-stats",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "twap_states",
+      "endpoint": "/api/upgrade/v2/hl/twap-states/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-pnl/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-pnl/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-executions/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-executions/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "portfolio",
+      "endpoint": "/api/upgrade/v2/hl/portfolio/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/week",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "pnls",
+      "endpoint": "/api/upgrade/v2/hl/pnls/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "max_drawdown",
+      "endpoint": "/api/upgrade/v2/hl/max-drawdown/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "net_flow",
+      "endpoint": "/api/upgrade/v2/hl/ledger-updates/net-flow/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "info",
+      "endpoint": "/api/upgrade/v2/hl/info",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "smart_find",
+      "endpoint": "/api/upgrade/v2/hl/smart/find",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "discover",
+      "endpoint": "/api/upgrade/v2/hl/traders/discover",
+      "status": 200,
+      "code": "OK"
+    }
+  ],
+  "normal": [
+    {
+      "tool": "coin_info",
+      "action": "list",
+      "endpoint": "/api/v2/coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/coin/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "config",
+      "endpoint": "/api/v2/coin/config",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ai_analysis",
+      "endpoint": "/api/v2/content/ai-coins",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_info",
+      "action": "exchanges",
+      "endpoint": "/api/v2/market",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/market/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "hot_coins",
+      "endpoint": "/api/v2/market/hotTabCoins",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "futures_interest",
+      "endpoint": "/api/v2/futures/interest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "kline",
+      "action": "data",
+      "endpoint": "/api/v2/commonKline/dataRecords",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_1000"
+    },
+    {
+      "tool": "kline",
+      "action": "indicator",
+      "endpoint": "/api/v2/indicatorKline/dataRecords",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "kline",
+      "action": "trading_pair",
+      "endpoint": "/api/v2/indicatorKline/getTradingPair",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "index_data",
+      "action": "price",
+      "endpoint": "/api/v2/index/indexPrice",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "index_data",
+      "action": "info",
+      "endpoint": "/api/v2/index/indexInfo",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "index_data",
+      "action": "list",
+      "endpoint": "/api/v2/index/getIndex",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "news",
+      "action": "list",
+      "endpoint": "/api/v2/content/news-list",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "news",
+      "action": "detail",
+      "endpoint": "/api/v2/content/news-detail",
+      "status": 200,
+      "code": "403",
+      "note": "invalid parameters"
+    },
+    {
+      "tool": "news",
+      "action": "rss",
+      "endpoint": "/api/v2/content/square/market/news-list",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "newsflash",
+      "endpoint": "/api/v2/content/newsflash",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "list",
+      "endpoint": "/api/v2/content/flashList",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "exchange_listing",
+      "endpoint": "/api/v2/content/exchange-listing-flash",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "nav",
+      "endpoint": "/api/v2/mix/nav",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "ls_ratio",
+      "endpoint": "/api/v2/mix/ls-ratio",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "liquidation",
+      "endpoint": "/api/v2/mix/liq",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "grayscale_trust",
+      "endpoint": "/api/v2/mix/grayscale-trust",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "gray_scale",
+      "endpoint": "/api/v2/mix/gray-scale",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "stock_market",
+      "endpoint": "/api/v2/mix/stock-market",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "order_flow",
+      "action": "big_orders",
+      "endpoint": "/api/v2/order/bigOrder",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "order_flow",
+      "action": "agg_trades",
+      "endpoint": "/api/v2/order/aggTrade",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "ticker",
+      "endpoint": "/api/v2/trading-pair/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "by_market",
+      "endpoint": "/api/v2/trading-pair/getTradingPair",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "list",
+      "endpoint": "/api/v2/trading-pair",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "strategy",
+      "endpoint": "/api/v2/signal/strategySignal",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_400"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert",
+      "endpoint": "/api/v2/signal/signalAlert",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "config",
+      "endpoint": "/api/v2/signal/signalAlertConf",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert_list",
+      "endpoint": "/api/v2/signal/getSignalAlertSetList",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "change",
+      "endpoint": "/api/v2/signal/changeSignal",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_manage",
+      "action": "delete",
+      "endpoint": "/api/v2/signal/delSignalAlert",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "default",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "weighted",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/vol-weight-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "map",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/map",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "estimated",
+      "endpoint": "/api/upgrade/v2/futures/estimated-liquidation/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "stablecoin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-stablecoin-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "coin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-coin-margin-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "historical_depth",
+      "endpoint": "/api/upgrade/v2/futures/historical-depth",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "super_depth",
+      "endpoint": "/api/upgrade/v2/futures/super-depth/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "trade_data",
+      "endpoint": "/api/upgrade/v2/futures/trade-data",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "depth",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/futures/latest-depth",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "depth",
+      "action": "full",
+      "endpoint": "/api/upgrade/v2/futures/full-depth",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "depth",
+      "action": "grouped",
+      "endpoint": "/api/upgrade/v2/futures/full-depth/grouped",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "quotes",
+      "endpoint": "/api/upgrade/v2/crypto_stock/quotes",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "top_gainer",
+      "endpoint": "/api/upgrade/v2/crypto_stock/top-gainer",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "company",
+      "endpoint": "/api/upgrade/v2/crypto_stock/company/i:mstr:nasdaq",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/entities",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "accumulated",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history/accumulated",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/entities",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/summary",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "all",
+      "endpoint": "/api/upgrade/v2/hl/tickers",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "single",
+      "endpoint": "/api/upgrade/v2/hl/tickers/coin/BTC",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "positions",
+      "endpoint": "/api/upgrade/v2/hl/whales/open-positions",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "events",
+      "endpoint": "/api/upgrade/v2/hl/whales/latest-events",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "directions",
+      "endpoint": "/api/upgrade/v2/hl/whales/directions",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "history_ratio",
+      "endpoint": "/api/upgrade/v2/hl/whales/history-long-ratio",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats_by_coin",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat-by-coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "top_positions",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/top-positions",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/summary",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "top_coins",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/top-coins",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "delta",
+      "endpoint": "/api/upgrade/v2/hl/accumulated-taker-delta/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "klines",
+      "endpoint": "/api/upgrade/v2/hl/klines-with-taker-vol/BTC/4h",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/addr-stat",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "best_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/best-trades",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "performance",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/performance-by-coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "completed_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-trades",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "accounts",
+      "endpoint": "/api/upgrade/v2/hl/traders/accounts",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "statistics",
+      "endpoint": "/api/upgrade/v2/hl/traders/statistics",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_address",
+      "endpoint": "/api/upgrade/v2/hl/fills/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/fills/oid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_twapid",
+      "endpoint": "/api/upgrade/v2/hl/fills/twapid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "top_trades",
+      "endpoint": "/api/upgrade/v2/hl/fills/top-trades",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/hl/orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/orders/oid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled_by_oid",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/oid/999999",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "top_open",
+      "endpoint": "/api/upgrade/v2/hl/orders/top-open-orders",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "active_stats",
+      "endpoint": "/api/upgrade/v2/hl/orders/active-stats",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "twap_states",
+      "endpoint": "/api/upgrade/v2/hl/twap-states/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-history/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-history/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-pnl/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-pnl/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-executions/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-executions/BTC",
+      "status": 400,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "portfolio",
+      "endpoint": "/api/upgrade/v2/hl/portfolio/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/week",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "pnls",
+      "endpoint": "/api/upgrade/v2/hl/pnls/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "max_drawdown",
+      "endpoint": "/api/upgrade/v2/hl/max-drawdown/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "net_flow",
+      "endpoint": "/api/upgrade/v2/hl/ledger-updates/net-flow/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "info",
+      "endpoint": "/api/upgrade/v2/hl/info",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "smart_find",
+      "endpoint": "/api/upgrade/v2/hl/smart/find",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "discover",
+      "endpoint": "/api/upgrade/v2/hl/traders/discover",
+      "status": 403,
+      "code": "403"
+    }
+  ],
+  "free": [
+    {
+      "tool": "coin_info",
+      "action": "list",
+      "endpoint": "/api/v2/coin",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/coin/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "config",
+      "endpoint": "/api/v2/coin/config",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ai_analysis",
+      "endpoint": "/api/v2/content/ai-coins",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_info",
+      "action": "exchanges",
+      "endpoint": "/api/v2/market",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/market/ticker",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_info",
+      "action": "hot_coins",
+      "endpoint": "/api/v2/market/hotTabCoins",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "futures_interest",
+      "endpoint": "/api/v2/futures/interest",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "kline",
+      "action": "data",
+      "endpoint": "/api/v2/commonKline/dataRecords",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_1000"
+    },
+    {
+      "tool": "kline",
+      "action": "indicator",
+      "endpoint": "/api/v2/indicatorKline/dataRecords",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "kline",
+      "action": "trading_pair",
+      "endpoint": "/api/v2/indicatorKline/getTradingPair",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "index_data",
+      "action": "price",
+      "endpoint": "/api/v2/index/indexPrice",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "index_data",
+      "action": "info",
+      "endpoint": "/api/v2/index/indexInfo",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "index_data",
+      "action": "list",
+      "endpoint": "/api/v2/index/getIndex",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "news",
+      "action": "list",
+      "endpoint": "/api/v2/content/news-list",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "news",
+      "action": "detail",
+      "endpoint": "/api/v2/content/news-detail",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "news",
+      "action": "rss",
+      "endpoint": "/api/v2/content/square/market/news-list",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "newsflash",
+      "endpoint": "/api/v2/content/newsflash",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "flash",
+      "action": "list",
+      "endpoint": "/api/v2/content/flashList",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "flash",
+      "action": "exchange_listing",
+      "endpoint": "/api/v2/content/exchange-listing-flash",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "nav",
+      "endpoint": "/api/v2/mix/nav",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "ls_ratio",
+      "endpoint": "/api/v2/mix/ls-ratio",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "liquidation",
+      "endpoint": "/api/v2/mix/liq",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "grayscale_trust",
+      "endpoint": "/api/v2/mix/grayscale-trust",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "gray_scale",
+      "endpoint": "/api/v2/mix/gray-scale",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "stock_market",
+      "endpoint": "/api/v2/mix/stock-market",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "order_flow",
+      "action": "big_orders",
+      "endpoint": "/api/v2/order/bigOrder",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "order_flow",
+      "action": "agg_trades",
+      "endpoint": "/api/v2/order/aggTrade",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "ticker",
+      "endpoint": "/api/v2/trading-pair/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "by_market",
+      "endpoint": "/api/v2/trading-pair/getTradingPair",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "list",
+      "endpoint": "/api/v2/trading-pair",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "strategy",
+      "endpoint": "/api/v2/signal/strategySignal",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert",
+      "endpoint": "/api/v2/signal/signalAlert",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "config",
+      "endpoint": "/api/v2/signal/signalAlertConf",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert_list",
+      "endpoint": "/api/v2/signal/getSignalAlertSetList",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "change",
+      "endpoint": "/api/v2/signal/changeSignal",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_manage",
+      "action": "delete",
+      "endpoint": "/api/v2/signal/delSignalAlert",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "default",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "weighted",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/vol-weight-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "map",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/map",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "estimated",
+      "endpoint": "/api/upgrade/v2/futures/estimated-liquidation/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "stablecoin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-stablecoin-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "coin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-coin-margin-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "historical_depth",
+      "endpoint": "/api/upgrade/v2/futures/historical-depth",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "super_depth",
+      "endpoint": "/api/upgrade/v2/futures/super-depth/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "trade_data",
+      "endpoint": "/api/upgrade/v2/futures/trade-data",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "depth",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/futures/latest-depth",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "depth",
+      "action": "full",
+      "endpoint": "/api/upgrade/v2/futures/full-depth",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "depth",
+      "action": "grouped",
+      "endpoint": "/api/upgrade/v2/futures/full-depth/grouped",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "quotes",
+      "endpoint": "/api/upgrade/v2/crypto_stock/quotes",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "top_gainer",
+      "endpoint": "/api/upgrade/v2/crypto_stock/top-gainer",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "company",
+      "endpoint": "/api/upgrade/v2/crypto_stock/company/i:mstr:nasdaq",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/entities",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "accumulated",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history/accumulated",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/entities",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/summary",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "all",
+      "endpoint": "/api/upgrade/v2/hl/tickers",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "single",
+      "endpoint": "/api/upgrade/v2/hl/tickers/coin/BTC",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "positions",
+      "endpoint": "/api/upgrade/v2/hl/whales/open-positions",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "events",
+      "endpoint": "/api/upgrade/v2/hl/whales/latest-events",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "directions",
+      "endpoint": "/api/upgrade/v2/hl/whales/directions",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "history_ratio",
+      "endpoint": "/api/upgrade/v2/hl/whales/history-long-ratio",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats_by_coin",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat-by-coin",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "top_positions",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/top-positions",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/summary",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "top_coins",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/top-coins",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "delta",
+      "endpoint": "/api/upgrade/v2/hl/accumulated-taker-delta/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "klines",
+      "endpoint": "/api/upgrade/v2/hl/klines-with-taker-vol/BTC/4h",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/addr-stat",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "best_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/best-trades",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "performance",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/performance-by-coin",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "completed_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-trades",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "accounts",
+      "endpoint": "/api/upgrade/v2/hl/traders/accounts",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "statistics",
+      "endpoint": "/api/upgrade/v2/hl/traders/statistics",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_address",
+      "endpoint": "/api/upgrade/v2/hl/fills/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/fills/oid/999999",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_twapid",
+      "endpoint": "/api/upgrade/v2/hl/fills/twapid/999999",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "top_trades",
+      "endpoint": "/api/upgrade/v2/hl/fills/top-trades",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/hl/orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/orders/oid/999999",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled_by_oid",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/oid/999999",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "top_open",
+      "endpoint": "/api/upgrade/v2/hl/orders/top-open-orders",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "active_stats",
+      "endpoint": "/api/upgrade/v2/hl/orders/active-stats",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "twap_states",
+      "endpoint": "/api/upgrade/v2/hl/twap-states/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-pnl/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-pnl/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-executions/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-executions/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "portfolio",
+      "endpoint": "/api/upgrade/v2/hl/portfolio/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/week",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "pnls",
+      "endpoint": "/api/upgrade/v2/hl/pnls/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "max_drawdown",
+      "endpoint": "/api/upgrade/v2/hl/max-drawdown/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "net_flow",
+      "endpoint": "/api/upgrade/v2/hl/ledger-updates/net-flow/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "info",
+      "endpoint": "/api/upgrade/v2/hl/info",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "smart_find",
+      "endpoint": "/api/upgrade/v2/hl/smart/find",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "discover",
+      "endpoint": "/api/upgrade/v2/hl/traders/discover",
+      "status": 403,
+      "code": "403"
+    }
+  ],
+  "basic": [
+    {
+      "tool": "coin_info",
+      "action": "list",
+      "endpoint": "/api/v2/coin",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/coin/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "config",
+      "endpoint": "/api/v2/coin/config",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_info",
+      "action": "ai_analysis",
+      "endpoint": "/api/v2/content/ai-coins",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_info",
+      "action": "exchanges",
+      "endpoint": "/api/v2/market",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "ticker",
+      "endpoint": "/api/v2/market/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "hot_coins",
+      "endpoint": "/api/v2/market/hotTabCoins",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_info",
+      "action": "futures_interest",
+      "endpoint": "/api/v2/futures/interest",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "kline",
+      "action": "data",
+      "endpoint": "/api/v2/commonKline/dataRecords",
+      "status": 200,
+      "code": "OK",
+      "note": "biz_1000"
+    },
+    {
+      "tool": "kline",
+      "action": "indicator",
+      "endpoint": "/api/v2/indicatorKline/dataRecords",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "kline",
+      "action": "trading_pair",
+      "endpoint": "/api/v2/indicatorKline/getTradingPair",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "index_data",
+      "action": "price",
+      "endpoint": "/api/v2/index/indexPrice",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "index_data",
+      "action": "info",
+      "endpoint": "/api/v2/index/indexInfo",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "index_data",
+      "action": "list",
+      "endpoint": "/api/v2/index/getIndex",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "news",
+      "action": "list",
+      "endpoint": "/api/v2/content/news-list",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "news",
+      "action": "detail",
+      "endpoint": "/api/v2/content/news-detail",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "news",
+      "action": "rss",
+      "endpoint": "/api/v2/content/square/market/news-list",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "newsflash",
+      "endpoint": "/api/v2/content/newsflash",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "flash",
+      "action": "list",
+      "endpoint": "/api/v2/content/flashList",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "flash",
+      "action": "exchange_listing",
+      "endpoint": "/api/v2/content/exchange-listing-flash",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "nav",
+      "endpoint": "/api/v2/mix/nav",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "ls_ratio",
+      "endpoint": "/api/v2/mix/ls-ratio",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "market_overview",
+      "action": "liquidation",
+      "endpoint": "/api/v2/mix/liq",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "grayscale_trust",
+      "endpoint": "/api/v2/mix/grayscale-trust",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "gray_scale",
+      "endpoint": "/api/v2/mix/gray-scale",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "market_overview",
+      "action": "stock_market",
+      "endpoint": "/api/v2/mix/stock-market",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "order_flow",
+      "action": "big_orders",
+      "endpoint": "/api/v2/order/bigOrder",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "order_flow",
+      "action": "agg_trades",
+      "endpoint": "/api/v2/order/aggTrade",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "ticker",
+      "endpoint": "/api/v2/trading-pair/ticker",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "by_market",
+      "endpoint": "/api/v2/trading-pair/getTradingPair",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "trading_pair",
+      "action": "list",
+      "endpoint": "/api/v2/trading-pair",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "signal_data",
+      "action": "strategy",
+      "endpoint": "/api/v2/signal/strategySignal",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert",
+      "endpoint": "/api/v2/signal/signalAlert",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "config",
+      "endpoint": "/api/v2/signal/signalAlertConf",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "alert_list",
+      "endpoint": "/api/v2/signal/getSignalAlertSetList",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_data",
+      "action": "change",
+      "endpoint": "/api/v2/signal/changeSignal",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "signal_manage",
+      "action": "delete",
+      "endpoint": "/api/v2/signal/delSignalAlert",
+      "status": 200,
+      "code": "403",
+      "note": "需要授权"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "default",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/history",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "coin_funding_rate",
+      "action": "weighted",
+      "endpoint": "/api/upgrade/v2/futures/funding-rate/vol-weight-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "map",
+      "endpoint": "/api/upgrade/v2/futures/liquidation/map",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_liquidation",
+      "action": "estimated",
+      "endpoint": "/api/upgrade/v2/futures/estimated-liquidation/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "stablecoin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-stablecoin-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_open_interest",
+      "action": "coin",
+      "endpoint": "/api/upgrade/v2/futures/open-interest/aggregated-coin-margin-history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "historical_depth",
+      "endpoint": "/api/upgrade/v2/futures/historical-depth",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "super_depth",
+      "endpoint": "/api/upgrade/v2/futures/super-depth/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_futures_data",
+      "action": "trade_data",
+      "endpoint": "/api/upgrade/v2/futures/trade-data",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "depth",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/futures/latest-depth",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "depth",
+      "action": "full",
+      "endpoint": "/api/upgrade/v2/futures/full-depth",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "depth",
+      "action": "grouped",
+      "endpoint": "/api/upgrade/v2/futures/full-depth/grouped",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "quotes",
+      "endpoint": "/api/upgrade/v2/crypto_stock/quotes",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "top_gainer",
+      "endpoint": "/api/upgrade/v2/crypto_stock/top-gainer",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "crypto_stock",
+      "action": "company",
+      "endpoint": "/api/upgrade/v2/crypto_stock/company/i:mstr:nasdaq",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/entities",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "accumulated",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/history/accumulated",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_entities",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/entities",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "latest_history",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/latest/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "coin_treasury",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/coin-treasuries/summary",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "all",
+      "endpoint": "/api/upgrade/v2/hl/tickers",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_ticker",
+      "action": "single",
+      "endpoint": "/api/upgrade/v2/hl/tickers/coin/BTC",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "positions",
+      "endpoint": "/api/upgrade/v2/hl/whales/open-positions",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "events",
+      "endpoint": "/api/upgrade/v2/hl/whales/latest-events",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "directions",
+      "endpoint": "/api/upgrade/v2/hl/whales/directions",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_whale",
+      "action": "history_ratio",
+      "endpoint": "/api/upgrade/v2/hl/whales/history-long-ratio",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/history",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "stats_by_coin",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/stat-by-coin",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_liquidation",
+      "action": "top_positions",
+      "endpoint": "/api/upgrade/v2/hl/liquidations/top-positions",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "summary",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/summary",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "top_coins",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/top-coins",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_open_interest",
+      "action": "history",
+      "endpoint": "/api/upgrade/v2/hl/open-interest/history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "delta",
+      "endpoint": "/api/upgrade/v2/hl/accumulated-taker-delta/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_taker",
+      "action": "klines",
+      "endpoint": "/api/upgrade/v2/hl/klines-with-taker-vol/BTC/4h",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "stats",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/addr-stat",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "best_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/best-trades",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "performance",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/performance-by-coin",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "completed_trades",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-trades",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "accounts",
+      "endpoint": "/api/upgrade/v2/hl/traders/accounts",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_trader",
+      "action": "statistics",
+      "endpoint": "/api/upgrade/v2/hl/traders/statistics",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_address",
+      "endpoint": "/api/upgrade/v2/hl/fills/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/fills/oid/999999",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "by_twapid",
+      "endpoint": "/api/upgrade/v2/hl/fills/twapid/999999",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_fills",
+      "action": "top_trades",
+      "endpoint": "/api/upgrade/v2/hl/fills/top-trades",
+      "status": 500,
+      "code": "500"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "latest",
+      "endpoint": "/api/upgrade/v2/hl/orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "by_oid",
+      "endpoint": "/api/upgrade/v2/hl/orders/oid/999999",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "filled_by_oid",
+      "endpoint": "/api/upgrade/v2/hl/filled-orders/oid/999999",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "top_open",
+      "endpoint": "/api/upgrade/v2/hl/orders/top-open-orders",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "active_stats",
+      "endpoint": "/api/upgrade/v2/hl/orders/active-stats",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_orders",
+      "action": "twap_states",
+      "endpoint": "/api/upgrade/v2/hl/twap-states/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/latest",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_history",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-history/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-pnl/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_pnl",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-pnl/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "current_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/current-position-executions/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_position",
+      "action": "completed_executions",
+      "endpoint": "/api/upgrade/v2/hl/traders/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/completed-position-executions/BTC",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "portfolio",
+      "endpoint": "/api/upgrade/v2/hl/portfolio/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de/week",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "pnls",
+      "endpoint": "/api/upgrade/v2/hl/pnls/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "max_drawdown",
+      "endpoint": "/api/upgrade/v2/hl/max-drawdown/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_portfolio",
+      "action": "net_flow",
+      "endpoint": "/api/upgrade/v2/hl/ledger-updates/net-flow/0x72793d7a0a25fabc6cd68e5927bff39636e6a5de",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "info",
+      "endpoint": "/api/upgrade/v2/hl/info",
+      "status": 200,
+      "code": "OK"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "smart_find",
+      "endpoint": "/api/upgrade/v2/hl/smart/find",
+      "status": 403,
+      "code": "403"
+    },
+    {
+      "tool": "hl_advanced",
+      "action": "discover",
+      "endpoint": "/api/upgrade/v2/hl/traders/discover",
+      "status": 403,
+      "code": "403"
+    }
+  ]
+}

@@ -1,5 +1,10 @@
 /**
- * Feature data tools (long/short ratio, whale orders, signals)
+ * Feature data tools
+ * #25 market_overview (6→1): get_nav + get_ls_ratio + get_liquidation_data + get_grayscale_trust + get_gray_scale + get_stock_market
+ * #26 order_flow (2→1): get_big_orders + get_agg_trades
+ * #27 trading_pair (3→1): get_trading_pair_ticker + get_trading_pair + get_trading_pairs
+ * #28 signal_data (5→1): get_strategy_signal + get_signal_alert + get_signal_alert_config + get_signal_alert_list + get_change_signal
+ * #29 signal_manage (2→1): add_signal_alert + delete_signal_alert
  */
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -7,455 +12,180 @@ import { apiGet } from '../client/api.js';
 import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
 
 export function registerFeatureTools(server: McpServer) {
+  // #25 market_overview
   server.tool(
-    'get_ls_ratio',
-    'Get long/short ratio data',
-    {},
-    async () => {
-      try {
-        return ok(
-          await apiGet('/api/v2/mix/ls-ratio')
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_liquidation_data',
-    'Get liquidation/forced-close data',
+    'market_overview',
+    'Market overview data.\n• nav — market overview/navigation\n• ls_ratio — long/short ratio, no params needed\n• liquidation — forced-close data\n• grayscale_trust — trust fund, no params needed\n• gray_scale — grayscale holdings. Requires: coins\n• stock_market — crypto stocks, no params needed',
     {
-      currency: z
-        .string()
-        .optional()
-        .describe('Currency: cny or usd, default cny'),
-      type: z
-        .string()
-        .optional()
-        .describe(
-          'Query type: 1=by coin, 2=by platform'
-        ),
-      coinKey: z
-        .string()
-        .optional()
-        .describe('Coin key, used when type=1'),
-      marketKey: z
-        .string()
-        .optional()
-        .describe('Market key, used when type=2'),
-    },
-    async ({ currency, type, coinKey, marketKey }) => {
-      try {
-        const params: Record<string, string> = {};
-        if (currency) params.currency = currency;
-        if (type) params.type = type;
-        if (coinKey) params.coinKey = coinKey;
-        if (marketKey) params.marketKey = marketKey;
-        return ok(
-          await apiGet('/api/v2/mix/liq', params)
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_big_orders',
-    'Get whale/large order tracking data',
-    {
-      symbol: z
-        .string()
-        .describe(
-          'Trading pair, e.g. btcusdt:okex'
-        ),
+      action: z.enum(['nav', 'ls_ratio', 'liquidation', 'grayscale_trust', 'gray_scale', 'stock_market']).describe(
+        'nav: market overview; ls_ratio: long/short ratio; liquidation: forced-close data; grayscale_trust: trust fund; gray_scale: holdings; stock_market: crypto stocks'
+      ),
+      lan: z.string().optional().describe('Optional for nav. Language: "cn" or "en"'),
+      currency: z.string().optional().describe('Optional for liquidation. Currency: "cny" or "usd"'),
+      type: z.string().optional().describe('Optional for liquidation. Group by: "1"=by coin, "2"=by platform'),
+      coinKey: z.string().optional().describe('Optional for liquidation. Coin key filter (when type="1")'),
+      marketKey: z.string().optional().describe('Optional for liquidation. Market key filter (when type="2")'),
+      coins: z.string().optional().describe('REQUIRED for gray_scale. Comma-separated coin symbols in lowercase, e.g. "btc,eth"'),
       ...maxItemsParam,
     },
-    async ({ symbol, _max_items }) => {
+    async ({ action, lan, currency, type, coinKey, marketKey, coins, _max_items }) => {
       try {
-        return okList(
-          await apiGet('/api/v2/order/bigOrder', {
-            symbol,
-          }),
-          parseMax(_max_items, 20)
-        );
+        switch (action) {
+          case 'nav': {
+            const params: Record<string, string> = {};
+            if (lan) params.lan = lan;
+            return ok(await apiGet('/api/v2/mix/nav', params));
+          }
+          case 'ls_ratio':
+            return ok(await apiGet('/api/v2/mix/ls-ratio'));
+          case 'liquidation': {
+            const params: Record<string, string> = {};
+            if (currency) params.currency = currency;
+            if (type) params.type = type;
+            if (coinKey) params.coinKey = coinKey;
+            if (marketKey) params.marketKey = marketKey;
+            return ok(await apiGet('/api/v2/mix/liq', params));
+          }
+          case 'grayscale_trust':
+            return ok(await apiGet('/api/v2/mix/grayscale-trust'));
+          case 'gray_scale': {
+            if (!coins) return err('coins is required for gray_scale action');
+            return ok(await apiGet('/api/v2/mix/gray-scale', { coins }));
+          }
+          case 'stock_market':
+            return okList(await apiGet('/api/v2/mix/stock-market'), parseMax(_max_items, 50));
+        }
       } catch (e) {
         return err(e);
       }
     }
   );
 
+  // #26 order_flow
   server.tool(
-    'get_agg_trades',
-    'Get aggregated large trades data',
+    'order_flow',
+    'Order flow data. Requires: symbol for all actions.\n• big_orders — whale/large order tracking\n• agg_trades — aggregated large trades',
     {
-      symbol: z
-        .string()
-        .describe(
-          'Trading pair, e.g. btcusdt:okex'
-        ),
+      action: z.enum(['big_orders', 'agg_trades']).describe(
+        'big_orders: whale/large order tracking; agg_trades: aggregated large trades'
+      ),
+      symbol: z.string().describe('REQUIRED. Trading pair with exchange, e.g. btcswapusdt:binance'),
       ...maxItemsParam,
     },
-    async ({ symbol, _max_items }) => {
+    async ({ action, symbol, _max_items }) => {
       try {
-        return okList(
-          await apiGet('/api/v2/order/aggTrade', {
-            symbol,
-          }),
-          parseMax(_max_items, 30)
-        );
+        switch (action) {
+          case 'big_orders':
+            return okList(await apiGet('/api/v2/order/bigOrder', { symbol }), parseMax(_max_items, 20));
+          case 'agg_trades':
+            return okList(await apiGet('/api/v2/order/aggTrade', { symbol }), parseMax(_max_items, 30));
+        }
       } catch (e) {
         return err(e);
       }
     }
   );
 
+  // #27 trading_pair
   server.tool(
-    'get_trading_pair_ticker',
-    'Get ticker data for specific trading pairs',
+    'trading_pair',
+    'Trading pair data.\n• ticker — specific pair tickers. Requires: key_list\n• by_market — all pairs for a platform. Requires: market\n• list — pairs with filters. Requires: market',
     {
-      key_list: z
-        .string()
-        .describe(
-          'Trading pair keys, comma-separated, max 100, e.g. btcusdt:okex,btcusdt:huobipro'
-        ),
-    },
-    async ({ key_list }) => {
-      try {
-        return ok(
-          await apiGet('/api/v2/trading-pair/ticker', {
-            key_list,
-          })
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_strategy_signal',
-    'Get indicator win-rate signal data',
-    {
-      coin_type: z
-        .string()
-        .optional()
-        .describe('Coin type, e.g. bitcoin'),
-      signal_key: z
-        .string()
-        .optional()
-        .describe(
-          'Signal key: depth_win_one,depth_win_two,depth_buy_one,order_buy_one,td_buy_one,lsur_one'
-        ),
-      latest_time: z
-        .string()
-        .optional()
-        .describe('Latest time in ms timestamp'),
+      action: z.enum(['ticker', 'by_market', 'list']).describe(
+        'ticker: specific pair tickers; by_market: pairs for a platform; list: pairs with filters'
+      ),
+      key_list: z.string().optional().describe('REQUIRED for ticker. Comma-separated pair keys, e.g. "btcusdt:okex,btcusdt:huobipro"'),
+      market: z.string().optional().describe('REQUIRED for by_market, list. Platform/exchange key, e.g. okex, binance'),
+      currency: z.string().optional().describe('For list: quote currency filter'),
+      show: z.string().optional().describe('For list: coin symbol filter'),
       ...maxItemsParam,
     },
-    async ({ coin_type, signal_key, latest_time, _max_items }) => {
+    async ({ action, key_list, market, currency, show, _max_items }) => {
       try {
-        const params: Record<string, string> = {};
-        if (coin_type) params.coin_type = coin_type;
-        if (signal_key) params.signal_key = signal_key;
-        if (latest_time)
-          params.latest_time = latest_time;
-        return okList(
-          await apiGet(
-            '/api/v2/signal/strategySignal',
-            params
-          ),
-          parseMax(_max_items, 20)
-        );
+        switch (action) {
+          case 'ticker': {
+            if (!key_list) return err('key_list is required for ticker action');
+            return ok(await apiGet('/api/v2/trading-pair/ticker', { key_list }));
+          }
+          case 'by_market': {
+            if (!market) return err('market is required for by_market action');
+            return okList(
+              await apiGet('/api/v2/trading-pair/getTradingPair', { market }),
+              parseMax(_max_items, 50)
+            );
+          }
+          case 'list': {
+            if (!market) return err('market is required for list action');
+            const params: Record<string, string> = { market };
+            if (currency) params.currency = currency;
+            if (show) params.show = show;
+            return okList(await apiGet('/api/v2/trading-pair', params), parseMax(_max_items, 100));
+          }
+        }
       } catch (e) {
         return err(e);
       }
     }
   );
 
+  // #28 signal_data
   server.tool(
-    'get_nav',
-    'Get navigation bar data (market overview)',
+    'signal_data',
+    'Signal data.\n• strategy — indicator win-rate signals\n• alert — current signal alerts\n• config — alert configurations\n• alert_list — user alert settings\n• change — abnormal price movements',
     {
-      lan: z
-        .string()
-        .optional()
-        .describe('Language: cn or en'),
-    },
-    async ({ lan }) => {
-      try {
-        const params: Record<string, string> = {};
-        if (lan) params.lan = lan;
-        return ok(
-          await apiGet('/api/v2/mix/nav', params)
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_grayscale_trust',
-    'Get Grayscale trust fund data',
-    {},
-    async () => {
-      try {
-        return ok(
-          await apiGet('/api/v2/mix/grayscale-trust')
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_gray_scale',
-    'Get Grayscale holdings data',
-    {
-      coins: z
-        .string()
-        .describe(
-          'Coin list, comma-separated: btc,ltc,eth,bch,xrp,xlm,zec,zen,etc'
-        ),
-    },
-    async ({ coins }) => {
-      try {
-        return ok(
-          await apiGet('/api/v2/mix/gray-scale', {
-            coins,
-          })
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_stock_market',
-    'Get stock market data (crypto-related)',
-    { ...maxItemsParam },
-    async ({ _max_items }) => {
-      try {
-        return okList(
-          await apiGet('/api/v2/mix/stock-market'),
-          parseMax(_max_items, 50)
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_signal_alert',
-    'Get signal alert data',
-    { ...maxItemsParam },
-    async ({ _max_items }) => {
-      try {
-        return okList(
-          await apiGet(
-            '/api/v2/signal/signalAlert'
-          ),
-          parseMax(_max_items, 20)
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_signal_alert_config',
-    'Get signal alert configuration options',
-    {
-      lan: z
-        .string()
-        .optional()
-        .describe('Language: cn or en'),
+      action: z.enum(['strategy', 'alert', 'config', 'alert_list', 'change']).describe(
+        'strategy: indicator win-rate signals; alert: signal alert data; config: alert configurations; alert_list: alert settings; change: abnormal movement'
+      ),
+      coin_type: z.string().optional().describe('Optional for strategy. Coin type, e.g. bitcoin'),
+      signal_key: z.string().optional().describe('Optional for strategy. Signal key: depth_win_one, td_buy_one, etc.'),
+      latest_time: z.string().optional().describe('Optional for strategy. Latest time filter in ms'),
+      lan: z.string().optional().describe('Optional for config. Language: "cn" or "en"'),
+      type: z.string().optional().describe('Optional for change. Signal type: 1-12, 17, 18, 23, 24'),
+      currency: z.string().optional().describe('Optional for change. Currency: "usd" or "cny"'),
       ...maxItemsParam,
     },
-    async ({ lan, _max_items }) => {
+    async ({ action, coin_type, signal_key, latest_time, lan, type, currency, _max_items }) => {
       try {
-        const params: Record<string, string> = {};
-        if (lan) params.lan = lan;
-        return okList(
-          await apiGet(
-            '/api/v2/signal/signalAlertConf',
-            params
-          ),
-          parseMax(_max_items, 20)
-        );
+        switch (action) {
+          case 'strategy': {
+            const params: Record<string, string> = {};
+            if (coin_type) params.coin_type = coin_type;
+            if (signal_key) params.signal_key = signal_key;
+            if (latest_time) params.latest_time = latest_time;
+            return okList(await apiGet('/api/v2/signal/strategySignal', params), parseMax(_max_items, 20));
+          }
+          case 'alert':
+            return okList(await apiGet('/api/v2/signal/signalAlert'), parseMax(_max_items, 20));
+          case 'config': {
+            const params: Record<string, string> = {};
+            if (lan) params.lan = lan;
+            return okList(await apiGet('/api/v2/signal/signalAlertConf', params), parseMax(_max_items, 20));
+          }
+          case 'alert_list':
+            return ok(await apiGet('/api/v2/signal/getSignalAlertSetList'));
+          case 'change': {
+            const params: Record<string, string> = {};
+            if (type) params.type = type;
+            if (currency) params.currency = currency;
+            return okList(await apiGet('/api/v2/signal/changeSignal', params), parseMax(_max_items, 50));
+          }
+        }
       } catch (e) {
         return err(e);
       }
     }
   );
 
+  // #29 signal_manage (add not supported by backend yet, only delete)
   server.tool(
-    'delete_signal_alert',
-    'Delete a signal alert by ID',
+    'signal_manage',
+    'Delete a signal alert. Requires: id',
     {
-      id: z.string().describe('Signal alert ID'),
+      id: z.string().describe('REQUIRED. Signal alert ID to delete'),
     },
     async ({ id }) => {
       try {
-        return ok(
-          await apiGet(
-            '/api/v2/signal/delSignalAlert',
-            { id }
-          )
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'add_signal_alert',
-    'Add a new signal alert',
-    {
-      subType: z
-        .string()
-        .describe('Alert sub type'),
-      symbol: z
-        .string()
-        .describe('Trading pair symbol'),
-      remark: z
-        .string()
-        .optional()
-        .describe('Alert remark/note'),
-    },
-    async ({ subType, symbol, remark }) => {
-      try {
-        const params: Record<string, string> = {
-          subType,
-          symbol,
-        };
-        if (remark) params.remark = remark;
-        return ok(
-          await apiGet(
-            '/api/v2/signal/addSignalAlert',
-            params
-          )
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_signal_alert_list',
-    'Get signal alert settings list',
-    {},
-    async () => {
-      try {
-        return ok(
-          await apiGet(
-            '/api/v2/signal/getSignalAlertSetList'
-          )
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_change_signal',
-    'Get abnormal movement signal data',
-    {
-      type: z
-        .string()
-        .optional()
-        .describe(
-          'Signal type: 1-12, 17, 18, 23, 24'
-        ),
-      currency: z
-        .string()
-        .optional()
-        .describe('Currency: usd (default) or cny'),
-      ...maxItemsParam,
-    },
-    async ({ type, currency, _max_items }) => {
-      try {
-        const params: Record<string, string> = {};
-        if (type) params.type = type;
-        if (currency) params.currency = currency;
-        return okList(
-          await apiGet(
-            '/api/v2/signal/changeSignal',
-            params
-          ),
-          parseMax(_max_items, 50)
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_trading_pair',
-    'Get trading pair info for a platform',
-    {
-      market: z
-        .string()
-        .describe(
-          'Platform key (from get_markets), e.g. okex, binance'
-        ),
-      ...maxItemsParam,
-    },
-    async ({ market, _max_items }) => {
-      try {
-        return okList(
-          await apiGet(
-            '/api/v2/trading-pair/getTradingPair',
-            { market }
-          ),
-          parseMax(_max_items, 50)
-        );
-      } catch (e) {
-        return err(e);
-      }
-    }
-  );
-
-  server.tool(
-    'get_trading_pairs',
-    'Get trading pair list for a platform',
-    {
-      market: z
-        .string()
-        .describe(
-          'Platform key (from /v2/market), e.g. okex, binance'
-        ),
-      currency: z
-        .string()
-        .optional()
-        .describe('Quote currency filter'),
-      show: z
-        .string()
-        .optional()
-        .describe('Coin symbol filter'),
-      ...maxItemsParam,
-    },
-    async ({ market, currency, show, _max_items }) => {
-      try {
-        const params: Record<string, string> = {
-          market,
-        };
-        if (currency) params.currency = currency;
-        if (show) params.show = show;
-        return okList(
-          await apiGet('/api/v2/trading-pair', params),
-          parseMax(_max_items, 100)
-        );
+        return ok(await apiGet('/api/v2/signal/delSignalAlert', { id }));
       } catch (e) {
         return err(e);
       }
