@@ -40,6 +40,7 @@ const PRESETS = {
   // === Contents ===
   news: { action: 'list', page: '1', pageSize: '2' },
   flash: { action: 'newsflash', language: 'cn' },
+  twitter: { action: 'latest', page_size: '2' },
 
   // === Markets ===
   market_info: { action: 'exchanges' },

@@ -6,7 +6,7 @@
  */
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { apiGet } from '../client/api.js';
+import { apiGet, apiPost } from '../client/api.js';
 import { ok, okList, err, maxItemsParam, parseMax } from './utils.js';
 
 export function registerContentTools(server: McpServer) {
@@ -87,6 +87,74 @@ export function registerContentTools(server: McpServer) {
             if (memberIds) params.memberIds = memberIds;
             if (pageSize) params.pageSize = pageSize;
             return ok(await apiGet('/api/v2/content/exchange-listing-flash', params));
+          }
+        }
+      } catch (e) {
+        return err(e);
+      }
+    }
+  );
+
+  // #19 twitter (4→1): latest + search + members + interaction_stats
+  server.tool(
+    'twitter',
+    'Twitter/X crypto tweets.\n• latest — latest crypto tweets, cursor-paginated\n• search — search tweets by keyword. Requires: keyword\n• members — search Twitter KOL/users. Requires: word\n• interaction_stats — tweet engagement stats. Requires: flash_ids (POST)',
+    {
+      action: z.enum(['latest', 'search', 'members', 'interaction_stats']).describe(
+        'latest: latest crypto tweets; search: search by keyword; members: search KOL/users; interaction_stats: tweet engagement'
+      ),
+      keyword: z.string().optional().describe('REQUIRED for search. Search keyword'),
+      word: z.string().optional().describe('REQUIRED for members. User search keyword'),
+      flash_ids: z.string().optional().describe(
+        'REQUIRED for interaction_stats. Comma-separated tweet flash IDs, e.g. "123,456,789" (max 50)'
+      ),
+      language: z.string().optional().describe('For latest/search: language filter (cn, en)'),
+      last_time: z.string().optional().describe('For latest/search: cursor for pagination (last item timestamp)'),
+      page_size: z.string().optional().describe('For latest/search: page size, default 20'),
+      page: z.string().optional().describe('For members: page number, default 1'),
+      size: z.string().optional().describe('For members: page size, default 20'),
+      ...maxItemsParam,
+    },
+    async ({ action, keyword, word, flash_ids, language, last_time, page_size, page, size, _max_items }) => {
+      try {
+        switch (action) {
+          case 'latest': {
+            const params: Record<string, string> = {};
+            if (language) params.language = language;
+            if (last_time) params.last_time = last_time;
+            if (page_size) params.page_size = page_size;
+            return okList(
+              await apiGet('/api/upgrade/v2/content/twitter/latest', params),
+              parseMax(_max_items, 20)
+            );
+          }
+          case 'search': {
+            if (!keyword) return err('keyword is required for search action');
+            const params: Record<string, string> = { keyword };
+            if (language) params.language = language;
+            if (last_time) params.last_time = last_time;
+            if (page_size) params.page_size = page_size;
+            return okList(
+              await apiGet('/api/upgrade/v2/content/twitter/search', params),
+              parseMax(_max_items, 20)
+            );
+          }
+          case 'members': {
+            if (!word) return err('word is required for members action');
+            const params: Record<string, string> = { word };
+            if (page) params.page = page;
+            if (size) params.size = size;
+            return okList(
+              await apiGet('/api/upgrade/v2/content/twitter/members', params),
+              parseMax(_max_items, 20)
+            );
+          }
+          case 'interaction_stats': {
+            if (!flash_ids) return err('flash_ids is required for interaction_stats action');
+            const ids = flash_ids.split(',').map(s => Number(s.trim())).filter(n => !isNaN(n));
+            if (ids.length === 0) return err('flash_ids must contain valid numeric IDs');
+            if (ids.length > 50) return err('flash_ids max 50 items');
+            return ok(await apiPost('/api/upgrade/v2/content/twitter/interaction-stats', { flash_ids: ids }));
           }
         }
       } catch (e) {
