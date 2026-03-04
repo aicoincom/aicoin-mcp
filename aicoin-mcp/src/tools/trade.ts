@@ -175,7 +175,18 @@ export function registerTradeTools(server: McpServer) {
           case 'balance': {
             const ex = getExchange(exchange, market_type);
             const bal = await ex.fetchBalance();
-            return ok({ total: bal.total, free: bal.free, used: bal.used });
+            // Return only non-zero balances for cleaner output
+            const summary: Record<string, unknown> = {};
+            for (const [ccy, amt] of Object.entries(bal.total || {})) {
+              if (Number(amt) > 0) {
+                summary[ccy] = { free: bal.free?.[ccy], used: bal.used?.[ccy], total: bal.total?.[ccy] };
+              }
+            }
+            // OKX unified account note
+            if (exchange?.toLowerCase() === 'okx') {
+              summary._note = 'OKX统一账户：现货和合约共用同一余额，无需划转。';
+            }
+            return ok(summary);
           }
           case 'positions': {
             const ex = getExchange(exchange, market_type || 'swap');
@@ -289,6 +300,18 @@ export function registerTradeTools(server: McpServer) {
           }
         }
         const order = await ex.createOrder(symbol, type, side, amount, price, params);
+        // For futures/swap, attach contract size context so callers know actual position
+        if (market_type && market_type !== 'spot') {
+          try {
+            await ex.loadMarkets();
+            const mkt = ex.markets[symbol];
+            if (mkt?.contractSize) {
+              (order as Record<string, unknown>)._contractSize = mkt.contractSize;
+              (order as Record<string, unknown>)._amountInBase = amount * mkt.contractSize;
+              (order as Record<string, unknown>)._unit = `${amount} contracts × ${mkt.contractSize} ${mkt.base}/contract = ${amount * mkt.contractSize} ${mkt.base}`;
+            }
+          } catch { /* ignore */ }
+        }
         return ok(order);
       } catch (e) {
         return err(e);
@@ -384,9 +407,25 @@ export function registerTradeTools(server: McpServer) {
     },
     async ({ exchange, code, amount, from_account, to_account, market_type }) => {
       try {
+        // OKX unified account: no transfer needed
+        if (exchange?.toLowerCase() === 'okx') {
+          return ok({
+            success: false,
+            reason: 'OKX_UNIFIED_ACCOUNT',
+            message: 'OKX 是统一账户，现货和合约共用同一个余额，不需要划转。直接下单即可。',
+          });
+        }
         const ex = getExchange(exchange, market_type);
-        return ok(await ex.transfer(code, amount, from_account, to_account));
+        // Normalize account names for CCXT (lowercase)
+        const from = from_account.toLowerCase();
+        const to = to_account.toLowerCase();
+        return ok(await ex.transfer(code, amount, from, to));
       } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        // Binance: API key lacks Universal Transfer permission
+        if (exchange?.toLowerCase().startsWith('binance') && (msg.includes('-1002') || msg.includes('not authorized'))) {
+          return err(`Binance 划转失败: API Key 没有万向划转(Universal Transfer)权限。请在 Binance API 管理后台开启「Permits Universal Transfer / 允许万向划转」权限。原始错误: ${msg}`);
+        }
         return err(e);
       }
     }

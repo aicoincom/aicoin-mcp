@@ -16,7 +16,9 @@ const BROKER_CONFIG: Record<
     options: {
       broker: {
         spot: 'x-MGFCMH4U',
+        margin: 'x-MGFCMH4U',
         future: 'x-FaeSBrMa',
+        swap: 'x-FaeSBrMa',
         delivery: 'x-FaeSBrMa',
       },
     },

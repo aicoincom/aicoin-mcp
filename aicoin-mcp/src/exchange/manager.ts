@@ -54,8 +54,11 @@ function buildOptions(config: ExchangeConfig & { skipAuth?: boolean }): Record<s
   if (sec) opts.secret = sec;
   if (pass) opts.password = pass;
 
-  const proxyUrl = process.env.PROXY_URL;
-  if (process.env.USE_PROXY === 'true' && proxyUrl) {
+  const proxyUrl = process.env.PROXY_URL
+    || process.env.HTTPS_PROXY || process.env.https_proxy
+    || process.env.HTTP_PROXY || process.env.http_proxy
+    || process.env.ALL_PROXY || process.env.all_proxy;
+  if (proxyUrl) {
     if (proxyUrl.startsWith('socks')) {
       let socksUrl = proxyUrl;
       if (socksUrl.startsWith('socks5://')) {
