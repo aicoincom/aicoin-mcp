@@ -1,0 +1,13 @@
+node_modules/
+build/
+.env
+*.log
+.DS_Store
+.mcp.json
+
+# Test reports & scripts
+**/TEST-REPORT.md
+**/TIER-ACCESS.md
+**/TIER-GUIDE.md
+**/tier-test-results.json
+**/test-*.mjs
