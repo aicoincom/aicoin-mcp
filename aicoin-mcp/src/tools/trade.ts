@@ -175,12 +175,16 @@ export function registerTradeTools(server: McpServer) {
           case 'balance': {
             const ex = getExchange(exchange, market_type);
             const bal = await ex.fetchBalance();
-            // Return only non-zero balances for cleaner output
+            // Return only non-zero balances, filter dust tokens for cleaner output
             const summary: Record<string, unknown> = {};
+            const stablecoins = ['USDT', 'USDC', 'BUSD', 'DAI', 'TUSD', 'FDUSD'];
             for (const [ccy, amt] of Object.entries(bal.total || {})) {
-              if (Number(amt) > 0) {
-                summary[ccy] = { free: bal.free?.[ccy], used: bal.used?.[ccy], total: bal.total?.[ccy] };
-              }
+              const total = Number(amt);
+              if (total <= 0) continue;
+              // Filter dust: stablecoins < $0.01, others < 1e-7
+              if (stablecoins.includes(ccy) && total < 0.01) continue;
+              if (!stablecoins.includes(ccy) && total < 1e-7) continue;
+              summary[ccy] = { free: bal.free?.[ccy], used: bal.used?.[ccy], total: bal.total?.[ccy] };
             }
             // OKX unified account note
             if (exchange?.toLowerCase() === 'okx') {
@@ -267,7 +271,7 @@ export function registerTradeTools(server: McpServer) {
   // #8 create_order (keep independent for trading safety)
   server.tool(
     'create_order',
-    'Place a new order (market or limit)',
+    'Place a new order (market or limit). For conditional SL/TP orders, use stop_loss_price or take_profit_price with type=market.',
     {
       exchange: z.string().describe('Exchange ID'),
       symbol: z.string().describe('Trading pair, e.g. BTC/USDT'),
@@ -277,9 +281,12 @@ export function registerTradeTools(server: McpServer) {
       price: z.number().positive().optional().describe('Limit price (required for limit orders)'),
       pos_side: z.enum(['long', 'short']).optional().describe('Position side for hedge mode: long/short'),
       margin_mode: z.enum(['cross', 'isolated']).optional().describe('Margin mode for derivatives: cross/isolated'),
+      stop_loss_price: z.number().positive().optional().describe('Stop-loss trigger price (creates conditional market order)'),
+      take_profit_price: z.number().positive().optional().describe('Take-profit trigger price (creates conditional market order)'),
+      reduce_only: z.boolean().optional().describe('Reduce-only flag for closing positions (SL/TP orders)'),
       market_type: marketTypePrivateSchema,
     },
-    async ({ exchange, symbol, type, side, amount, price, pos_side, margin_mode, market_type }) => {
+    async ({ exchange, symbol, type, side, amount, price, pos_side, margin_mode, stop_loss_price, take_profit_price, reduce_only, market_type }) => {
       try {
         if (type === 'limit' && price == null) {
           return err('price is required for limit orders');
@@ -299,6 +306,9 @@ export function registerTradeTools(server: McpServer) {
             params.tdMode = margin_mode;
           }
         }
+        if (stop_loss_price) params.stopLossPrice = stop_loss_price;
+        if (take_profit_price) params.takeProfitPrice = take_profit_price;
+        if (reduce_only) params.reduceOnly = true;
         const order = await ex.createOrder(symbol, type, side, amount, price, params);
         // For futures/swap, attach contract size context so callers know actual position
         if (market_type && market_type !== 'spot') {
