@@ -163,21 +163,31 @@ export function registerContentTools(server: McpServer) {
     }
   );
 
-  // #20 newsflash (2→1): search + detail (OpenData newsflash endpoints)
+  // #20 newsflash (3→1): search + list + detail (OpenData newsflash endpoints)
   server.tool(
     'newsflash',
-    'Newsflash / breaking news from AiCoin OpenData.\n• search — search newsflash by keyword. Requires: word\n• detail — single newsflash full content. Requires: flash_id',
+    'Newsflash / breaking news from AiCoin OpenData.\n• search — search newsflash by keyword. Requires: word\n• list — newsflash list with filters (date, category, importance)\n• detail — single newsflash full content. Requires: flash_id',
     {
-      action: z.enum(['search', 'detail']).describe(
-        'search: search by keyword; detail: full newsflash content'
+      action: z.enum(['search', 'list', 'detail']).describe(
+        'search: search by keyword; list: newsflash list with filters; detail: full newsflash content'
       ),
       word: z.string().optional().describe('REQUIRED for search. Search keyword'),
       flash_id: z.string().optional().describe('REQUIRED for detail. Newsflash ID'),
       page: z.string().optional().describe('For search: page number, default 1'),
       size: z.string().optional().describe('For search: page size, default 20'),
+      last_id: z.string().optional().describe('For list: cursor pagination, last item ID'),
+      pagesize: z.string().optional().describe('For list: page size, default 20, max 50'),
+      tab: z.string().optional().describe('For list: category tab (0-15)'),
+      only_important: z.string().optional().describe('For list: 1=important only, 0=all'),
+      lan: z.string().optional().describe('For list: language (cn, en)'),
+      platform_show: z.string().optional().describe('For list: source filter (aicoin, twitter)'),
+      date_mode: z.string().optional().describe('For list: date mode (normal, jump, range)'),
+      jump_to_date: z.string().optional().describe('For list: jump to date YYYY-MM-DD (date_mode=jump)'),
+      start_date: z.string().optional().describe('For list: start date YYYY-MM-DD (date_mode=range)'),
+      end_date: z.string().optional().describe('For list: end date YYYY-MM-DD (date_mode=range)'),
       ...maxItemsParam,
     },
-    async ({ action, word, flash_id, page, size, _max_items }) => {
+    async ({ action, word, flash_id, page, size, last_id, pagesize, tab, only_important, lan, platform_show, date_mode, jump_to_date, start_date, end_date, _max_items }) => {
       try {
         switch (action) {
           case 'search': {
@@ -187,6 +197,23 @@ export function registerContentTools(server: McpServer) {
             if (size) params.size = size;
             return okList(
               await apiGet('/api/upgrade/v2/content/newsflash/search', params),
+              parseMax(_max_items, 20)
+            );
+          }
+          case 'list': {
+            const params: Record<string, string> = {};
+            if (last_id) params.last_id = last_id;
+            if (pagesize) params.pagesize = pagesize;
+            if (tab) params.tab = tab;
+            if (only_important) params.only_important = only_important;
+            if (lan) params.lan = lan;
+            if (platform_show) params.platform_show = platform_show;
+            if (date_mode) params.date_mode = date_mode;
+            if (jump_to_date) params.jump_to_date = jump_to_date;
+            if (start_date) params.start_date = start_date;
+            if (end_date) params.end_date = end_date;
+            return okList(
+              await apiGet('/api/upgrade/v2/content/newsflash/list', params),
               parseMax(_max_items, 20)
             );
           }
