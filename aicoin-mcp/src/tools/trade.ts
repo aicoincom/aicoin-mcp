@@ -271,7 +271,7 @@ export function registerTradeTools(server: McpServer) {
   // #8 create_order (keep independent for trading safety)
   server.tool(
     'create_order',
-    'Place a new order (market or limit). For conditional SL/TP orders, use stop_loss_price or take_profit_price with type=market.',
+    'Place a new order (market or limit). Default returns a PREVIEW (confirmed=false). Set confirmed=true to actually execute. For conditional SL/TP orders, use stop_loss_price or take_profit_price with type=market.',
     {
       exchange: z.string().describe('Exchange ID'),
       symbol: z.string().describe('Trading pair, e.g. BTC/USDT'),
@@ -279,6 +279,7 @@ export function registerTradeTools(server: McpServer) {
       side: z.enum(['buy', 'sell']).describe('Order side'),
       amount: z.number().positive().describe('Order amount'),
       price: z.number().positive().optional().describe('Limit price (required for limit orders)'),
+      confirmed: z.boolean().optional().default(false).describe('false (default) = preview only, true = execute order'),
       pos_side: z.enum(['long', 'short']).optional().describe('Position side for hedge mode: long/short'),
       margin_mode: z.enum(['cross', 'isolated']).optional().describe('Margin mode for derivatives: cross/isolated'),
       stop_loss_price: z.number().positive().optional().describe('Stop-loss trigger price (creates conditional market order)'),
@@ -286,11 +287,53 @@ export function registerTradeTools(server: McpServer) {
       reduce_only: z.boolean().optional().describe('Reduce-only flag for closing positions (SL/TP orders)'),
       market_type: marketTypePrivateSchema,
     },
-    async ({ exchange, symbol, type, side, amount, price, pos_side, margin_mode, stop_loss_price, take_profit_price, reduce_only, market_type }) => {
+    async ({ exchange, symbol, type, side, amount, price, confirmed, pos_side, margin_mode, stop_loss_price, take_profit_price, reduce_only, market_type }) => {
       try {
         if (type === 'limit' && price == null) {
           return err('price is required for limit orders');
         }
+
+        // Preview mode: load market data and return order summary without executing
+        if (!confirmed) {
+          const pub = getExchange(exchange, market_type, { skipAuth: true });
+          await pub.loadMarkets();
+          const mkt = pub.markets[symbol];
+          if (!mkt) return err(`Symbol '${symbol}' not found on ${exchange}`);
+
+          const ticker = await pub.fetchTicker(symbol);
+          const currentPrice = ticker.last ?? ticker.close ?? 0;
+          const orderPrice = type === 'limit' ? price! : currentPrice;
+          const contractSize = mkt.contractSize ?? 1;
+          const isDerivative = market_type && market_type !== 'spot';
+          const amountInBase = isDerivative ? amount * contractSize : amount;
+          const notional = amountInBase * orderPrice;
+
+          const preview: Record<string, unknown> = {
+            _preview: true,
+            _confirm_hint: 'Set confirmed=true to execute this order',
+            exchange,
+            symbol,
+            type,
+            side,
+            amount,
+            price: orderPrice,
+            current_price: currentPrice,
+            notional_value: `${notional.toFixed(2)} ${mkt.quote}`,
+          };
+          if (isDerivative && contractSize !== 1) {
+            preview.contract_size = contractSize;
+            preview.amount_in_base = `${amountInBase} ${mkt.base}`;
+            preview.unit = `${amount} contracts × ${contractSize} ${mkt.base}/contract = ${amountInBase} ${mkt.base}`;
+          }
+          if (mkt.limits?.amount?.min) preview.min_amount = mkt.limits.amount.min;
+          if (stop_loss_price) preview.stop_loss_price = stop_loss_price;
+          if (take_profit_price) preview.take_profit_price = take_profit_price;
+          if (pos_side) preview.pos_side = pos_side;
+          if (reduce_only) preview.reduce_only = true;
+          return ok(preview);
+        }
+
+        // Execution mode
         const ex = getExchange(exchange, market_type);
         const params: Record<string, unknown> = {};
         const isBinance = exchange?.toLowerCase().startsWith('binance');

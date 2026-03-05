@@ -41,12 +41,12 @@ const BROKER_CONFIG: Record<
     headers: {},
   },
   bybit: {
-    options: {},
-    headers: { Referer: 'AiCoin' },
+    options: { brokerId: 'AiCoin' },
+    headers: {},
   },
   bitget: {
-    options: {},
-    headers: { 'X-CHANNEL-API-CODE': 'tpequ' },
+    options: { broker: 'tpequ' },
+    headers: {},
   },
   gate: {
     options: {},

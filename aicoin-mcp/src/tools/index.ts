@@ -11,6 +11,8 @@ import { registerHyperliquidTools } from './hyperliquid.js';
 import { registerGuideTools } from './guide.js';
 import { registerFreqtradeTools } from './freqtrade.js';
 import { registerFreqtradeDevTools } from './freqtrade-dev.js';
+import { registerFtDeployTools } from './ft-deploy.js';
+import { registerAutoTradeTools } from './auto-trade.js';
 
 export function registerAllTools(server: McpServer) {
   registerTradeTools(server);
@@ -22,4 +24,6 @@ export function registerAllTools(server: McpServer) {
   registerGuideTools(server);
   registerFreqtradeTools(server);
   registerFreqtradeDevTools(server);
+  registerFtDeployTools(server);
+  registerAutoTradeTools(server);
 }
