@@ -35,7 +35,7 @@ export function registerTradeTools(server: McpServer) {
   // #1 exchange_info
   server.tool(
     'exchange_info',
-    'Exchange info via CCXT. Supports: Binance, OKX, Bybit, Bitget, Gate.io, Huobi, Hyperliquid.\n• exchanges — list all supported exchanges\n• markets — trading pairs on exchange. Requires: exchange\nNote: Hyperliquid is a DEX, symbol format uses USDC: BTC/USDC:USDC, ETH/USDC:USDC.',
+    'Exchange info via CCXT. Supports: Binance, OKX, Bybit, Bitget, Gate.io, HTX, Pionex, Hyperliquid.\n• exchanges — list all supported exchanges\n• markets — trading pairs on exchange. Requires: exchange\nNote: Hyperliquid is a DEX, symbol format uses USDC: BTC/USDC:USDC, ETH/USDC:USDC.',
     {
       action: z.enum(['exchanges', 'markets']).describe(
         'exchanges: list all supported exchanges; markets: trading pairs on an exchange'
@@ -81,7 +81,7 @@ export function registerTradeTools(server: McpServer) {
     'exchange_ticker',
     'Exchange ticker via CCXT. Requires: exchange.\n• Single ticker: provide symbol\n• Multiple tickers: provide symbols array or omit for all',
     {
-      exchange: z.string().describe('Exchange ID, e.g. binance, okx, bybit, bitget, gate, huobi, hyperliquid'),
+      exchange: z.string().describe('Exchange ID, e.g. binance, okx, bybit, bitget, gate, htx, pionex, hyperliquid'),
       symbol: z.string().describe('Trading pair, e.g. BTC/USDT (CEX) or BTC/USDC:USDC (Hyperliquid)'),
       symbols: z.array(z.string()).optional().describe('Multiple pairs, e.g. ["BTC/USDT","ETH/USDT"]'),
       market_type: marketTypeSchema,

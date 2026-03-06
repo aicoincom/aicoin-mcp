@@ -25,7 +25,7 @@ export function registerGuideTools(server: McpServer) {
         .string()
         .optional()
         .describe(
-          'For trade_setup: target exchange (binance, okx, bybit, bitget, gate, huobi, pionex, hyperliquid)'
+          'For trade_setup: target exchange (binance, okx, bybit, bitget, gate, htx, pionex, hyperliquid)'
         ),
     },
     async ({ action, current_error, endpoint, exchange }) => {
