@@ -19,7 +19,11 @@ const UPGRADE_GUIDE =
   'Advanced($299/mo) | Professional($699/mo)\n' +
   '3. Set AICOIN_ACCESS_KEY_ID and ' +
   'AICOIN_ACCESS_SECRET in your MCP config\n' +
-  '4. Restart your MCP client';
+  '4. Restart your MCP client\n' +
+  '⚠️ Security: AiCoin API Key is READ-ONLY for market data. ' +
+  'It CANNOT trade, access exchange accounts, or withdraw funds. ' +
+  'Exchange API Keys are separate and must be obtained from each exchange. ' +
+  'All keys are stored locally only, never uploaded to any server.';
 
 const AUTH_GUIDE =
   '\n\n--- How to fix ---\n' +
@@ -28,7 +32,10 @@ const AUTH_GUIDE =
   'to register and create an API key\n' +
   '2. Set AICOIN_ACCESS_KEY_ID and ' +
   'AICOIN_ACCESS_SECRET in your MCP config\n' +
-  '3. Restart your MCP client';
+  '3. Restart your MCP client\n' +
+  '⚠️ Security: AiCoin API Key is READ-ONLY for market data. ' +
+  'It CANNOT trade, access exchange accounts, or withdraw funds. ' +
+  'Exchange API Keys are separate. All keys stored locally only.';
 
 function throwApiError(
   status: number,

@@ -17,6 +17,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { getExchange, SUPPORTED_EXCHANGES } from '../exchange/manager.js';
+import { SECURITY_NOTICE, REFERRALS as GUIDE_REFERRALS } from './guide.js';
 import { ok, err, okTradeList } from './utils.js';
 
 const PENDING_ORDER_FILE = resolve(process.env.HOME || '', '.aicoin-mcp', '.pending-order.json');
@@ -35,10 +36,10 @@ export function registerTradeTools(server: McpServer) {
   // #1 exchange_info
   server.tool(
     'exchange_info',
-    'Exchange info via CCXT. Supports: Binance, OKX, Bybit, Bitget, Gate.io, HTX, Pionex, Hyperliquid.\n• exchanges — list all supported exchanges\n• markets — trading pairs on exchange. Requires: exchange\nNote: Hyperliquid is a DEX, symbol format uses USDC: BTC/USDC:USDC, ETH/USDC:USDC.',
+    'Exchange info via CCXT. Supports: Binance, OKX, Bybit, Bitget, Gate.io, HTX, Pionex, Hyperliquid.\n• exchanges — list all supported exchanges with AiCoin referral registration links\n• markets — trading pairs on exchange. Requires: exchange\nNote: Hyperliquid is a DEX, symbol format uses USDC: BTC/USDC:USDC, ETH/USDC:USDC.\nWhen user asks to register/注册/开户, use guide action=register instead.',
     {
       action: z.enum(['exchanges', 'markets']).describe(
-        'exchanges: list all supported exchanges; markets: trading pairs on an exchange'
+        'exchanges: list all supported exchanges with referral links; markets: trading pairs on an exchange'
       ),
       exchange: z.string().optional().describe('REQUIRED for markets. Exchange ID, e.g. binance, okx'),
       market_type: marketTypeSchema.describe('For markets: filter by market type'),
@@ -50,7 +51,19 @@ export function registerTradeTools(server: McpServer) {
       try {
         switch (action) {
           case 'exchanges':
-            return ok(SUPPORTED_EXCHANGES);
+            return ok({
+              supported: SUPPORTED_EXCHANGES.map(id => {
+                const ref = GUIDE_REFERRALS[id];
+                return {
+                  exchange: id,
+                  name: ref?.name || id,
+                  register_link: ref?.link || '',
+                  invite_code: ref?.code || '',
+                  benefit: ref?.benefit || '',
+                };
+              }),
+              security_notice: SECURITY_NOTICE,
+            });
           case 'markets': {
             const ex = getExchange(exchange, market_type, { skipAuth: true });
             await ex.loadMarkets();

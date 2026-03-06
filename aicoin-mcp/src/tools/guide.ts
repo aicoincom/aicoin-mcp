@@ -1,17 +1,41 @@
 /**
  * Guide tools - help users with auth, registration, and setup
  * Merged: guide_get_api_key + guide_upgrade_tier + guide_setup_ccxt_trade → guide (3→1)
+ * + register: exchange registration with AiCoin referral links
  */
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
+// AiCoin referral links
+export const REFERRALS: Record<string, { name: string; code: string; benefit: string; link: string; type: 'CEX' | 'DEX' }> = {
+  okx:         { name: 'OKX',         code: 'aicoin20',  benefit: '永久返20%手续费', link: 'https://jump.do/zh-Hans/xlink-proxy?id=2', type: 'CEX' },
+  binance:     { name: 'Binance',     code: 'aicoin668', benefit: '返10% + $500',   link: 'https://jump.do/zh-Hans/xlink-proxy?id=3', type: 'CEX' },
+  bitget:      { name: 'Bitget',      code: 'hktb3191',  benefit: '返10%手续费',     link: 'https://jump.do/zh-Hans/xlink-proxy?id=6', type: 'CEX' },
+  htx:         { name: 'HTX',         code: 'j2us6223',  benefit: '',               link: 'https://jump.do/zh-Hans/xlink-proxy?id=4', type: 'CEX' },
+  gate:        { name: 'Gate.io',     code: 'AICOINGO',  benefit: '',               link: 'https://jump.do/zh-Hans/xlink-proxy?id=5', type: 'CEX' },
+  bitmart:     { name: 'Bitmart',     code: 'cBMfHE',    benefit: '',               link: 'https://jump.do/zh-Hans/xlink-proxy?id=13', type: 'CEX' },
+  bybit:       { name: 'Bybit',       code: '34429',     benefit: '',               link: 'https://jump.do/zh-Hans/xlink-proxy?id=15', type: 'CEX' },
+  pionex:      { name: 'Pionex',      code: '4vgi0zUF',  benefit: '',               link: 'https://www.pionex.com/zh-CN/signUp?r=4vgi0zUF', type: 'CEX' },
+  okx_dex:     { name: 'OKX DEX',     code: 'AICOIN88',  benefit: '返20%手续费',     link: 'https://web3.okx.com/ul/joindex?ref=AICOIN88', type: 'DEX' },
+  binance_dex: { name: 'Binance DEX', code: 'SEPRFR9Q',  benefit: '返10%手续费',     link: 'https://web3.binance.com/referral?ref=SEPRFR9Q', type: 'DEX' },
+  hyperliquid: { name: 'Hyperliquid', code: 'AICOIN88',  benefit: '返4%手续费',      link: 'https://app.hyperliquid.xyz/join/AICOIN88', type: 'DEX' },
+  aster:       { name: 'Aster',       code: '9C50e2',    benefit: '返5%手续费',      link: 'https://www.asterdex.com/zh-CN/referral/9C50e2', type: 'DEX' },
+};
+
+const EXCHANGE_ALIASES: Record<string, string> = {
+  '币安': 'binance', '火币': 'htx', '派网': 'pionex', 'hl': 'hyperliquid',
+  'gateio': 'gate', 'gate.io': 'gate', 'huobi': 'htx',
+};
+
+export const SECURITY_NOTICE = '⚠️ AiCoin API Key 与交易所 API Key 是完全独立的两套密钥：(1) AiCoin API Key 仅用于获取市场数据（行情、K线、资金费率等），无法进行任何交易操作，也无法读取你在交易所的任何信息。(2) 交易所 API Key 需要单独到各交易所后台申请和授权。(3) 所有密钥仅保存在本地设备中，不会上传到任何服务器。';
+
 export function registerGuideTools(server: McpServer) {
   server.tool(
     'guide',
-    'Setup guides. Actions: api_key (get AiCoin API key), upgrade (tier comparison), trade_setup (exchange trading setup)',
+    'Setup guides & exchange registration.\n• api_key — get AiCoin API key (includes security notice)\n• upgrade — tier comparison\n• trade_setup — exchange trading setup\n• register — exchange registration with AiCoin referral links & invite codes. Use when user asks to register/注册/开户 on any exchange.',
     {
-      action: z.enum(['api_key', 'upgrade', 'trade_setup']).describe(
-        'api_key: register & get API key; upgrade: tier comparison & upgrade; trade_setup: exchange trading setup'
+      action: z.enum(['api_key', 'upgrade', 'trade_setup', 'register']).describe(
+        'api_key: register & get API key; upgrade: tier comparison; trade_setup: exchange trading setup; register: exchange registration with referral link'
       ),
       current_error: z
         .string()
@@ -25,7 +49,7 @@ export function registerGuideTools(server: McpServer) {
         .string()
         .optional()
         .describe(
-          'For trade_setup: target exchange (binance, okx, bybit, bitget, gate, htx, pionex, hyperliquid)'
+          'For trade_setup/register: target exchange (binance, okx, bybit, bitget, gate, htx, pionex, hyperliquid)'
         ),
     },
     async ({ action, current_error, endpoint, exchange }) => {
@@ -36,6 +60,8 @@ export function registerGuideTools(server: McpServer) {
           return { content: [{ type: 'text', text: getUpgradeGuide(current_error, endpoint) }] };
         case 'trade_setup':
           return { content: [{ type: 'text', text: getTradeSetupGuide(exchange) }] };
+        case 'register':
+          return { content: [{ type: 'text', text: getRegisterGuide(exchange) }] };
       }
     }
   );
@@ -83,7 +109,10 @@ Add them to your MCP client config:
 }
 \`\`\`
 
-After updating the config, restart your MCP client to apply.`;
+After updating the config, restart your MCP client to apply.
+
+## Security Notice / 安全说明
+${SECURITY_NOTICE}`;
 }
 
 function getUpgradeGuide(currentError?: string, endpoint?: string): string {
@@ -208,5 +237,49 @@ ${envJson},
 - API keys are stored in your local MCP config only
 - Never share your secret key with anyone
 - Enable IP whitelist on the exchange if possible
-- For trading, enable "Trade" permission; disable "Withdraw"`;
+- For trading, enable "Trade" permission; disable "Withdraw"
+- ${SECURITY_NOTICE}
+
+## Register with AiCoin Referral (Fee Discount)
+${(() => { const ref = REFERRALS[ex]; return ref ? `Register ${ref.name}: ${ref.link}\nInvite code: ${ref.code}${ref.benefit ? ' (' + ref.benefit + ')' : ''}` : 'Use guide action=register for referral links'; })()}`;
+}
+
+function getRegisterGuide(exchange?: string): string {
+  if (!exchange) {
+    // List all exchanges with referral links
+    const cex = Object.entries(REFERRALS).filter(([, v]) => v.type === 'CEX');
+    const dex = Object.entries(REFERRALS).filter(([, v]) => v.type === 'DEX');
+    let text = '# Exchange Registration (AiCoin Referral Links)\n\nUse these links to register and get fee discounts.\n\n## CEX (Centralized Exchanges)\n\n| Exchange | Invite Code | Benefits | Registration Link |\n|----------|-------------|----------|-------------------|\n';
+    for (const [, ref] of cex) {
+      text += `| ${ref.name} | ${ref.code} | ${ref.benefit || '-'} | ${ref.link} |\n`;
+    }
+    text += '\n## DEX (Decentralized Exchanges)\n\n| Exchange | Invite Code | Benefits | Registration Link |\n|----------|-------------|----------|-------------------|\n';
+    for (const [, ref] of dex) {
+      text += `| ${ref.name} | ${ref.code} | ${ref.benefit || '-'} | ${ref.link} |\n`;
+    }
+    text += `\n## Security Notice / 安全说明\n${SECURITY_NOTICE}`;
+    return text;
+  }
+
+  const key = EXCHANGE_ALIASES[exchange.toLowerCase()] || exchange.toLowerCase().replace(/[\s.]/g, '');
+  const ref = REFERRALS[key];
+  if (!ref) {
+    return `Exchange '${exchange}' not found. Available: ${Object.keys(REFERRALS).join(', ')}\nAliases: 币安=binance, 火币=htx, 派网=pionex, hl=hyperliquid`;
+  }
+
+  return `# Register ${ref.name} (AiCoin Referral)
+
+**Registration Link**: ${ref.link}
+**Invite Code**: ${ref.code}
+${ref.benefit ? `**Benefits**: ${ref.benefit}` : ''}
+
+## Steps
+1. Open the registration link above
+2. Choose phone or email registration
+3. Enter verification code and set password
+4. Complete identity verification (KYC)
+5. If you need API trading, go to API Management to create API key, then configure in MCP env
+
+## Security Notice / 安全说明
+${SECURITY_NOTICE}`;
 }
