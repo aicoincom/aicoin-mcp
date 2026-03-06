@@ -227,4 +227,101 @@ export function registerContentTools(server: McpServer) {
       }
     }
   );
+
+  // #21 airdrop (8→1): list + exchanges + banner + finished + calendar + detail + cryptorank_list + cryptorank_detail
+  server.tool(
+    'airdrop',
+    'Crypto airdrop data.\n• list — airdrop projects list with exchange/type filters\n• exchanges — available exchanges and activity types\n• banner — hot airdrop banners\n• finished — completed airdrop projects\n• calendar — airdrop calendar. Requires: year + month\n• detail — airdrop detail. Requires: detail_type (hodler/xlaunch) + token\n• cryptorank_list — CryptoRank airdrop list\n• cryptorank_detail — CryptoRank airdrop detail. Requires: token',
+    {
+      action: z.enum(['list', 'exchanges', 'banner', 'finished', 'calendar', 'detail', 'cryptorank_list', 'cryptorank_detail']).describe(
+        'list: airdrop list; exchanges: exchange list; banner: hot banners; finished: completed; calendar: calendar; detail: project detail; cryptorank_list: CryptoRank list; cryptorank_detail: CryptoRank detail'
+      ),
+      detail_type: z.string().optional().describe('REQUIRED for detail. Type: hodler or xlaunch'),
+      token: z.string().optional().describe('REQUIRED for detail/cryptorank_detail. Project token identifier'),
+      year: z.string().optional().describe('REQUIRED for calendar. Year (2020-2030)'),
+      month: z.string().optional().describe('REQUIRED for calendar. Month (1-12)'),
+      page: z.string().optional().describe('For list/finished/cryptorank_list: page number, default 1'),
+      page_size: z.string().optional().describe('For list/finished/cryptorank_list: page size, default 20'),
+      exchange: z.string().optional().describe('For list/finished: exchange filter (binance, okx, bitget, bybit)'),
+      activity_type: z.string().optional().describe('For list/finished: activity type (alpha, hodler, launchpool, xlaunch)'),
+      status: z.string().optional().describe('For cryptorank_list: status filter'),
+      limit: z.string().optional().describe('For banner: number of banners, default 5'),
+      lan: z.string().optional().describe('Language: cn, en, tc'),
+      ...maxItemsParam,
+    },
+    async ({ action, detail_type, token, year, month, page, page_size, exchange, activity_type, status, limit, lan, _max_items }) => {
+      try {
+        switch (action) {
+          case 'list': {
+            const params: Record<string, string> = {};
+            if (page) params.page = page;
+            if (page_size) params.page_size = page_size;
+            if (exchange) params.exchange = exchange;
+            if (activity_type) params.activity_type = activity_type;
+            if (lan) params.lan = lan;
+            return okList(
+              await apiGet('/api/upgrade/v2/content/airdrop/list', params),
+              parseMax(_max_items, 20)
+            );
+          }
+          case 'exchanges': {
+            const params: Record<string, string> = {};
+            if (lan) params.lan = lan;
+            return ok(await apiGet('/api/upgrade/v2/content/airdrop/exchanges', params));
+          }
+          case 'banner': {
+            const params: Record<string, string> = {};
+            if (limit) params.limit = limit;
+            if (lan) params.lan = lan;
+            return ok(await apiGet('/api/upgrade/v2/content/airdrop/banner', params));
+          }
+          case 'finished': {
+            const params: Record<string, string> = {};
+            if (page) params.page = page;
+            if (page_size) params.page_size = page_size;
+            if (exchange) params.exchange = exchange;
+            if (activity_type) params.activity_type = activity_type;
+            if (lan) params.lan = lan;
+            return okList(
+              await apiGet('/api/upgrade/v2/content/airdrop/finished', params),
+              parseMax(_max_items, 20)
+            );
+          }
+          case 'calendar': {
+            if (!year) return err('year is required for calendar action');
+            if (!month) return err('month is required for calendar action');
+            const params: Record<string, string> = { year, month };
+            if (lan) params.lan = lan;
+            return ok(await apiGet('/api/upgrade/v2/content/airdrop/calendar', params));
+          }
+          case 'detail': {
+            if (!detail_type) return err('detail_type is required for detail action (hodler or xlaunch)');
+            if (!token) return err('token is required for detail action');
+            const params: Record<string, string> = { detail_type, token };
+            if (lan) params.lan = lan;
+            return ok(await apiGet('/api/upgrade/v2/content/airdrop/detail', params));
+          }
+          case 'cryptorank_list': {
+            const params: Record<string, string> = {};
+            if (page) params.page = page;
+            if (page_size) params.page_size = page_size;
+            if (status) params.status = status;
+            if (lan) params.lan = lan;
+            return okList(
+              await apiGet('/api/upgrade/v2/content/airdrop/cryptorank/list', params),
+              parseMax(_max_items, 20)
+            );
+          }
+          case 'cryptorank_detail': {
+            if (!token) return err('token is required for cryptorank_detail action');
+            const params: Record<string, string> = { token };
+            if (lan) params.lan = lan;
+            return ok(await apiGet('/api/upgrade/v2/content/airdrop/cryptorank/detail', params));
+          }
+        }
+      } catch (e) {
+        return err(e);
+      }
+    }
+  );
 }
