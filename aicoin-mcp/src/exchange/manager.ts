@@ -8,7 +8,7 @@ import { getBrokerOptions } from './broker.js';
 export const SUPPORTED_EXCHANGES = [
   'binance', 'binanceusdm', 'binancecoinm',
   'okx', 'bybit', 'bitget', 'gate',
-  'huobi', 'hyperliquid',
+  'htx', 'kucoin', 'mexc', 'coinbase', 'hyperliquid',
 ];
 
 const cache: Record<string, ccxt.Exchange> = {};

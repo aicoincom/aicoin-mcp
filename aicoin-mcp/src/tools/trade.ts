@@ -35,7 +35,7 @@ export function registerTradeTools(server: McpServer) {
   // #1 exchange_info
   server.tool(
     'exchange_info',
-    'Exchange info via CCXT.\n• exchanges — list all supported exchanges, no params needed\n• markets — trading pairs on exchange. Requires: exchange',
+    'Exchange info via CCXT. Supports: Binance, OKX, Bybit, Bitget, Gate.io, Huobi, Hyperliquid.\n• exchanges — list all supported exchanges\n• markets — trading pairs on exchange. Requires: exchange\nNote: Hyperliquid is a DEX, symbol format uses USDC: BTC/USDC:USDC, ETH/USDC:USDC.',
     {
       action: z.enum(['exchanges', 'markets']).describe(
         'exchanges: list all supported exchanges; markets: trading pairs on an exchange'
@@ -81,8 +81,8 @@ export function registerTradeTools(server: McpServer) {
     'exchange_ticker',
     'Exchange ticker via CCXT. Requires: exchange.\n• Single ticker: provide symbol\n• Multiple tickers: provide symbols array or omit for all',
     {
-      exchange: z.string().describe('Exchange ID, e.g. binance, okx, bybit'),
-      symbol: z.string().optional().describe('Single trading pair, e.g. BTC/USDT'),
+      exchange: z.string().describe('Exchange ID, e.g. binance, okx, bybit, bitget, gate, huobi, hyperliquid'),
+      symbol: z.string().describe('Trading pair, e.g. BTC/USDT (CEX) or BTC/USDC:USDC (Hyperliquid)'),
       symbols: z.array(z.string()).optional().describe('Multiple pairs, e.g. ["BTC/USDT","ETH/USDT"]'),
       market_type: marketTypeSchema,
     },
@@ -110,7 +110,7 @@ export function registerTradeTools(server: McpServer) {
         'orderbook: order book depth; trades: recent trades; ohlcv: candlestick K-line'
       ),
       exchange: z.string().describe('Exchange ID'),
-      symbol: z.string().describe('Trading pair, e.g. BTC/USDT'),
+      symbol: z.string().describe('Trading pair, e.g. BTC/USDT or BTC/USDC:USDC (Hyperliquid)'),
       market_type: marketTypeSchema,
       limit: z.number().optional().describe('Number of records (orderbook default 20, trades default 50, ohlcv default 100, max 1000)'),
       timeframe: z.string().optional().default('1d').describe('For ohlcv: timeframe 1m,5m,15m,1h,4h,1d,1w'),
@@ -167,7 +167,7 @@ export function registerTradeTools(server: McpServer) {
   // #5 account_status
   server.tool(
     'account_status',
-    'Account status. Requires: exchange.\n• balance — account balance\n• positions — open futures/swap positions',
+    'Account status. Requires: exchange. Supports CEX and Hyperliquid (DEX, requires wallet address as HYPERLIQUID_API_KEY + private key as HYPERLIQUID_API_SECRET).\n• balance — account balance\n• positions — open futures/swap positions',
     {
       action: z.enum(['balance', 'positions']).describe(
         'balance: account balance; positions: open positions (futures/swap)'
@@ -278,10 +278,10 @@ export function registerTradeTools(server: McpServer) {
   // #8 create_order (keep independent for trading safety)
   server.tool(
     'create_order',
-    'Place a new order (market or limit). Default returns a PREVIEW (confirmed=false). Set confirmed=true to actually execute. For conditional SL/TP orders, use stop_loss_price or take_profit_price with type=market.',
+    'Place a new order (market or limit). Default returns a PREVIEW (confirmed=false). Set confirmed=true to actually execute after user confirms. Supports CEX (Binance, OKX, Bybit, etc.) and DEX (Hyperliquid — use BTC/USDC:USDC format). For conditional SL/TP orders, use stop_loss_price or take_profit_price with type=market.',
     {
       exchange: z.string().describe('Exchange ID'),
-      symbol: z.string().describe('Trading pair, e.g. BTC/USDT'),
+      symbol: z.string().describe('Trading pair, e.g. BTC/USDT or BTC/USDC:USDC (Hyperliquid)'),
       type: z.enum(['market', 'limit']).describe('Order type'),
       side: z.enum(['buy', 'sell']).describe('Order side'),
       amount: z.number().positive().describe('Order amount'),
@@ -409,7 +409,7 @@ export function registerTradeTools(server: McpServer) {
     'Cancel orders. Set cancel_all=true to cancel all open orders for a symbol.',
     {
       exchange: z.string().describe('Exchange ID'),
-      symbol: z.string().describe('Trading pair, e.g. BTC/USDT'),
+      symbol: z.string().describe('Trading pair, e.g. BTC/USDT or BTC/USDC:USDC (Hyperliquid)'),
       order_id: z.string().optional().describe('Order ID to cancel (not needed if cancel_all=true)'),
       cancel_all: z.boolean().optional().default(false).describe('Cancel all open orders for the symbol'),
       market_type: marketTypePrivateSchema,

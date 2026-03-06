@@ -58,6 +58,12 @@ const BROKER_CONFIG: Record<
     },
     headers: {},
   },
+  htx: {
+    options: {
+      broker: { id: 'AAf0e4f2ef' },
+    },
+    headers: {},
+  },
   pionex: {
     options: { brokerId: 'AiCoin2023' },
     headers: {},

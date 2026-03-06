@@ -132,22 +132,30 @@ function getExchangeGuide(ex: string): string {
     pionex:
       '1. Log in to https://www.pionex.com\n2. Go to Account → API Management\n3. Create API key',
     hyperliquid:
-      '1. Visit https://app.hyperliquid.xyz\n2. Connect your wallet\n3. Go to API → Generate API Key',
+      '1. Hyperliquid is a **DEX** — NO API key page. Auth uses your EVM wallet.\n2. `HYPERLIQUID_API_KEY` = your wallet address (the 0x... shown in MetaMask/Rabby)\n3. `HYPERLIQUID_API_SECRET` = your private key. Two options:\n   - **Agent Wallet (recommended)**: On https://app.hyperliquid.xyz → Settings → Agent Wallet → Create. Limited-permission key (trade only, cannot withdraw).\n   - **Wallet private key**: Export from MetaMask (Settings → Security → Export Private Key). Full permissions — use with caution.\n4. Symbol format: use USDC, NOT USDT — e.g. `BTC/USDC:USDC`, `ETH/USDC:USDC`',
   };
   return guides[ex] || guides.binance;
 }
 
 function getTradeSetupGuide(exchange?: string): string {
   const ex = exchange?.toLowerCase() || 'binance';
+  const isHL = ex === 'hyperliquid';
   const needsPass = ex === 'okx' || ex === 'bitget';
   const EX = ex.toUpperCase();
 
-  let keyBlock = `${EX}_API_KEY=your_api_key\n${EX}_SECRET=your_secret`;
-  if (needsPass) keyBlock += `\n${EX}_PASSPHRASE=your_passphrase`;
+  let keyBlock: string;
+  let envJson: string;
 
-  let envJson = `        "${EX}_API_KEY": "<your_api_key>",\n        "${EX}_SECRET": "<your_secret>"`;
-  if (needsPass) {
-    envJson += `,\n        "${EX}_PASSPHRASE": "<your_passphrase>"`;
+  if (isHL) {
+    keyBlock = `# Hyperliquid (DEX — wallet-based, NOT API key)\nHYPERLIQUID_API_KEY=0x1234...your_wallet_address\nHYPERLIQUID_API_SECRET=0xabcd...your_private_key`;
+    envJson = `        "HYPERLIQUID_API_KEY": "<your 0x... wallet address>",\n        "HYPERLIQUID_API_SECRET": "<your 0x... private key>"`;
+  } else {
+    keyBlock = `${EX}_API_KEY=your_api_key\n${EX}_API_SECRET=your_secret`;
+    if (needsPass) keyBlock += `\n${EX}_PASSWORD=your_passphrase`;
+    envJson = `        "${EX}_API_KEY": "<your_api_key>",\n        "${EX}_API_SECRET": "<your_secret>"`;
+    if (needsPass) {
+      envJson += `,\n        "${EX}_PASSWORD": "<your_passphrase>"`;
+    }
   }
 
   return `# AiCoin Trade MCP Setup Guide (CCXT)
