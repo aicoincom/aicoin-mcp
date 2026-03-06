@@ -28,9 +28,9 @@ function buildOptions(config: ExchangeConfig & { skipAuth?: boolean }): Record<s
   const id = exchangeId.toLowerCase();
 
   const key = skipAuth ? undefined : (apiKey || process.env[`${id.toUpperCase()}_API_KEY`]);
-  const sec = skipAuth ? undefined : (secret || process.env[`${id.toUpperCase()}_SECRET`]);
+  const sec = skipAuth ? undefined : (secret || process.env[`${id.toUpperCase()}_API_SECRET`] || process.env[`${id.toUpperCase()}_SECRET`]);
   const pass = skipAuth ? undefined :
-    (passphrase || process.env[`${id.toUpperCase()}_PASSPHRASE`]);
+    (passphrase || process.env[`${id.toUpperCase()}_PASSWORD`] || process.env[`${id.toUpperCase()}_PASSPHRASE`]);
 
   const broker = getBrokerOptions(id);
   const timeout = Number(process.env.EXCHANGE_TIMEOUT) || 30000;

@@ -14,8 +14,12 @@
  */
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { getExchange, SUPPORTED_EXCHANGES } from '../exchange/manager.js';
 import { ok, err, okTradeList } from './utils.js';
+
+const PENDING_ORDER_FILE = resolve(process.env.HOME || '', '.aicoin-mcp', '.pending-order.json');
 
 const marketTypeSchema = z
   .enum(['spot', 'future', 'swap'])
@@ -56,6 +60,9 @@ export function registerTradeTools(server: McpServer) {
               quote: m.quote,
               type: m.type,
               active: m.active,
+              contractSize: m.contractSize || null,
+              limits: m.limits || null,
+              precision: m.precision || null,
             }));
             if (market_type) markets = markets.filter(m => m.type === market_type);
             if (base) markets = markets.filter(m => m.base === base.toUpperCase());
@@ -293,79 +300,103 @@ export function registerTradeTools(server: McpServer) {
           return err('price is required for limit orders');
         }
 
-        // Preview mode: load market data and return order summary without executing
-        if (!confirmed) {
-          const pub = getExchange(exchange, market_type, { skipAuth: true });
-          await pub.loadMarkets();
-          const mkt = pub.markets[symbol];
-          if (!mkt) return err(`Symbol '${symbol}' not found on ${exchange}`);
+        // Confirmation mode: read pending order from file and execute
+        if (confirmed) {
+          let pending: Record<string, unknown>;
+          try { pending = JSON.parse(readFileSync(PENDING_ORDER_FILE, 'utf8')); }
+          catch { return err('没有待确认的订单。请先用 confirmed=false 预览订单，等用户确认后再设 confirmed=true 执行。'); }
 
-          const ticker = await pub.fetchTicker(symbol);
-          const currentPrice = ticker.last ?? ticker.close ?? 0;
-          const orderPrice = type === 'limit' ? price! : currentPrice;
-          const contractSize = mkt.contractSize ?? 1;
-          const isDerivative = market_type && market_type !== 'spot';
-          const amountInBase = isDerivative ? amount * contractSize : amount;
-          const notional = amountInBase * orderPrice;
+          // Expire after 5 minutes
+          if (Date.now() - (pending.timestamp as number) > 5 * 60 * 1000) {
+            try { unlinkSync(PENDING_ORDER_FILE); } catch { /* ignore */ }
+            return err('订单预览已过期（超过5分钟），请重新创建订单预览。');
+          }
 
-          const preview: Record<string, unknown> = {
-            _preview: true,
-            _confirm_hint: 'Set confirmed=true to execute this order',
-            exchange,
-            symbol,
-            type,
-            side,
-            amount,
-            price: orderPrice,
-            current_price: currentPrice,
-            notional_value: `${notional.toFixed(2)} ${mkt.quote}`,
-          };
-          if (isDerivative && contractSize !== 1) {
-            preview.contract_size = contractSize;
-            preview.amount_in_base = `${amountInBase} ${mkt.base}`;
-            preview.unit = `${amount} contracts × ${contractSize} ${mkt.base}/contract = ${amountInBase} ${mkt.base}`;
-          }
-          if (mkt.limits?.amount?.min) preview.min_amount = mkt.limits.amount.min;
-          if (stop_loss_price) preview.stop_loss_price = stop_loss_price;
-          if (take_profit_price) preview.take_profit_price = take_profit_price;
-          if (pos_side) preview.pos_side = pos_side;
-          if (reduce_only) preview.reduce_only = true;
-          return ok(preview);
-        }
+          try { unlinkSync(PENDING_ORDER_FILE); } catch { /* ignore */ }
 
-        // Execution mode
-        const ex = getExchange(exchange, market_type);
-        const params: Record<string, unknown> = {};
-        const isBinance = exchange?.toLowerCase().startsWith('binance');
-        if (pos_side) {
-          if (isBinance) {
-            params.positionSide = pos_side.toUpperCase();
-          } else {
-            params.posSide = pos_side;
-          }
-        }
-        if (margin_mode) {
-          if (!isBinance) {
-            params.tdMode = margin_mode;
-          }
-        }
-        if (stop_loss_price) params.stopLossPrice = stop_loss_price;
-        if (take_profit_price) params.takeProfitPrice = take_profit_price;
-        if (reduce_only) params.reduceOnly = true;
-        const order = await ex.createOrder(symbol, type, side, amount, price, params);
-        // For futures/swap, attach contract size context so callers know actual position
-        if (market_type && market_type !== 'spot') {
-          try {
-            await ex.loadMarkets();
-            const mkt = ex.markets[symbol];
-            if (mkt?.contractSize) {
-              (order as Record<string, unknown>)._contractSize = mkt.contractSize;
-              (order as Record<string, unknown>)._amountInBase = amount * mkt.contractSize;
-              (order as Record<string, unknown>)._unit = `${amount} contracts × ${mkt.contractSize} ${mkt.base}/contract = ${amount * mkt.contractSize} ${mkt.base}`;
+          // Execute with stored params (prevents tampering between preview and confirm)
+          const ex = getExchange(pending.exchange as string, pending.market_type as string | undefined);
+          const params: Record<string, unknown> = {};
+          const isBinance = (pending.exchange as string)?.toLowerCase().startsWith('binance');
+          const isOkx = (pending.exchange as string)?.toLowerCase() === 'okx';
+          const pendingSide = pending.side as string;
+          const pendingMarketType = pending.market_type as string | undefined;
+          if (pending.pos_side) {
+            if (isBinance) {
+              params.positionSide = (pending.pos_side as string).toUpperCase();
+            } else {
+              params.posSide = pending.pos_side;
             }
-          } catch { /* ignore */ }
+          } else if (isOkx && pendingMarketType && pendingMarketType !== 'spot') {
+            // OKX hedge mode: auto-set posSide if not explicitly provided
+            if (pending.reduce_only) {
+              params.posSide = pendingSide === 'buy' ? 'short' : 'long';
+            } else {
+              params.posSide = pendingSide === 'buy' ? 'long' : 'short';
+            }
+          }
+          if (pending.margin_mode && !isBinance) params.tdMode = pending.margin_mode;
+          if (pending.stop_loss_price) params.stopLossPrice = pending.stop_loss_price;
+          if (pending.take_profit_price) params.takeProfitPrice = pending.take_profit_price;
+          if (pending.reduce_only) params.reduceOnly = true;
+          const order = await ex.createOrder(
+            pending.symbol as string, pending.type as string, pendingSide,
+            pending.amount as number, pending.price as number | undefined, params
+          );
+          if (pendingMarketType && pendingMarketType !== 'spot') {
+            try {
+              await ex.loadMarkets();
+              const mkt = ex.markets[pending.symbol as string];
+              if (mkt?.contractSize) {
+                (order as Record<string, unknown>)._contractSize = mkt.contractSize;
+                (order as Record<string, unknown>)._amountInBase = (pending.amount as number) * mkt.contractSize;
+              }
+            } catch { /* ignore */ }
+          }
+          return ok(order);
         }
-        return ok(order);
+
+        // Preview mode: save pending order to file, return summary
+        const pub = getExchange(exchange, market_type, { skipAuth: true });
+        await pub.loadMarkets();
+        const mkt = pub.markets[symbol];
+        if (!mkt) return err(`Symbol '${symbol}' not found on ${exchange}`);
+
+        // Save pending order
+        const { mkdirSync } = await import('node:fs');
+        mkdirSync(resolve(process.env.HOME || '', '.aicoin-mcp'), { recursive: true });
+        writeFileSync(PENDING_ORDER_FILE, JSON.stringify({
+          exchange, symbol, type, side, amount, price, market_type,
+          pos_side, margin_mode, stop_loss_price, take_profit_price, reduce_only,
+          timestamp: Date.now(),
+        }));
+
+        const ticker = await pub.fetchTicker(symbol);
+        const currentPrice = ticker.last ?? ticker.close ?? 0;
+        const orderPrice = type === 'limit' ? price! : currentPrice;
+        const contractSize = mkt.contractSize ?? 1;
+        const isDerivative = market_type && market_type !== 'spot';
+        const amountInBase = isDerivative ? amount * contractSize : amount;
+        const notional = amountInBase * orderPrice;
+
+        const preview: Record<string, unknown> = {
+          _preview: true,
+          _confirm_hint: 'Set confirmed=true to execute this order',
+          exchange, symbol, type, side, amount,
+          price: orderPrice, current_price: currentPrice,
+          notional_value: `${notional.toFixed(2)} ${mkt.quote}`,
+        };
+        if (isDerivative && contractSize !== 1) {
+          preview.contract_size = contractSize;
+          preview.amount_in_base = `${amountInBase} ${mkt.base}`;
+          preview.unit = `${amount} contracts × ${contractSize} ${mkt.base}/contract = ${amountInBase} ${mkt.base}`;
+        }
+        if (mkt.limits?.amount?.min) preview.min_amount = mkt.limits.amount.min;
+        if (stop_loss_price) preview.stop_loss_price = stop_loss_price;
+        if (take_profit_price) preview.take_profit_price = take_profit_price;
+        if (pos_side) preview.pos_side = pos_side;
+        if (reduce_only) preview.reduce_only = true;
+        return ok(preview);
       } catch (e) {
         return err(e);
       }
@@ -469,9 +500,12 @@ export function registerTradeTools(server: McpServer) {
           });
         }
         const ex = getExchange(exchange, market_type);
-        // Normalize account names for CCXT (lowercase)
-        const from = from_account.toLowerCase();
-        const to = to_account.toLowerCase();
+        // Normalize account names for CCXT
+        const ALIAS: Record<string, string> = { futures: 'future', usdm: 'future', coinm: 'delivery' };
+        const fromRaw = from_account.toLowerCase();
+        const toRaw = to_account.toLowerCase();
+        const from = ALIAS[fromRaw] || fromRaw;
+        const to = ALIAS[toRaw] || toRaw;
         return ok(await ex.transfer(code, amount, from, to));
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
