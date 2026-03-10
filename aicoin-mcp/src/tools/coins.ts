@@ -15,19 +15,29 @@ export function registerCoinTools(server: McpServer) {
   // #12 coin_info
   server.tool(
     'coin_info',
-    'Coin data.\n• list — all coins, no params needed\n• ticker — real-time prices. Requires: coin_list\n• config — coin profiles. Requires: coin_list\n• ai_analysis — AI predictions. Requires: coin_keys (JSON array string)',
+    'Coin data.\n• search — search coins by keyword, returns coinKey/dbKeys. Requires: search\n• list — all coins, no params needed\n• ticker — real-time prices. Requires: coin_list\n• config — coin profiles. Requires: coin_list\n• ai_analysis — AI predictions. Requires: coin_keys (JSON array string)',
     {
-      action: z.enum(['list', 'ticker', 'config', 'ai_analysis']).describe(
-        'list: top coins; ticker: real-time prices; config: coin profiles; ai_analysis: AI predictions'
+      action: z.enum(['search', 'list', 'ticker', 'config', 'ai_analysis']).describe(
+        'search: find coins by keyword; list: top coins; ticker: real-time prices; config: coin profiles; ai_analysis: AI predictions'
       ),
+      search: z.string().optional().describe('REQUIRED for search. Keyword like "BTC" or "bitcoin"'),
       coin_list: z.string().optional().describe('REQUIRED for ticker, config. Comma-separated coin keys, e.g. "bitcoin,ethereum". NOT used by ai_analysis'),
       coin_keys: z.string().optional().describe('REQUIRED for ai_analysis. JSON array string, e.g. \'["bitcoin","ethereum"]\'. NOT used by ticker/config'),
       language: z.enum(['CN', 'EN', 'TC']).optional().describe('Optional for ai_analysis: response language, default CN'),
+      page: z.number().optional().describe('Optional for search: page number, default 1'),
+      page_size: z.number().optional().describe('Optional for search: page size, default 20'),
       ...maxItemsParam,
     },
-    async ({ action, coin_list, coin_keys, language, _max_items }) => {
+    async ({ action, search, coin_list, coin_keys, language, page, page_size, _max_items }) => {
       try {
         switch (action) {
+          case 'search': {
+            if (!search) return err('search is required for search action');
+            const params: Record<string, string> = { search };
+            if (page) params.page = String(page);
+            if (page_size) params.page_size = String(page_size);
+            return ok(await apiGet('/api/upgrade/v2/coin/search', params));
+          }
           case 'list':
             return okList(await apiGet('/api/v2/coin'), parseMax(_max_items, 100));
           case 'ticker': {
